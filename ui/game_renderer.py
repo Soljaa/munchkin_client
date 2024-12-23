@@ -6,6 +6,7 @@ from ui.button import Button
 class GameRenderer:
     def __init__(self, screen):
         self.screen = screen
+        self.gameboard = pygame.image.load("assets/gameboard.png")
         self.buttons = {}
         self.message = ""
         self.message_timer = 0
@@ -15,25 +16,28 @@ class GameRenderer:
         # Create buttons with consistent positioning
         button_y = SCREEN_HEIGHT - 100
         self.buttons = {
-            "kick_door": Button(50, button_y, 200, 50, "Kick Down Door", GREEN, (100, 255, 100)),
-            "run_away": Button(300, button_y, 200, 50, "Run Away", RED, (255, 100, 100)),
-            "end_turn": Button(550, button_y, 200, 50, "End Turn", BLUE, (100, 100, 255))
+            "kick_door": Button(500, button_y, 200, 50, "Kick Down Door", GREEN, (100, 255, 100)),
+            "run_away": Button(750, button_y, 200, 50, "Run Away", RED, (255, 100, 100)),
+            "end_turn": Button(1000, button_y, 200, 50, "End Turn", BLUE, (100, 100, 255))
         }
+
+    def draw_gameboard(self):
+        self.screen.blit(self.gameboard, (0, 0))
 
     def draw_game_state(self, game_state):
         # Draw current player info
         player = game_state.current_player()
-        self._draw_player_info(player, 50, 50)
+        self._draw_player_info(player, 420, 50)
         
         # Draw phase indicator at the top
-        self._draw_phase_indicator(game_state.phase, SCREEN_WIDTH // 2 - 100, 20)
+        self._draw_phase_indicator(game_state.phase, SCREEN_WIDTH // 2 + 50, 20)
         
         # Draw hand
-        self._draw_hand(player, 50, 200)
+        self._draw_hand(player, 420, 200)
         
         # Draw current combat if any
         if game_state.current_combat:
-            self._draw_combat(game_state.current_combat, 400, 300)
+            self._draw_combat(game_state.current_combat, 800, 300)
         
         # Draw buttons based on game phase
         self._draw_buttons(game_state.phase)
@@ -148,7 +152,7 @@ class GameRenderer:
         if self.message and self.message_timer > 0:
             font = pygame.font.Font(None, 32)
             text = font.render(self.message, True, BLACK)
-            text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 50))
+            text_rect = text.get_rect(center=(SCREEN_WIDTH // 2 + 200, SCREEN_HEIGHT-25))
             pygame.draw.rect(self.screen, WHITE, (text_rect.x - 10, text_rect.y - 5, text_rect.width + 20, text_rect.height + 10))
             self.screen.blit(text, text_rect)
             self.message_timer -= 1
@@ -165,7 +169,7 @@ class GameRenderer:
             current_player = game_state.current_player()
             
             # Check for clicks in the hand area
-            x, y = 50, 200  # Starting position of hand cards
+            x, y = 420, 200  # Starting position of hand cards
             for i, card in enumerate(current_player.hand):
                 card_rect = pygame.Rect(x + 10, y + 30 + i * 25, 200, 20)
                 if card_rect.collidepoint(mouse_pos):
