@@ -41,6 +41,8 @@ def main():
         screen.fill(WHITE)
         # Render the gameboard
         renderer.draw_gameboard()
+        # Render the dungeon_backgorund (play area)
+        renderer.draw_dungeon_background()
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

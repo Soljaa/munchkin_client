@@ -7,6 +7,7 @@ class GameRenderer:
     def __init__(self, screen):
         self.screen = screen
         self.gameboard = pygame.image.load("assets/gameboard.png")
+        self.dungeon_background = pygame.image.load("assets/dungeon_background.png")
         self.buttons = {}
         self.message = ""
         self.message_timer = 0
@@ -23,6 +24,10 @@ class GameRenderer:
 
     def draw_gameboard(self):
         self.screen.blit(self.gameboard, (0, 0))
+
+    def draw_dungeon_background(self):
+        self.screen.blit(self.dungeon_background, (402, 0))
+
 
     def draw_game_state(self, game_state):
         # Draw current player info
