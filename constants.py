@@ -9,6 +9,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 GRAY = (128, 128, 128)
+BROWN = (70, 31, 0)
 
 # Game constants
 MAX_LEVEL = 10

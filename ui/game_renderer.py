@@ -24,6 +24,7 @@ class GameRenderer:
 
     def draw_gameboard(self):
         self.screen.blit(self.gameboard, (0, 0))
+        pygame.draw.rect(self.screen, BROWN, (402, 0, 5, 720))
 
     def draw_dungeon_background(self):
         self.screen.blit(self.dungeon_background, (402, 0))
