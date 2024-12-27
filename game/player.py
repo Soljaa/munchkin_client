@@ -1,6 +1,7 @@
 class Player:
-    def __init__(self, name):
+    def __init__(self, name, img_dir):
         self.name = name
+        self.img_dir = img_dir
         self.level = 1
         self.combat_strength = 0
         self.hand = []

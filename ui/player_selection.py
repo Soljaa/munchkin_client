@@ -5,6 +5,7 @@ from PPlay.gameimage import *
 import pygame
 from widgets.button.hover_button import HoverButton
 from widgets.button.click_button import ClickButton
+from game.game_manager import main
 
 
 class PlayerSelection:
@@ -77,7 +78,7 @@ class PlayerSelection:
         self.color_change_interval = 500  # Intervalo de tempo para mudar a cor (em ms)
         self.clock = pygame.time.Clock() 
 
-    def draw_avatar(self, avatar, input_box_y):
+    def draw_avatar(self, avatar):
         """Posiciona e desenha o avatar na tela."""
         avatar.x = self.window.width / 2 - avatar.width / 2
         avatar.y = 195
@@ -115,8 +116,9 @@ class PlayerSelection:
     def game(self):
         """Função chamada ao pressionar o botão de continuar."""
         nickname = self.input_text.strip()
+        avatar_img_dir = self.avatars[self.avatar_index]
         if self.is_valid_nickname(nickname):
-            raise StartGameException(nickname)
+            main(nickname, avatar_img_dir)
         
     def run(self):
         """Loop principal da tela de seleção do jogador."""
@@ -139,8 +141,8 @@ class PlayerSelection:
                     button.acao()
 
             # Imagem Avatar
-            avatar = GameImage(self.avatars[self.avatar_index])
-            self.draw_avatar(avatar, input_box_y)
+            self.avatar = GameImage(self.avatars[self.avatar_index])
+            self.draw_avatar(self.avatar)
 
             for event in pygame.event.get():  # Captura eventos da janela
                 if event.type == pygame.QUIT:
@@ -176,7 +178,3 @@ class PlayerSelection:
             self.window.update()
             #pygame.display.flip()  # Atualiza a tela do Pygame
             self.clock.tick(60)  # Limita o loop a 60 FPS
-
-
-class StartGameException(Exception):
-    pass
