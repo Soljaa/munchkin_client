@@ -4,12 +4,15 @@ from game.player import Player
 from game.card import CardType
 from game.combat import Combat
 
+
 class GamePhase(Enum):
+    SETUP =  auto()
     KICK_DOOR = auto()
     LOOK_FOR_TROUBLE = auto()
     LOOT_ROOM = auto()
     COMBAT = auto()
     CHARITY = auto()
+
 
 class GameState:
     def __init__(self):
@@ -17,7 +20,7 @@ class GameState:
         self.treasure_deck = TreasureDeck()
         self.players = []
         self.current_player_index = 0
-        self.phase = GamePhase.KICK_DOOR
+        self.phase = GamePhase.SETUP
         self.current_combat = None
 
     def add_player(self, name):
@@ -30,7 +33,7 @@ class GameState:
 
     def next_player(self):
         self.current_player_index = (self.current_player_index + 1) % len(self.players)
-        self.phase = GamePhase.KICK_DOOR
+        self.phase = GamePhase.SETUP
 
     def current_player(self):
         return self.players[self.current_player_index]
