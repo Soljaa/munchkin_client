@@ -4,7 +4,7 @@ from game.game_state import GameState, GamePhase
 from ui.game_renderer import GameRenderer
 
 
-def main(name: str = "Player", img_dir="assets/selecao_player/avatares/avatar1.png"):
+def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/avatar1.png"):
 
     """
     MAIN GAME LOOP: GERENCIA O GAMESTATE E POSSIBILITA FUTURA IMPLEMENTAÇÃO DE MULTIPLAYER
@@ -30,7 +30,7 @@ def main(name: str = "Player", img_dir="assets/selecao_player/avatares/avatar1.p
     # TODO: entry point for multiplayer
     # Initialize game state, default 1P Vs Com
     game_state = GameState()
-    game_state.add_player(name, img_dir)
+    game_state.add_player(name, avatar_img_dir)
     game_state.add_player("Player 2", "assets/selecao_player/avatares/avatar2.png")
     game_state.add_player("Player 3", "assets/selecao_player/avatares/avatar3.png")
     game_state.add_player("Player 4", "assets/selecao_player/avatares/avatar4.png")

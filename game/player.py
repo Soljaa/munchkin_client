@@ -2,9 +2,9 @@ from game.card import Race, Class
 
 
 class Player:
-    def __init__(self, name, img_dir):
+    def __init__(self, name, avatar_img_dir):
         self.name = name
-        self.img_dir = img_dir
+        self.avatar_img_dir = avatar_img_dir
         self.level = 1
         self.combat_strength = 0
         self.hand = []
