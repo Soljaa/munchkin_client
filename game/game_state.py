@@ -23,8 +23,8 @@ class GameState:
         self.phase = GamePhase.SETUP
         self.current_combat = None
 
-    def add_player(self, name):
-        player = Player(name)
+    def add_player(self, name, img_dir):
+        player = Player(name, img_dir)
         self.players.append(player)
         # Draw initial hand
         for _ in range(4):
