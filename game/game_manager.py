@@ -4,7 +4,7 @@ from game.game_state import GameState, GamePhase
 from ui.game_renderer import GameRenderer
 
 
-def main(name: str = "Player", img_dir="assets/selecao_player/avatares/avatar1.png"):
+def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/avatar1.png"):
 
     """
     MAIN GAME LOOP: GERENCIA O GAMESTATE E POSSIBILITA FUTURA IMPLEMENTAÇÃO DE MULTIPLAYER
