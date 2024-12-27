@@ -84,9 +84,12 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                     (f"Combat started! Fighting {game_state.current_combat.monster.name}!")
                             else:
                                 renderer.set_message("You found something else...")
-                    elif action == "run_away":
-                        if game_state.current_combat:
-                            if game_state.current_combat.try_to_run():
+                    elif action == "run_away": # Se aperto para fugir...
+                        if game_state.current_combat: # ... e estou em combate
+                            game_state.dice.roll() # Então rolo o dado 
+                            renderer.draw_dice() # Faço a animação da rolagem 
+                            value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
+                            if game_state.current_combat.try_to_run(value):
                                 renderer.set_message("Successfully ran away!")
                                 game_state.current_combat = None
                             else:
