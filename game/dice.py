@@ -6,6 +6,7 @@ from PPlay.window import *
 from PPlay.gameimage import *
 from PPlay.animation import *
 
+
 class Dice:
     def __init__(self):
         # Infos
@@ -14,58 +15,55 @@ class Dice:
         self.last_roll = None     # Resultado do último lançamento
 
         # Sprites
-        self.sprite_rolling_dice = Sprite(self.img_dir, 8) # Sprite (animação) do dado rolando
+        self.sprite_rolling_dice = Sprite(self.img_dir, 8)  # Sprite (animação) do dado rolando
         self.sprite_rolling_dice.set_total_duration(500)
-        self.sprite_value_dice = Sprite(f"assets/game/dice/dice_{self.last_roll}.png") # Sprite do dado estático com seu valor
+        self.sprite_value_dice = Sprite(f"assets/game/dice/dice_1.png")  # Sprite do dado estático com seu valor default
 
     def roll(self):
         """Lança o dado e retorna um valor aleatório entre 1 e o número de lados."""
         self.last_roll = random.randint(1, self.sides)  # Gera um valor aleatório
         self.sprite_value_dice = Sprite(f"assets/game/dice/dice_{self.last_roll}.png")
         return self.last_roll
-    
-    def draw_rolling_dice(self):
+
+    def draw_rolling_dice(self, screen, x=0, y=0):
+        self.sprite_rolling_dice.x = x
+        self.sprite_rolling_dice.y = y
         """Faz a animação do rolamento de dado"""
-        self.sprite_rolling_dice.update()
-        self.sprite_rolling_dice.draw()
+        roll_time_seconds = 4  # Tempo total de animação do dado rolando em segundos
+        elapsed_time = 0  # Variável para controlar o tempo de animação
+        while elapsed_time < roll_time_seconds:
+            #dice_background = Sprite("assets/game/transparent_background.jpg")
+            #dice_background.draw()
+            elapsed_time += window.delta_time()  # Adiciona o tempo de cada quadro
+            self.sprite_rolling_dice.update()
+            self.sprite_rolling_dice.draw()
+            screen.update()
 
-    def draw_value_dice(self):
-        "Desenha o dado estático com seu valor pós rolamento"
+    def draw_value_dice(self, x=0, y=0):
+        """Desenha o dado estático com seu valor pós rolamento"""
+        self.sprite_value_dice.x = x
+        self.sprite_value_dice.y = y
         self.sprite_value_dice.draw()
-         
 
-
-###
-###
-###
 
 # EXEMPLO
 if __name__ == "__main__":
-    ### Início da execução do jogo ###
     window = Window(400, 400)
     window.set_title("Exibição de Dado")
 
-    dado = Dice()  # Caminho para a imagem do dado
+    dice = Dice()  
 
-    segundos_de_dado_rolando = 4  # Tempo total de animação do dado rolando em segundos
-    segundos_rolados = 0  # Variável para controlar o tempo de animação
-    foiRolado = False
+    has_rolled = False
 
     while True:
         window.set_background_color((255, 255, 255))  # Cor de fundo branco
 
-        if not foiRolado:
-            while segundos_rolados < segundos_de_dado_rolando:
-                window.set_background_color((255, 255, 255))  # Cor de fundo branco
-                segundos_rolados += window.delta_time()  # Adiciona o tempo de cada quadro
-                dado.draw_rolling_dice()  # Desenha o dado rolando
-                window.update()
+        if not has_rolled:
+            dice.roll()  # Rola o dado para obter um valor
+            dice.draw_rolling_dice(window)  # Animação do rolamento do dado
 
-            dado.roll()
-            print(dado.last_roll)
+            has_rolled = True
 
-            foiRolado = True
-
-        dado.draw_value_dice()  # Desenha o valor final do dado
+        dice.draw_value_dice()  # Desenha o valor final do dado
 
         window.update()  # Atualiza a tela
