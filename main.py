@@ -3,12 +3,11 @@ import sys
 from constants import *
 from game.game_state import GameState, GamePhase
 from ui.game_renderer import GameRenderer
+from ui.menu import Menu
 
-def main():
-    # Set pygame to use software rendering
-    import os
-    os.environ['SDL_VIDEODRIVER'] = 'windows'
-    
+
+def main(player_name: str = "Palyer 1"):
+
     # Initialize Pygame with error handling
     try:
         pygame.init()
@@ -28,7 +27,7 @@ def main():
 
     # Initialize game state
     game_state = GameState()
-    game_state.add_player("Player 1")
+    game_state.add_player(player_name)
     game_state.add_player("Player 2")
 
     # Initialize renderer
@@ -114,5 +113,8 @@ def main():
     pygame.quit()
     sys.exit()
 
+
 if __name__ == "__main__":
-    main()
+    menu = Menu(1280, 720)
+    player_name = menu.run()
+    main(player_name)

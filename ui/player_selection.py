@@ -3,7 +3,6 @@ from PPlay.window import *
 from PPlay.mouse import *
 from PPlay.gameimage import *
 import pygame
-from game import Game
 from widgets.button.hover_button import HoverButton
 from widgets.button.click_button import ClickButton
 
@@ -125,8 +124,7 @@ class PlayerSelection:
 
     def game(self):
         """Função chamada ao pressionar o botão de continuar."""
-        game = Game(self.window)
-        game.run()
+        raise StartGameException(self.input_text.strip())
         
     def run(self):
         """Loop principal da tela de seleção do jogador."""
@@ -188,3 +186,7 @@ class PlayerSelection:
             self.window.update()
             #pygame.display.flip()  # Atualiza a tela do Pygame
             self.clock.tick(60)  # Limita o loop a 60 FPS
+
+
+class StartGameException(Exception):
+    pass

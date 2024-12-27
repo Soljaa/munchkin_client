@@ -5,7 +5,8 @@ from PPlay.sprite import *
 from PPlay.mouse import *
 from PPlay.gameimage import *
 from widgets.button.hover_button import HoverButton
-from player_selection import PlayerSelection
+from ui.player_selection import PlayerSelection, StartGameException
+
 
 class Menu:
     def __init__(self, width, height):  # Inicialização do MENU
@@ -28,18 +29,19 @@ class Menu:
         """Inicializa os botões do menu."""
         self.buttons = {
             "play": HoverButton(
-                "assets/menu/jogar_button.png", 
+                "assets/menu/jogar_button.png",
                 self.window.width/2, 
                 0.36*self.window.height, 
                 self.play
             ),
             "options": HoverButton(
-                "assets/menu/opcoes_button.png", 
+                "assets/menu/opcoes_button.png",
                 self.window.width/2, 
-                0.49*self.window.height
+                0.49*self.window.height,
+                self.options
             ),
             "exit": HoverButton(
-                "assets/menu/sair_button.png", 
+                "assets/menu/sair_button.png",
                 self.window.width/2, 
                 0.62*self.window.height,
                 self.quit
@@ -50,10 +52,15 @@ class Menu:
     def play(self):
         """Função chamada ao pressionar o botão de jogar."""
         selecao_player = PlayerSelection(self.window)
-        selecao_player.run()
-        
+        try:
+            selecao_player.run()
+        except StartGameException:
+            raise
     def quit(self):
         sys.exit()
+
+    def options(self):
+        return
 
     def run(self):
         """Executa o loop principal do menu."""
@@ -66,13 +73,17 @@ class Menu:
                 button.draw()
                 if self.mouse.is_over_object(button.sprite) and self.mouse.is_button_pressed(1) and self.reload_mouse <= 0:
                     self.reload_mouse = 1
-                    button.acao()
+                    try:
+                        button.acao()
+                    except StartGameException as player_name:
+                        return player_name
 
             if self.reload_mouse > 0:
                 self.reload_mouse -= 0.02
 
-            self.window.update()  
+            self.window.update()
+
 
 if __name__ == "__main__":
-    menu = Menu(1280, 720)  
+    menu = Menu(1280, 720)
     menu.run()
