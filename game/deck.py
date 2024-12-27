@@ -1,5 +1,13 @@
 import random
 from game.card import Card, Monster, Item, Race, Class, Buff, Curse, CardType
+from game.death import Death
+
+
+class Dice:
+    @staticmethod
+    def roll():
+        value = random.randint(1, 6)
+        return value
 
 class Deck:
     def __init__(self):
@@ -32,12 +40,20 @@ class DoorDeck(Deck):
         # Add monsters with varying levels
         monsters = [
             #TODO: O "BadStuff" está com X, pois tem uns que não são tão complexos como apenas "Lose 2 levels". Pensar em como fazer depois
-            Monster("3,872 Orcs", "../assets/door_cards/3872Orcs.png", 10, 3, "X"),
-            Monster("Amazon", "../assets/door_cards/Amazon.png", 8, 2, "X"),
-            Monster("Bigfoot", "../assets/door_cards/Bigfoot.png", 12, 3, "X"),
-            Monster("Bullrog", "../assets/door_cards/Bullrog.png", 18, 5, "X"),
-            Monster("Bullrog", "../assets/door_cards/Bullrog.png", 18, 5, "X"),
-            Monster("Crabs", "../assets/door_cards/Crabs.png", 1, 1, "X"),
+            Monster(
+                name="3,872 Orcs",
+                image="../assets/door_cards/3872Orcs.png",
+                level=10,
+                treasure=3,
+                bad_stuff=lambda player: (lambda roll=Dice.roll(): 
+                    Death(player).apply() if roll <= 2 
+                    else setattr(player, 'level', player.level - roll))()
+            ),
+            Monster("Amazon", "../assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
+            Monster("Bigfoot", "../assets/door_cards/Bigfoot.png", level=12, treasure=3, bad_stuff=None),
+            Monster("Bullrog", "../assets/door_cards/Bullrog.png", level=18, treasure=5, bad_stuff=None),
+            Monster("Bullrog", "../assets/door_cards/Bullrog.png", level=18, treasure=5, bad_stuff=None),
+            Monster("Crabs", "../assets/door_cards/Crabs.png", level=1, treasure=1, bad_stuff=None),
             Monster("Drooling Slime", "../assets/door_cards/DroolingSlime.png", 1, 1, "X"),
             Monster("Face Sucker", "../assets/door_cards/FaceSucker.png", 8, 2, "X"),
             Monster("Face Sucker", "../assets/door_cards/FaceSucker.png", 8, 2, "X"),
@@ -94,6 +110,7 @@ class DoorDeck(Deck):
             Race("Dwarf", "image", "Can carry extra items"),
             Race("Halfling", "image", "Can sell one item per turn"),
             Race("Human", "image", "Get bonus on running away"),
+            
         ]
         print(f"Adding {len(races)} races to deck")
         for race in races:

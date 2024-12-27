@@ -1,5 +1,6 @@
 from enum import Enum, auto
-
+from typing import Callable
+from game.player import Player
 class CardType(Enum):
     MONSTER = auto()
     CURSE = auto()
@@ -19,11 +20,11 @@ class Card:
         return f"{self.name} (Level: {self.level}, Bonus: {self.bonus})"
 
 class Monster(Card):
-    def __init__(self, name, image, level, treasure, bad_stuff):
+    def __init__(self, name, image, level, treasure, bad_stuff: Callable[[Player], None]):
         super().__init__(name, image, CardType.MONSTER)
         self.level = level        
         self.treasure = treasure  
-        self.bad_stuff = bad_stuff
+        self.bad_stuff: Callable[[Player], None] = bad_stuff
 
 class Item(Card):
     def __init__(self, name, image, bonus, value, slot=None, size="Small"):

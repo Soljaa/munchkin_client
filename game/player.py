@@ -1,3 +1,6 @@
+from game.card import Race, Class
+
+
 class Player:
     def __init__(self, name, img_dir):
         self.name = name
@@ -6,8 +9,8 @@ class Player:
         self.combat_strength = 0
         self.hand = []
         self.equipped_items = []
-        self.race = None
-        self.class_ = None
+        self.race: Race = None
+        self.class_: Class = None
 
     def calculate_combat_strength(self):
         base_strength = self.level
