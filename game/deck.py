@@ -48,6 +48,7 @@ class DoorDeck(Deck):
 
         monsters = [
             #TODO: O "BadStuff" está com X, pois tem uns que não são tão complexos como apenas "Lose 2 levels". Pensar em como fazer depois
+            # 3,872 Orcs
             Monster(
                 name="3,872 Orcs",
                 image="../assets/door_cards/3872Orcs.png",
@@ -56,6 +57,7 @@ class DoorDeck(Deck):
                 effect=IncreaseMonsterLevelEffect('Dwarf', 6),
                 bad_stuff=OrcsBadStuff(),
             ),
+            # Squidzilla
             Monster(
                 name="Squidzilla", 
                 image="../assets/door_cards/Squidzilla.png", 
@@ -64,6 +66,7 @@ class DoorDeck(Deck):
                 effect=CompositeEffect(IncreaseMonsterLevelEffect('Elf', 4), NotPursueLevelEffect(4, exclude_race='Elf')), 
                 bad_stuff=DeathBadStuff()
             ),
+            # Hairy Potter
             Monster(
                 name="Hairy Potter", 
                 image="../assets/door_cards/HairyPotter.png", 
@@ -72,22 +75,66 @@ class DoorDeck(Deck):
                 effect=CompositeEffect(IncreaseMonsterLevelEffect('Wizard', 4), IncreaseMonsterLevelEffect('Elf', -3), NotPursueLevelEffect(2)),
                 bad_stuff=LoseAllClassItemsBadStuff()
             ),
+
+            # Amazon #TODO
             Monster(name="Amazon", image="../assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
-            Monster(name="Bigfoot", image="../assets/door_cards/Bigfoot.png", level=12, treasure=3, bad_stuff=None),
-            Monster("Bullrog", "../assets/door_cards/Bullrog.png", level=18, treasure=5, bad_stuff=None),
-            Monster("Bullrog", "../assets/door_cards/Bullrog.png", level=18, treasure=5, bad_stuff=None),
+            
+            # Bigfoot
+            Monster(
+                name="Bigfoot",
+                image="../assets/door_cards/Bigfoot.png", 
+                level=12,
+                treasure=3,
+                effect= CompositeEffect(
+                    IncreaseMonsterLevelEffect("Dwarf", 3),
+                    IncreaseMonsterLevelEffect("Halfling", 3),
+                ),
+                bad_stuff= LoseTheEquippedHeadgearBadStuff,
+            ),
+            #Bullrog
+            Monster(
+                name= "Bullrog",
+                image= "../assets/door_cards/Bullrog.png",
+                level=18, 
+                treasure=5, 
+                effect= CompositeBadStuff(NotPursueLevelEffect(4)),
+                bad_stuff= DeathBadStuff(),
+            ),
+            
+            #Crabs
             Monster("Crabs", "../assets/door_cards/Crabs.png", level=1, treasure=1, bad_stuff=None),
+            # Drooling Slime #TODO
             Monster("Drooling Slime", "../assets/door_cards/DroolingSlime.png", 1, 1, "X"),
-            Monster("Face Sucker", "../assets/door_cards/FaceSucker.png", 8, 2, "X"),
-            Monster("Face Sucker", "../assets/door_cards/FaceSucker.png", 8, 2, "X"),
+            
+            #Face Sucker
+            Monster(name= "Face Sucker",
+                    image= "../assets/door_cards/FaceSucker.png",
+                    level= 8,
+                    treasure= 2, 
+                    effect= CompositeEffect(IncreaseMonsterLevelEffect("Elf", 6)),
+                    bad_stuff= CompositeBadStuff(
+                        LoseTheEquippedHeadgearBadStuff(),
+                        LoseLevelBadStuff(1),
+                    ),
+                ),
+            
+            # Floating Nose #TODO
             Monster("Floating Nose", "../assets/door_cards/FloatingNose.png", 10, 3, "X"),
+            # Flying Frogs #TODO
             Monster("Flying Frogs", "../assets/door_cards/FlyingFrogs.png", 2, 1, "X"),
+            # Gazebo #TODO
             Monster("Gazebo", "../assets/door_cards/Gazebo.png", 8, 2, "X"),
+            # Gelatinous Octahedron #TODO
             Monster("Gelatinous Octahedron", "../assets/door_cards/Gazebo.png", 2, 1, "X"),
+            # Ghoulfiends #TODO
             Monster("Ghoulfiends", "../assets/door_cards/Ghoulfiends.png", 8, 2, "X"),
+            # Harpies #TODO
             Monster("Harpies", "../assets/door_cards/Harpies.png", 4, 2, "X"),
+            # Hippogriff #TODO
             Monster("Hippogriff", "../assets/door_cards/Hippogriff.png", 16, 4, "X"),
+            # Insurance Salesman #TODO
             Monster("Insurance Salesman", "../assets/door_cards/InsuranceSalesman.png", 14, 4, "X"),
+
             
             # King Tut
             Monster(
@@ -99,7 +146,7 @@ class DoorDeck(Deck):
                     NotPursueLevelEffect(3), 
                     PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect(2)
                 ),
-                bad_stuff= LoseAllItemsStuff(),
+                bad_stuff= LoseAllItemsBadStuff(),
             ),
             
             #Lame Goblin #TODO

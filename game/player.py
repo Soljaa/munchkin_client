@@ -80,3 +80,7 @@ class Player:
     #TODO
     def lose_all_items(self):
         pass
+
+    #TODO
+    def lose_equipped_headgear(self):
+        pass

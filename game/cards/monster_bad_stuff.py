@@ -7,6 +7,14 @@ class MonsterBadStuff(ABC):
     def apply(self, player) -> None:
         pass
 
+class CompositeBadStuff(MonsterBadStuff):
+    def __init__(self, *bad_stuffs: MonsterBadStuff):
+        self.bad_stuffs = bad_stuffs
+    
+    def apply(self, monster, player) -> None:
+        for bad_stuff in self.bad_stuffs:
+            bad_stuff.apply(monster, player)
+
 class DeathBadStuff(MonsterBadStuff):
     def __init__(self, exclude_race=None):
         self.exclude_race = exclude_race
@@ -40,11 +48,15 @@ class LoseLevelBadStuff(MonsterBadStuff):
         self.level_loss = level_loss
 
     def apply(self, player) -> None:
-            player.level_down(self.level_loss)
+        player.level_down(self.level_loss)
 
-class LoseAllItemsStuff(MonsterBadStuff):
+class LoseAllItemsBadStuff(MonsterBadStuff):
     def apply(self, player) -> None:
-            player.lose_all_items()
+        player.lose_all_items()
+
+class LoseTheEquippedHeadgearBadStuff(MonsterBadStuff):
+    def apply(self, player) -> None:
+        player.lose_equipped_headgear() 
     
 
 # TODO: Continuar com os outros bad stuffs
