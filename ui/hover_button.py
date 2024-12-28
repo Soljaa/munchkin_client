@@ -4,7 +4,6 @@ from ui.button import Button
 
 class HoverButton(Button):
     def __init__(self, image_path, x, y, width, height, scale_factor=1.1):
-        # Chama o construtor da classe Button
         super().__init__(x, y, width, height, image_path)
         
         # Fator de escala para aumentar o tamanho no hover
@@ -15,7 +14,7 @@ class HoverButton(Button):
     def draw(self, screen):
         # Se o botão está sendo hoverado, aumenta o tamanho
         if self.is_hovered:
-            # Aumenta o tamanho do botão em 20%
+            # Aumenta o tamanho do botão de acordo com scale_factor
             new_width = int(self.original_width * self.scale_factor)
             new_height = int(self.original_height * self.scale_factor)
             scaled_rect = pygame.Rect(self.rect.x - (new_width - self.original_width) // 2,
