@@ -1,5 +1,4 @@
 from ui.menu import Menu
-from game.game_manager import main
 import pygame
 import sys
 

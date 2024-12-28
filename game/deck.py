@@ -13,11 +13,15 @@ class Deck:
         random.shuffle(self.cards)
 
     def draw(self):
+        card = None
         if not self.cards and self.discard_pile:
             self.cards = self.discard_pile
             self.discard_pile = []
             self.shuffle()
-        return self.cards.pop() if self.cards else None
+        if self.cards:
+            card = self.cards.pop()
+            self.discard(card)
+        return card
 
     def discard(self, card):
         self.discard_pile.append(card)
@@ -87,17 +91,13 @@ class DoorDeck(Deck):
         for monster in monsters:
             self.add_card(monster)
 
-        # Add races with special abilities
-        races = [
-            #TODO: Faltam cartas de raça (com imagem das raças)
-            Race("Elf", "image", "Can sell items for levels"),
-            Race("Dwarf", "image", "Can carry extra items"),
-            Race("Halfling", "image", "Can sell one item per turn"),
-            Race("Human", "image", "Get bonus on running away"),
+        curses = [
+
         ]
-        print(f"Adding {len(races)} races to deck")
-        for race in races:
-            self.add_card(race)
+
+        print(f"Adding {len(curses)} races to deck")
+        for curse in curses:
+            self.add_card(curse)
 
         print(f"Door deck initialized with {len(self.cards)} cards")
         self.shuffle()
@@ -161,6 +161,19 @@ class TreasureDeck(Deck):
         print(f"Adding {len(items)} items to deck")
         for item in items:
             self.add_card(item)
+
+        # Add races with special abilities
+        races = [
+            # TODO: Faltam cartas de raça (com imagem das raças)
+            Race("Elf", "image", "Can sell items for levels"),
+            Race("Dwarf", "image", "Can carry extra items"),
+            Race("Halfling", "image", "Can sell one item per turn"),
+            Race("Human", "image", "Get bonus on running away"),
+        ]
+
+        print(f"Adding {len(races)} races to deck")
+        for race in races:
+            self.add_card(race)
 
         print(f"Treasure deck initialized with {len(self.cards)} cards")
         self.shuffle()
