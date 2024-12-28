@@ -54,11 +54,8 @@ class Player:
         if self.level < 10:
             self.level += 1
 
-    def level_down(self, value):
-        if value:
-            self.level -= value
-        else:
-            self.level -= 1
+    def level_down(self, value=1):
+        self.level -= value
         if self.level < 1:
             Death(self).apply()
 
