@@ -30,20 +30,10 @@ class Dice:
         self.sprite_rolling_dice.y = y
         """Faz a animação do rolamento de dado"""
         
-        roll_time_seconds = 4  # Tempo total de animação do dado rolando em segundos
-        elapsed_time = 0  # Variável para controlar o tempo de animação
+        self.sprite_rolling_dice.update()
+        self.sprite_rolling_dice.draw()
         
-        clock = pygame.time.Clock()
-        
-        while elapsed_time < roll_time_seconds:
-            # Calcula o tempo entre quadros
-            delta_time = clock.tick(60) / 1000.0  # 60 FPS
-
-            elapsed_time += delta_time  # Atualiza o tempo decorrido
-            self.sprite_rolling_dice.update()
-            self.sprite_rolling_dice.draw()
-            
-            pygame.display.update()
+        pygame.display.update()
 
     def draw_value_dice(self, x=0, y=0):
         """Desenha o dado estático com seu valor pós rolamento"""
@@ -68,8 +58,17 @@ if __name__ == "__main__":
 
         if not has_rolled:
             dice.roll()  # Rola o dado para obter um valor
-            dice.draw_rolling_dice(window)  # Animação do rolamento do dado
 
+            roll_time_seconds = 4  # Tempo total de animação do dado rolando em segundos
+            elapsed_time = 0  # Variável para controlar o tempo de animação
+            clock = pygame.time.Clock()
+            while elapsed_time < roll_time_seconds:
+                # Calcula o tempo entre quadros
+                delta_time = clock.tick(60) / 1000.0  # 60 FPS
+                elapsed_time += delta_time  # Atualiza o tempo decorrido
+                dice.draw_rolling_dice()  # Animação do rolamento do dado
+                window.set_background_color((255, 255, 255))
+                
             has_rolled = True
 
         dice.draw_value_dice()  # Desenha o valor final do dado

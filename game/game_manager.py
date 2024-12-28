@@ -92,7 +92,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                     elif action == "run_away": # Se aperto para fugir...
                         if game_state.current_combat: # ... e estou em combate
                             game_state.dice.roll() # Então rolo o dado 
-                            renderer.draw_dice(game_state.dice) # Faço a animação da rolagem
+                            renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
                             value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
                             if game_state.current_combat.try_to_run(value):
                                 renderer.set_message("Successfully ran away!")

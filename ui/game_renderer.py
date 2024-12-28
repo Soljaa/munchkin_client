@@ -107,8 +107,22 @@ class GameRenderer:
             # Desenha o Sprite
             player_sprite.draw()
 
-    def draw_dice(self, dice):
-        dice.draw_rolling_dice(SCREEN_WIDTH/2-dice.sprite_rolling_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_rolling_dice.height/2) # Animação do rolamento do dado
+    def draw_dice_animation(self, dice):
+        roll_time_seconds = 4  # Tempo total de animação do dado rolando em segundos
+        elapsed_time = 0  # Variável para controlar o tempo de animação
+        
+        clock = pygame.time.Clock()
+        
+        while elapsed_time < roll_time_seconds:
+            # Calcula o tempo entre quadros
+            delta_time = clock.tick(60) / 1000.0  # 60 FPS
+
+            elapsed_time += delta_time  # Atualiza o tempo decorrido
+            dice.draw_rolling_dice(SCREEN_WIDTH/2-dice.sprite_rolling_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_rolling_dice.height/2, self.draw_dungeon_background, self.draw_gameboard) # Animação do rolamento do dado
+
+            self.draw_dungeon_background()
+            self.draw_gameboard()
+
         dice.draw_value_dice(SCREEN_WIDTH/2-dice.sprite_value_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_value_dice.height/2)
         time.sleep(1)
 
