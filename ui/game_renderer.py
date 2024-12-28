@@ -31,7 +31,7 @@ class GameRenderer:
         # Create buttons with consistent positioning
         button_y = SCREEN_HEIGHT - 100
         self.buttons = {
-            "kick_door": HoverButton("assets/game/kick_door.png", 420, button_y, 250, 80),
+            "kick_door": HoverButton("assets/game/kick_door_new.png", 430, button_y - 120, 250, 200),
             "use_card": HoverButton("assets/game/use_card.png", 410, button_y - 60, 210, 60),
             "run_away": HoverButton("assets/game/run_away.png", 620, button_y, 210, 60),
             "look_for_trouble": HoverButton("assets/game/look_for_trouble.png", 840, button_y, 210, 60),
@@ -130,20 +130,20 @@ class GameRenderer:
         # Draw current player info
         player = game_state.current_player()
         players = game_state.players
-        self._draw_player_info(player, 420, 50)
+        self._draw_player_info(player, 430, 20)
 
         # Draw avatars
         self.draw_avatars(players)
 
         # Draw phase indicator at the top
-        self._draw_phase_indicator(game_state.phase, SCREEN_WIDTH // 2 + 50, 20)
+        self._draw_phase_indicator(game_state.phase, 860, 20)
         
         # Draw hand
         self._draw_hand(player, 420, 200)
         
         # Draw current combat if any
         if game_state.current_combat:
-            self._draw_combat(game_state.current_combat, 800, 300)
+            self._draw_combat(game_state.current_combat, 800, 200)
         
         # Draw buttons based on game phase
         self._draw_buttons(game_state.phase)
@@ -154,27 +154,41 @@ class GameRenderer:
     def _draw_phase_indicator(self, phase, x, y):
         font = pygame.font.Font(None, 32)
         phase_text = f"Current Phase: {phase.name.replace('_', ' ')}"
-        surface = font.render(phase_text, True, BLUE)
+        surface = font.render(phase_text, True, BLACK)
         pygame.draw.rect(self.screen, WHITE, (x - 5, y - 5, surface.get_width() + 10, surface.get_height() + 10))
         pygame.draw.rect(self.screen, GRAY, (x - 5, y - 5, surface.get_width() + 10, surface.get_height() + 10), 2)
         self.screen.blit(surface, (x, y))
 
     def _draw_player_info(self, player, x, y):
+        # Carregar e configurar o avatar
+        player_sprite = Sprite(player.avatar_img_dir)
+        new_width = int(player_sprite.image.get_width() * 0.8)
+        new_height = int(player_sprite.image.get_height() * 0.8)
+        resized_image = pygame.transform.scale(player_sprite.image, (new_width, new_height))
+
+        # Desenhar avatar
+        player_sprite.image = resized_image
+        player_sprite.x = x
+        player_sprite.y = y
+        player_sprite.draw()
+
+        # Desenhar informações
         font = pygame.font.Font(None, 36)
         texts = [
             f"Player: {player.name}",
             f"Level: {player.level}",
             f"Combat Strength: {player.calculate_combat_strength()}"
         ]
-        
+
+        text_x = x + new_width + 20
         for i, text in enumerate(texts):
-            surface = font.render(text, True, BLACK)
-            self.screen.blit(surface, (x, y + i * 30))
+            surface = font.render(text, True, WHITE)
+            self.screen.blit(surface, (text_x, y + i * 30))
 
     def _draw_hand(self, player, x, y):
         font = pygame.font.Font(None, 24)
         # Draw hand title
-        title = font.render("Your Hand:", True, BLACK)
+        title = font.render("Your Hand:", True, WHITE)
         self.screen.blit(title, (x, y))
         
         # Draw cards in hand
@@ -182,18 +196,18 @@ class GameRenderer:
             card_text = f"{card.name}"
             if hasattr(card, 'bonus') and card.bonus:
                 card_text += f" (+{card.bonus})"
-            color = GREEN if isinstance(card, Item) and not card.equipped else BLACK
+            color = GREEN if isinstance(card, Item) and not card.equipped else WHITE
             surface = font.render(card_text, True, color)
             self.screen.blit(surface, (x + 10, y + 30 + i * 25))
             
         # Draw equipped items section
         equipped_y = y + 30 + len(player.hand) * 25 + 20
-        equipped_title = font.render("Equipped Items:", True, BLACK)
+        equipped_title = font.render("Equipped Items:", True, WHITE)
         self.screen.blit(equipped_title, (x, equipped_y))
         
         for i, item in enumerate(player.equipped_items):
             item_text = f"{item.name} (+{item.bonus})"
-            surface = font.render(item_text, True, BLUE)
+            surface = font.render(item_text, True, WHITE)
             self.screen.blit(surface, (x + 10, equipped_y + 30 + i * 25))
 
     def _draw_combat(self, combat, x, y):
@@ -214,7 +228,7 @@ class GameRenderer:
         
         # Draw VS graphic
         vs_font = pygame.font.Font(None, 48)
-        vs_text = vs_font.render("VS", True, WHITE)
+        vs_text = vs_font.render("  VS", True, WHITE)
         vs_rect = vs_text.get_rect(center=(x + 200, y + 80))
         self.screen.blit(vs_text, vs_rect)
         
