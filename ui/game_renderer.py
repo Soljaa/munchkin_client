@@ -3,6 +3,7 @@ from PPlay.sprite import *
 from constants import *
 from game.card import Item
 from ui.button import Button
+from game.dice import Dice
 
 class GameRenderer:
     def __init__(self, screen):
@@ -90,6 +91,11 @@ class GameRenderer:
             # Desenha o Sprite
             player_sprite.draw()
 
+    def draw_dice(self, dice):
+        dice.draw_rolling_dice(self.screen) # Animação do rolamento do dado
+        dice.draw_value_dice()
+        time.sleep(3)
+    
     def draw_game_state(self, game_state):
         # Draw current player info
         player = game_state.current_player()
