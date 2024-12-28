@@ -2,7 +2,7 @@ import pygame
 from PPlay.sprite import *
 from constants import *
 from game.card import Item
-from ui.button import Button
+from ui.hover_button import HoverButton
 from game.dice import Dice
 from game.game_state import GamePhase
 
@@ -31,13 +31,13 @@ class GameRenderer:
         # Create buttons with consistent positioning
         button_y = SCREEN_HEIGHT - 100
         self.buttons = {
-            "kick_door": Button(420, button_y, 200, 50, "Kick Down Door", GREEN, (100, 255, 100)),
-            "use_card": Button(420, button_y - 60, 200, 50, "Use item card", GREEN, (100, 255, 100)),
-            "run_away": Button(640, button_y, 200, 50, "Run Away", RED, (255, 100, 100)),
-            "look_for_trouble": Button(860, button_y, 200, 50, "Trouble", BLUE, (100, 100, 255)),
-            "ask_for_help": Button(860, button_y - 60, 200, 50, "Ask for help", BLUE, (100, 100, 255)),
-            "loot": Button(1080, button_y, 200, 50, "Loot", BLUE, (100, 100, 255)),
-            "finish_combat": Button(1080, button_y, 200, 50, "Finish Combat", BLUE, (100, 100, 255))
+            "kick_door": HoverButton("assets/game/kick_door.png", 420, button_y, 250, 80),
+            "use_card": HoverButton("assets/game/use_card.png", 410, button_y - 60, 210, 60),
+            "run_away": HoverButton("assets/game/run_away.png", 620, button_y, 210, 60),
+            "look_for_trouble": HoverButton("assets/game/look_for_trouble.png", 840, button_y, 210, 60),
+            "ask_for_help": HoverButton("assets/game/ask_for_help.png", 840, button_y - 60, 210, 60),
+            "loot": HoverButton("assets/game/loot.png", 1060, button_y, 210, 60),
+            "finish_combat": HoverButton("assets/game/finish_combat.png", 1060, button_y, 210, 60),
         }
 
     def draw_gameboard(self):
