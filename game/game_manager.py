@@ -4,7 +4,7 @@ from game.game_state import GameState, GamePhase, EndGameException
 from ui.game_renderer import GameRenderer
 
 
-def main(name: str = "Palyer 1"):
+def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/avatar1.png"):
 
     """
     MAIN GAME LOOP: GERENCIA O GAMESTATE E POSSIBILITA FUTURA IMPLEMENTAÇÃO DE MULTIPLAYER
@@ -32,10 +32,10 @@ def main(name: str = "Palyer 1"):
     # TODO: entry point for multiplayer
     # Initialize game state, default 1P Vs Com
     game_state = GameState()
-    game_state.add_player(name)
-    game_state.add_player("Player 2")
-    game_state.add_player("Player 3")
-    game_state.add_player("Player 4")
+    game_state.add_player(name, avatar_img_dir)
+    game_state.add_player("Player 2", "assets/selecao_player/avatares/avatar2.png")
+    game_state.add_player("Player 3", "assets/selecao_player/avatares/avatar3.png")
+    game_state.add_player("Player 4", "assets/selecao_player/avatares/avatar4.png")
 
     # Initialize renderer
     renderer = GameRenderer(screen)
@@ -89,9 +89,12 @@ def main(name: str = "Palyer 1"):
                             else:
                                 # curse
                                 renderer.set_message("You found something else...")
-                    elif action == "run_away":
-                        if game_state.current_combat:
-                            if game_state.current_combat.try_to_run():
+                    elif action == "run_away": # Se aperto para fugir...
+                        if game_state.current_combat: # ... e estou em combate
+                            game_state.dice.roll() # Então rolo o dado 
+                            renderer.draw_dice() # Faço a animação da rolagem 
+                            value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
+                            if game_state.current_combat.try_to_run(value):
                                 renderer.set_message("Successfully ran away!")
                                 game_state.set_combat(None)
                             else:

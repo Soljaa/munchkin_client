@@ -5,7 +5,7 @@ from PPlay.sprite import *
 from PPlay.mouse import *
 from PPlay.gameimage import *
 from widgets.button.hover_button import HoverButton
-from ui.player_selection import PlayerSelection, StartGameException
+from ui.player_selection import PlayerSelection
 
 
 class Menu:
@@ -52,10 +52,8 @@ class Menu:
     def play(self):
         """Função chamada ao pressionar o botão de jogar."""
         selecao_player = PlayerSelection(self.window)
-        try:
-            selecao_player.run()
-        except StartGameException:
-            raise
+        selecao_player.run()
+        
     def quit(self):
         sys.exit()
 
@@ -73,10 +71,7 @@ class Menu:
                 button.draw()
                 if self.mouse.is_over_object(button.sprite) and self.mouse.is_button_pressed(1) and self.reload_mouse <= 0:
                     self.reload_mouse = 1
-                    try:
-                        button.acao()
-                    except StartGameException as player_name:
-                        return player_name
+                    button.acao()
 
             if self.reload_mouse > 0:
                 self.reload_mouse -= 0.02

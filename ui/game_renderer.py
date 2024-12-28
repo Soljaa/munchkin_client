@@ -1,7 +1,9 @@
 import pygame
+from PPlay.sprite import *
 from constants import *
 from game.card import Item
 from ui.button import Button
+from game.dice import Dice
 from game.game_state import GamePhase
 
 
@@ -39,17 +41,86 @@ class GameRenderer:
         }
 
     def draw_gameboard(self):
-        self.screen.blit(self.gameboard, (0, 0))
+        self.screen.blit(self.gameboard, (0, 0)) #Minimapa
         pygame.draw.rect(self.screen, BROWN, (402, 0, 5, 720))
 
     def draw_dungeon_background(self):
         self.screen.blit(self.dungeon_background, (402, 0))
 
+    def draw_avatars(self, players):
+        # Configuração de posição inicial e incrementos para cada nível dos avatares
+        level_positions = {
+            1: {"base_x": 230, "base_y": 550, "increment_x": 35, "increment_y": 0},
+            2: {"base_x": 305, "base_y": 430, "increment_x": 25, "increment_y": 35},
+            3: {"base_x": 175, "base_y": 440, "increment_x": 40, "increment_y": 25},
+            4: {"base_x": 150, "base_y": 335, "increment_x": 40, "increment_y": 30},
+            5: {"base_x": 35, "base_y": 330, "increment_x": 20, "increment_y": 20},
+            6: {"base_x": 40, "base_y": 220, "increment_x": 35, "increment_y": 25},
+            7: {"base_x": 157, "base_y": 180, "increment_x": 37, "increment_y": 40},
+            8: {"base_x": 310, "base_y": 141, "increment_x": 23, "increment_y": 20},
+            9: {"base_x": 305, "base_y": 25, "increment_x": 30, "increment_y": 40},
+            10: {"base_x": 182, "base_y": 45, "increment_x": 40, "increment_y": 40},
+        }
+
+        # Armazena contadores de deslocamento para cada nível (level_counters é como se fosse a quantidade de avatares/jogadores no nível)
+        level_counters = {level: 0 for level in level_positions}
+
+        for player in players:
+            player_level = player.level  # Obtém o nível do jogador
+            if player_level not in level_positions:
+                continue  # Ignora jogadores com níveis não definidos
+
+            # Recupera configuração para o nível atual
+            level_config = level_positions[player_level]
+            base_x = level_config["base_x"]
+            base_y = level_config["base_y"]
+            increment_x = level_config["increment_x"]
+            increment_y = level_config["increment_y"]
+
+            # Calcula posição com base no índice do jogador no nível
+            index = level_counters[player_level]
+            if increment_y > 0:  # "Listinha" para níveis com increment_y > 0
+                col = index % 2  # Alterna entre coluna 0 e 1
+                row = index // 2  # Define a linha com base no índice
+                offset_x = col * increment_x
+                offset_y = row * increment_y
+            else:  # Padrão para outros níveis
+                offset_x = index * increment_x
+                offset_y = 0
+
+            # Incrementa o contador para o nível atual
+            level_counters[player_level] += 1
+
+            # Cria e posiciona o sprite do jogador
+            player_sprite = Sprite(player.avatar_img_dir)
+            player_sprite.x = base_x + offset_x
+            player_sprite.y = base_y + offset_y
+
+            # Redimensionar a imagem para 50% do tamanho original
+            new_width = int(player_sprite.image.get_width() * 0.25)
+            new_height = int(player_sprite.image.get_height() * 0.25)
+            resized_image = pygame.transform.scale(player_sprite.image, (new_width, new_height))
+
+            # Atualiza a imagem do Sprite com a redimensionada
+            player_sprite.image = resized_image
+
+            # Desenha o Sprite
+            player_sprite.draw()
+
+    def draw_dice(self, dice):
+        dice.draw_rolling_dice(self.screen) # Animação do rolamento do dado
+        dice.draw_value_dice()
+        time.sleep(3)
+
     def draw_game_state(self, game_state):
         # Draw current player info
         player = game_state.current_player()
+        players = game_state.players
         self._draw_player_info(player, 420, 50)
-        
+
+        # Draw avatars
+        self.draw_avatars(players)
+
         # Draw phase indicator at the top
         self._draw_phase_indicator(game_state.phase, SCREEN_WIDTH // 2 + 50, 20)
         

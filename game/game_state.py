@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from game.dice import Dice
 from game.deck import DoorDeck, TreasureDeck
 from game.player import Player
 from game.card import CardType
@@ -23,12 +24,13 @@ class GameState:
         self.door_deck = DoorDeck()
         self.treasure_deck = TreasureDeck()
         self.players = []
+        self.dice = Dice()
         self.current_player_index = 0
         self.phase = GamePhase.SETUP
         self.current_combat = None
 
-    def add_player(self, name):
-        player = Player(name)
+    def add_player(self, name, img_dir):
+        player = Player(name, img_dir)
         self.players.append(player)
         # Draw initial hand
         for _ in range(4):

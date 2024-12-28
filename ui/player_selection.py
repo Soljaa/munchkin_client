@@ -5,6 +5,7 @@ from PPlay.gameimage import *
 import pygame
 from widgets.button.hover_button import HoverButton
 from widgets.button.click_button import ClickButton
+from game.game_manager import main
 
 
 class PlayerSelection:
@@ -77,7 +78,7 @@ class PlayerSelection:
         self.color_change_interval = 500  # Intervalo de tempo para mudar a cor (em ms)
         self.clock = pygame.time.Clock() 
 
-    def draw_avatar(self, avatar, input_box_y):
+    def draw_avatar(self, avatar):
         """Posiciona e desenha o avatar na tela."""
         avatar.x = self.window.width / 2 - avatar.width / 2
         avatar.y = 195
@@ -90,25 +91,15 @@ class PlayerSelection:
         text_rect = text_surface.get_rect(topleft=position)  # Obtém o retângulo do texto para posicionamento
         surface.blit(text_surface, text_rect)  # Desenha o texto na superfície fornecida
 
-    def handle_text_imput(self, event):
+    def handle_text_input(self, event):
         """Gerencia a entrada de texto do jogador, lidando com validação e formatação."""
-        if event.key == pygame.K_RETURN:  # Verifica se a tecla Enter foi pressionada
-            nickname = self.input_text.strip()  # Obtém o nickname
-            print("Nickname inserido:", nickname)
-            if self.is_valid_nickname(nickname): # Se nickname válido 
-                self.running = False  
-            else: # Se o nickname inválido
-                if len(nickname) == 0:
-                    print("AVISO: Insira um nome.")
-                elif " " in nickname:
-                    print("AVISO: Não é permitido espaço.")
-
-        elif event.key == pygame.K_BACKSPACE:  # Verifica se a tecla Backspace foi pressionada
+        if event.key == pygame.K_BACKSPACE:  # Verifica se a tecla Backspace foi pressionada
             self.input_text = self.input_text[:-1]  # Remove o último caractere
         else:
             new_char = event.unicode  # Obtém o novo caractere digitado
-            if new_char != " " and new_char:  # Ignora espaços e caracteres vazios
+            if new_char.isalnum():  # Verifica se o caractere é alfanumérico
                 self.input_text += new_char  # Adiciona o novo caractere ao texto
+
 
     def is_valid_nickname(self, nickname):
         """Verifica se o nickname é válido: não vazio, sem espaços e alfanumérico."""
@@ -124,7 +115,10 @@ class PlayerSelection:
 
     def game(self):
         """Função chamada ao pressionar o botão de continuar."""
-        raise StartGameException(self.input_text.strip())
+        nickname = self.input_text.strip()
+        avatar_img_dir = self.avatars[self.avatar_index]
+        if self.is_valid_nickname(nickname):
+            main(nickname, avatar_img_dir)
         
     def run(self):
         """Loop principal da tela de seleção do jogador."""
@@ -147,15 +141,15 @@ class PlayerSelection:
                     button.acao()
 
             # Imagem Avatar
-            avatar = GameImage(self.avatars[self.avatar_index])
-            self.draw_avatar(avatar, input_box_y)
+            self.avatar = GameImage(self.avatars[self.avatar_index])
+            self.draw_avatar(self.avatar)
 
             for event in pygame.event.get():  # Captura eventos da janela
                 if event.type == pygame.QUIT:
                     self.running = False  # Sai do loop se a janela for fechada
 
                 elif event.type == pygame.KEYDOWN:  # Verifica se uma tecla foi pressionada
-                    self.handle_text_imput(event)
+                    self.handle_text_input(event)
                     
             # Desenha o campo de entrada (box)
             input_box_width = 400
@@ -177,8 +171,6 @@ class PlayerSelection:
             # Exibe mensagens de aviso, se necessário
             if len(self.input_text) == 0:
                 self.draw_text(self.window.screen, "AVISO: Insira um nome.", (input_box_x, input_box_y + input_box_height + 10), 20, self.colors[self.color_index])
-            elif " " in self.input_text:
-                self.draw_text(self.window.screen, "AVISO: Não é permitido espaço.", (input_box_x, input_box_y + input_box_height + 10), 20, self.colors[self.color_index])
 
             if self.reload_mouse > 0:
                 self.reload_mouse -= 0.02
@@ -186,7 +178,3 @@ class PlayerSelection:
             self.window.update()
             #pygame.display.flip()  # Atualiza a tela do Pygame
             self.clock.tick(60)  # Limita o loop a 60 FPS
-
-
-class StartGameException(Exception):
-    pass
