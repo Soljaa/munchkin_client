@@ -108,7 +108,7 @@ class GameRenderer:
             player_sprite.draw()
 
     def draw_dice_animation(self, dice):
-        roll_time_seconds = 4  # Tempo total de animação do dado rolando em segundos
+        roll_time_seconds = 1.5  # Tempo total de animação do dado rolando em segundos
         elapsed_time = 0  # Variável para controlar o tempo de animação
         
         clock = pygame.time.Clock()

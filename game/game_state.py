@@ -64,39 +64,59 @@ class GameState:
         if card.card_type == CardType.MONSTER:
             print("Monster encountered! Initializing combat...")
             self.set_combat(Combat(self.current_player(), card))
-            self.set_game_phase(GamePhase.COMBAT)
+            self.set_game_phase(GamePhase.COMBAT) # Caso tenha saído um monstro, seta a fase de combate
             print(f"Combat initialized with monster: {card.name}")
         # handle curse
         else:
             print("Non-monster card drawn, adding to hand")
             self.current_player().hand.append(card)
-            self.phase = GamePhase.LOOK_FOR_TROUBLE
+            #self.set_game_phase(GamePhase.LOOK_FOR_TROUBLE) # TODO Achei interessante remover, pois, ao não sair um monstro o player tem DUAS opções: look_for_trouble ou loot
         return True
 
     def resolve_combat(self):
         if not self.current_combat:
             return False
         try:
-            success, result = self.current_combat.resolve_combat()
-            if success:
+            success, result = self.current_combat.resolve_combat() # Ve se player ganha ou perde. Retorno: success(True ou False), result(informações do monstro)
+            if success: # Se player ganhou o combate
                 self.current_player().level_up()
-                if self.current_player().level >= 10:
+                if self.current_player().level >= 10: 
                     raise EndGameException
                 # Draw treasure cards based on monster's treasure value
                 for _ in range(result['treasure']):
-                    card = self.treasure_deck.draw()
-                    if card:
-                        self.current_player().hand.append(card)
-            else:
+                    card = self.treasure_deck.draw() # Retira uma carda do deck de tesouro
+                    if card: # Se foi retirado a carta
+                        self.current_player().hand.append(card) # Coloca ela na mão do player
+            else: # Se perdeu combate
                 # Handle bad stuff
                 if "level" in result['bad_stuff'].lower():
                     self.current_player().level_down()
             print(result['message'])
 
             self.current_combat = None
-            self.play_charity_phase()
+            #self.play_charity_phase() Passei para o game_manager
         except EndGameException:
             raise
+
+    def loot(self):
+        print(f"Attempting to loot the room in phase: {self.phase}")
+        if self.phase != GamePhase.LOOT_ROOM:
+            print("Wrong phase for looting the room")
+            return False
+        
+        card = self.door_deck.draw()
+        if not card:
+            print("No card drawn, reshuffling deck")
+            self.door_deck.shuffle()
+            card = self.door_deck.draw()
+            if not card:
+                print("Still no card after shuffle")
+                return False
+        
+        self.current_player.hand.append(card)
+        self.set_game_phase(GamePhase.CHARITY)
+
+        return True
 
     def set_game_phase(self, new_phase):
         if new_phase in [phase for phase in GamePhase]:

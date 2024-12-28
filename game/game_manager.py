@@ -57,13 +57,13 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
             action = renderer.handle_event(event, game_state)
             if action:
                 # item management
-                if isinstance(action, tuple):
+                if isinstance(action, tuple): # Se o clique for em um item
                     action_type, index = action
                     current_player = game_state.current_player()
 
                     if game_state.phase == GamePhase.SETUP:
                         if action_type == "equip_item":
-                            if index < len(current_player.hand):
+                            if index < len(current_player.hand): # "Possívelmente" redundante (o index obrigatoriamente já vai ser menor que o tamanho da mão, haja vista que é gerado a partir de uma seleção dessa propria mão)
                                 card = current_player.hand[index]
                                 if current_player.equip_item(card):
                                     renderer.set_message(f"Equipped {card.name}!")
@@ -71,20 +71,20 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                     renderer.set_message("Cannot equip this item!")
 
                         elif action_type == "unequip_item":
-                            if index < len(current_player.equipped_items):
+                            if index < len(current_player.equipped_items): # "Possívelmente" redundante (pelo mesmo motivo acima)
                                 item = current_player.equipped_items[index]
                                 current_player.unequip_item(item)
                                 renderer.set_message(f"Unequipped {item.name}")
-                else:
+                else: # Se o clique não for em um item (for em um botão)
                     print(f"\nButton clicked: {action}")
                     print(f"Current phase: {game_state.phase}")
                     print(f"Current player: {game_state.current_player().name}")
 
-                    if action == "kick_door":
+                    if action == "kick_door": # Se aperto para chutar porta
                         game_state.set_game_phase(GamePhase.KICK_DOOR)
-                        if game_state.phase == GamePhase.KICK_DOOR:
-                            success = game_state.kick_down_door()
-                            if success and game_state.current_combat:
+                        if game_state.phase == GamePhase.KICK_DOOR: # "Possívelmente" redundante (pois essa fase acaba de ser setada acima)
+                            success = game_state.kick_down_door() # True ou False para se retirou uma carta com sucesso
+                            if success and game_state.current_combat: # Se tirou carta com sucesso e estamos na fase de combate (fase de combate é setada em "game_state.kick_down_door()" caso tenha retirado um monstro)
                                 renderer.set_message(f"Combat started! Fighting {game_state.current_combat.monster.name}!")
                             else:
                                 # curse
@@ -94,21 +94,29 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             game_state.dice.roll() # Então rolo o dado 
                             renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
                             value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
-                            if game_state.current_combat.try_to_run(value):
+                            if game_state.current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
                                 renderer.set_message("Successfully ran away!")
                                 game_state.set_combat(None)
-                            else:
+                            else: # Se não consigo fugir (value<5)
                                 renderer.set_message(f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
-                                game_state.current_player().level_down()
+                                game_state.current_player().level_down() # Perco um nível
                             game_state.play_charity_phase()
                             game_state.next_player()
                             curr_turn += 1
                             print("Turno:", curr_turn)
 
-                    elif action == "finish_combat":
-                        if game_state.current_combat:
+                    elif action == "loot": # Se aperto por buscar encrenca
+                        if game_state.phase == GamePhase.KICK_DOOR: # Acho que deve ser uma fase intermediária entre KICK_DOOR e LOOT_ROOM, caso sim, dps trocar
+                            game_state.set_game_phase(GamePhase.LOOT_ROOM)
+                            if game_state.phase == GamePhase.LOOT_ROOM: # "Possivelmente" redundante, pois já foi setado acima"
+                                game_state.loot()
+                                game_state.play_charity_phase()
+
+                    elif action == "finish_combat": # Se aperto para finalizar o combate...
+                        if game_state.current_combat: #... e estou na fase de combate
                             try:
-                                game_state.resolve_combat()
+                                game_state.resolve_combat() # Resolve o combate, aplicando as devidas bonificações ou penalizações
+                                game_state.play_charity_phase() 
                             except EndGameException:
                                 # mostrar tela de vencedor
                                 print("Fim de jogo! Vencedor:", game_state.current_player().name)
