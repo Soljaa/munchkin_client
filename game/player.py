@@ -1,5 +1,4 @@
-from game.card import Race, Class
-
+from game.death import Death
 
 class Player:
     def __init__(self, name, avatar_img_dir):
@@ -9,8 +8,8 @@ class Player:
         self.combat_strength = 0
         self.hand = []
         self.equipped_items = []
-        self.race: Race = None
-        self.class_: Class = None
+        self.race = None
+        self.class_ = None
 
     def calculate_combat_strength(self):
         base_strength = self.level
@@ -55,6 +54,16 @@ class Player:
         if self.level < 10:
             self.level += 1
 
-    def level_down(self):
-        if self.level > 1:
+    def level_down(self, value):
+        if value:
+            self.level -= value
+        else:
             self.level -= 1
+        if self.level < 1:
+            Death(self).apply()
+
+    # TODO: Fazer
+    def lose_all_class_items(self):
+        pass
+        # self.equipped_items = []
+        # self.hand = []

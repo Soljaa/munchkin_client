@@ -1,7 +1,8 @@
 import random
-from game.card import Card, Monster, Item, Race, Class, Buff, Curse, CardType
+from game.card import Monster, Item, Race
 from game.death import Death
-
+from game.cards.monster_effect import *
+from game.cards.monster_bad_stuff import *
 
 class Dice:
     @staticmethod
@@ -38,6 +39,9 @@ class DoorDeck(Deck):
     def _initialize_deck(self):
         print("Initializing Door Deck...")
         # Add monsters with varying levels
+
+        # TODO: Falta png do hairy potter
+
         monsters = [
             #TODO: O "BadStuff" está com X, pois tem uns que não são tão complexos como apenas "Lose 2 levels". Pensar em como fazer depois
             Monster(
@@ -45,12 +49,27 @@ class DoorDeck(Deck):
                 image="../assets/door_cards/3872Orcs.png",
                 level=10,
                 treasure=3,
-                bad_stuff=lambda player: (lambda roll=Dice.roll(): 
-                    Death(player).apply() if roll <= 2 
-                    else setattr(player, 'level', player.level - roll))()
+                effect=IncreaseMonsterLevelEffect('Dwarf', 6),
+                bad_stuff=OrcsBadStuff(),
             ),
-            Monster("Amazon", "../assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
-            Monster("Bigfoot", "../assets/door_cards/Bigfoot.png", level=12, treasure=3, bad_stuff=None),
+            Monster(
+                name="Squidzilla", 
+                image="../assets/door_cards/Squidzilla.png", 
+                level=18, 
+                treasure=4, 
+                effect=CompositeEffect(IncreaseMonsterLevelEffect('Elf', 4), NotPursueLevelEffect(4, exclude_race='Elf')), 
+                bad_stuff=DeathBadStuff()
+            ),
+            Monster(
+                name="Hairy Potter", 
+                image="../assets/door_cards/HairyPotter.png", 
+                level=15, 
+                treasure=4, 
+                effect=CompositeEffect(IncreaseMonsterLevelEffect('Wizard', 4), IncreaseMonsterLevelEffect('Elf', -3), NotPursueLevelEffect(2)),
+                bad_stuff=LoseAllClassItemsBadStuff()
+            ),
+            Monster(name="Amazon", image="../assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
+            Monster(name="Bigfoot", image="../assets/door_cards/Bigfoot.png", level=12, treasure=3, bad_stuff=None),
             Monster("Bullrog", "../assets/door_cards/Bullrog.png", level=18, treasure=5, bad_stuff=None),
             Monster("Bullrog", "../assets/door_cards/Bullrog.png", level=18, treasure=5, bad_stuff=None),
             Monster("Crabs", "../assets/door_cards/Crabs.png", level=1, treasure=1, bad_stuff=None),
@@ -80,7 +99,6 @@ class DoorDeck(Deck):
             Monster("Pukachu", "../assets/door_cards/Pukachu.png", 6, 2, "X"),
             Monster("Shrieking Geek", "../assets/door_cards/ShriekingGeek.png", 6, 2, "X"),
             Monster("Snails on Speed", "../assets/door_cards/SnailsOnSpeed.png", 4, 2, "X"),
-            Monster("Squidzilla", "../assets/door_cards/Squidzilla.png", 18, 4, "X"),
             Monster("Stoned Golem", "../assets/door_cards/StonedGolem.png", 14, 4, "X"),
             Monster("Tongue Demon", "../assets/door_cards/TongueDemon.png", 12, 3, "X"),
             Monster("Undead Horse", "../assets/door_cards/UndeadHorse.png", 4, 2, "X"), # TODO: Ele é undead
