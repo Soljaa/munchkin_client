@@ -53,6 +53,7 @@ class Menu:
         """Função chamada ao pressionar o botão de jogar."""
         selecao_player = PlayerSelection(self.window)
         selecao_player.run()
+        self.quit()
         
     def quit(self):
         sys.exit()
@@ -63,8 +64,8 @@ class Menu:
     def run(self):
         """Executa o loop principal do menu."""
         while self.running:
-            if pygame.key.get_pressed()[pygame.K_F11]:
-                pygame.display.toggle_fullscreen()
+            # if pygame.key.get_pressed()[pygame.K_F11]:
+            #     pygame.display.toggle_fullscreen() fazer para todas as telas
 
             self.bg.draw()  
             for button in self.buttons.values():
