@@ -26,6 +26,7 @@ class Monster(Card):
         super().__init__(name, image, CardType.MONSTER)
         self.base_level = level
         self.level = level
+        self.base_treasure = treasure
         self.treasure = treasure
         self.effect = effect
         self.bad_stuff = bad_stuff

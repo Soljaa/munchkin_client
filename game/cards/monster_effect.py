@@ -35,4 +35,27 @@ class NotPursueLevelEffect(MonsterEffect):
         if player.level <= self.level_limit:
             monster.pursue = False
 
+class PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect(MonsterEffect):
+    def __init__(self, level_loss: int):
+        self.level_loss = level_loss
+
+    def apply(self, monster, player) -> None:
+        if player.level > monster.level:
+            player.level_down(self.level_loss)
+
+class MoreTreasureEffect(MonsterEffect):
+    def __init__(self, qty_plus_treasure, include_race=None):
+        self.qty_plus_treasure = qty_plus_treasure
+        self.include_race = include_race
+
+    def apply(self, monster, player) -> None:
+        monster.treasure = monster.base_treasure
+
+        if not self.include_race:
+            monster.treasure += 1
+        elif self.include_race and player.race==self.include_race:
+            monster.treasure += 1
+            
+
+
 # TODO: Continuar com os outros efeitos de monstros

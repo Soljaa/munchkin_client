@@ -59,8 +59,24 @@ class Player:
         if self.level < 1:
             Death(self).apply()
 
+    #TODO
+    def lose_items(self, qty):
+        pass
+
     # TODO: Fazer
     def lose_all_class_items(self):
         pass
         # self.equipped_items = []
         # self.hand = []
+
+    #TODO
+    def lose_all_class_cards(self):
+        pass
+
+    #TODO
+    def lose_all_race_cards(self):
+        pass
+
+    #TODO
+    def lose_all_items(self):
+        pass

@@ -118,7 +118,7 @@ class GameRenderer:
             delta_time = clock.tick(60) / 1000.0  # 60 FPS
 
             elapsed_time += delta_time  # Atualiza o tempo decorrido
-            dice.draw_rolling_dice(SCREEN_WIDTH/2-dice.sprite_rolling_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_rolling_dice.height/2, self.draw_dungeon_background, self.draw_gameboard) # Animação do rolamento do dado
+            dice.draw_rolling_dice(SCREEN_WIDTH/2-dice.sprite_rolling_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_rolling_dice.height/2) # Animação do rolamento do dado
 
             self.draw_dungeon_background()
             self.draw_gameboard()
