@@ -37,10 +37,8 @@ class Combat:
         self.monster_modifiers += value
         return self.get_monster_strength()
 
-    def try_to_run(self):
-        import random
-        roll = random.randint(1, 6)
-        success = roll >= 5  # Need 5 or 6 to run away
+    def try_to_run(self, value):
+        success = value >= 5  # Need 5 or 6 to run away
         return success
 
     def resolve_combat(self):
@@ -48,7 +46,6 @@ class Combat:
         monster_strength = self.get_monster_strength()
 
         if player_strength > monster_strength:
-            # Victory! Get treasure and maybe level
             return True, {
                 'treasure': self.monster.treasure,
                 'level_gain': 1,

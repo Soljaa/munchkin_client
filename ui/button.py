@@ -1,5 +1,6 @@
 import pygame
 
+
 class Button:
     def __init__(self, x, y, width, height, text, color, hover_color):
         self.rect = pygame.Rect(x, y, width, height)
@@ -7,6 +8,7 @@ class Button:
         self.color = color
         self.hover_color = hover_color
         self.is_hovered = False
+        self.is_active = True
 
     def draw(self, screen):
         color = self.hover_color if self.is_hovered else self.color
@@ -21,6 +23,12 @@ class Button:
         if event.type == pygame.MOUSEMOTION:
             self.is_hovered = self.rect.collidepoint(event.pos)
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if self.is_hovered:
+            if self.is_hovered and self.is_active:
                 return True
         return False
+
+    def activate(self):
+        self.is_active = True
+
+    def deactivate(self):
+        self.is_active = False

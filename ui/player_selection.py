@@ -119,11 +119,15 @@ class PlayerSelection:
         avatar_img_dir = self.avatars[self.avatar_index]
         if self.is_valid_nickname(nickname):
             main(nickname, avatar_img_dir)
+            self.quit()
+
+    def quit(self):
+        self.running = False
         
     def run(self):
         """Loop principal da tela de seleção do jogador."""
         if pygame.key.get_pressed()[pygame.K_F11]:
-                pygame.display.toggle_fullscreen()
+            pygame.display.toggle_fullscreen()
                 
         input_box_width = 400
         input_box_height = 40
