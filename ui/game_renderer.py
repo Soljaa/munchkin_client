@@ -108,9 +108,9 @@ class GameRenderer:
             player_sprite.draw()
 
     def draw_dice(self, dice):
-        dice.draw_rolling_dice(self.screen) # Animação do rolamento do dado
-        dice.draw_value_dice()
-        time.sleep(3)
+        dice.draw_rolling_dice(SCREEN_WIDTH/2-dice.sprite_rolling_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_rolling_dice.height/2) # Animação do rolamento do dado
+        dice.draw_value_dice(SCREEN_WIDTH/2-dice.sprite_value_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_value_dice.height/2)
+        time.sleep(1)
 
     def draw_game_state(self, game_state):
         # Draw current player info

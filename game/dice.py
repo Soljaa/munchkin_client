@@ -15,7 +15,7 @@ class Dice:
         self.last_roll = None     # Resultado do último lançamento
 
         # Sprites
-        self.sprite_rolling_dice = Sprite(self.img_dir, 8)  # Sprite (animação) do dado rolando
+        self.sprite_rolling_dice = Sprite(self.img_dir, 8) # Sprite (animação) do dado rolando
         self.sprite_rolling_dice.set_total_duration(500)
         self.sprite_value_dice = Sprite(f"assets/game/dice/dice_1.png")  # Sprite do dado estático com seu valor default
 
@@ -25,25 +25,33 @@ class Dice:
         self.sprite_value_dice = Sprite(f"assets/game/dice/dice_{self.last_roll}.png")
         return self.last_roll
 
-    def draw_rolling_dice(self, screen, x=0, y=0):
+    def draw_rolling_dice(self, x=0, y=0):
         self.sprite_rolling_dice.x = x
         self.sprite_rolling_dice.y = y
         """Faz a animação do rolamento de dado"""
+        
         roll_time_seconds = 4  # Tempo total de animação do dado rolando em segundos
         elapsed_time = 0  # Variável para controlar o tempo de animação
+        
+        clock = pygame.time.Clock()
+        
         while elapsed_time < roll_time_seconds:
-            #dice_background = Sprite("assets/game/transparent_background.jpg")
-            #dice_background.draw()
-            elapsed_time += window.delta_time()  # Adiciona o tempo de cada quadro
+            # Calcula o tempo entre quadros
+            delta_time = clock.tick(60) / 1000.0  # 60 FPS
+
+            elapsed_time += delta_time  # Atualiza o tempo decorrido
             self.sprite_rolling_dice.update()
             self.sprite_rolling_dice.draw()
-            screen.update()
+            
+            pygame.display.update()
 
     def draw_value_dice(self, x=0, y=0):
         """Desenha o dado estático com seu valor pós rolamento"""
         self.sprite_value_dice.x = x
         self.sprite_value_dice.y = y
         self.sprite_value_dice.draw()
+        
+        pygame.display.update()
 
 
 # EXEMPLO
