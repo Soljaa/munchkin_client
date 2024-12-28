@@ -2,7 +2,7 @@ import pygame
 from PPlay.sprite import *
 from constants import *
 from game.card import Item
-from ui.button import Button
+from ui.hover_button import HoverButton
 from game.dice import Dice
 from game.game_state import GamePhase
 
@@ -31,13 +31,13 @@ class GameRenderer:
         # Create buttons with consistent positioning
         button_y = SCREEN_HEIGHT - 100
         self.buttons = {
-            "kick_door": Button(420, button_y, 250, 80, "assets/game/kick_door.png"),
-            "use_card": Button(410, button_y - 60, 210, 60, "assets/game/use_card.png"),
-            "run_away": Button(620, button_y, 210, 60, "assets/game/run_away.png"),
-            "look_for_trouble": Button(840, button_y, 210, 60, "assets/game/look_for_trouble.png"),
-            "ask_for_help": Button(840, button_y - 60, 210, 60, "assets/game/ask_for_help.png"),
-            "loot": Button(1060, button_y, 210, 60, "assets/game/loot.png"),
-            "finish_combat": Button(1060, button_y, 210, 60, "assets/game/finish_combat.png")
+            "kick_door": HoverButton("assets/game/kick_door.png", 420, button_y, 250, 80),
+            "use_card": HoverButton("assets/game/use_card.png", 410, button_y - 60, 210, 60),
+            "run_away": HoverButton("assets/game/run_away.png", 620, button_y, 210, 60),
+            "look_for_trouble": HoverButton("assets/game/look_for_trouble.png", 840, button_y, 210, 60),
+            "ask_for_help": HoverButton("assets/game/ask_for_help.png", 840, button_y - 60, 210, 60),
+            "loot": HoverButton("assets/game/loot.png", 1060, button_y, 210, 60),
+            "finish_combat": HoverButton("assets/game/finish_combat.png", 1060, button_y, 210, 60),
         }
 
     def draw_gameboard(self):
@@ -118,7 +118,7 @@ class GameRenderer:
             delta_time = clock.tick(60) / 1000.0  # 60 FPS
 
             elapsed_time += delta_time  # Atualiza o tempo decorrido
-            dice.draw_rolling_dice(SCREEN_WIDTH/2-dice.sprite_rolling_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_rolling_dice.height/2, self.draw_dungeon_background, self.draw_gameboard) # Animação do rolamento do dado
+            dice.draw_rolling_dice(SCREEN_WIDTH/2-dice.sprite_rolling_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_rolling_dice.height/2) # Animação do rolamento do dado
 
             self.draw_dungeon_background()
             self.draw_gameboard()
