@@ -6,12 +6,16 @@ from game.combat import Combat
 
 
 class GamePhase(Enum):
-    SETUP =  auto()
+    SETUP = auto()
     KICK_DOOR = auto()
     LOOK_FOR_TROUBLE = auto()
     LOOT_ROOM = auto()
     COMBAT = auto()
     CHARITY = auto()
+
+
+class EndGameException(Exception):
+    pass
 
 
 class GameState:
@@ -34,6 +38,7 @@ class GameState:
     def next_player(self):
         self.current_player_index = (self.current_player_index + 1) % len(self.players)
         self.phase = GamePhase.SETUP
+        self.set_combat(None)
 
     def current_player(self):
         return self.players[self.current_player_index]
@@ -56,9 +61,10 @@ class GameState:
         print(f"Drew card: {card.name} of type {card.card_type}")
         if card.card_type == CardType.MONSTER:
             print("Monster encountered! Initializing combat...")
-            self.current_combat = Combat(self.current_player(), card)
-            self.phase = GamePhase.COMBAT
+            self.set_combat(Combat(self.current_player(), card))
+            self.set_game_phase(GamePhase.COMBAT)
             print(f"Combat initialized with monster: {card.name}")
+        # handle curse
         else:
             print("Non-monster card drawn, adding to hand")
             self.current_player().hand.append(card)
@@ -68,22 +74,37 @@ class GameState:
     def resolve_combat(self):
         if not self.current_combat:
             return False
-        
-        success, result = self.current_combat.resolve_combat()
-        if success:
-            self.current_player().level_up()
-            # Draw treasure cards based on monster's treasure value
-            for _ in range(result['treasure']):
-                card = self.treasure_deck.draw()
-                if card:
-                    self.current_player().hand.append(card)
-            print(f"Combat won! Gained {result['treasure']} treasure(s)")
-        else:
-            # Handle bad stuff
-            print(f"Combat lost! {result['bad_stuff']}")
-            if "level" in result['bad_stuff'].lower():
-                self.current_player().level_down()
+        try:
+            success, result = self.current_combat.resolve_combat()
+            if success:
+                self.current_player().level_up()
+                if self.current_player().level >= 10:
+                    raise EndGameException
+                # Draw treasure cards based on monster's treasure value
+                for _ in range(result['treasure']):
+                    card = self.treasure_deck.draw()
+                    if card:
+                        self.current_player().hand.append(card)
+            else:
+                # Handle bad stuff
+                if "level" in result['bad_stuff'].lower():
+                    self.current_player().level_down()
+            print(result['message'])
 
-        self.current_combat = None
-        self.phase = GamePhase.CHARITY
-        return True
+            self.current_combat = None
+            self.play_charity_phase()
+        except EndGameException:
+            raise
+
+    def set_game_phase(self, new_phase):
+        if new_phase in [phase for phase in GamePhase]:
+            self.phase = new_phase
+            print("New phase set:", self.phase)
+
+    def set_combat(self, combat):
+        self.current_combat = combat
+        if self.current_combat:
+            print("New combat:", self.current_combat.__dict__)
+
+    def play_charity_phase(self):
+        pass

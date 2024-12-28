@@ -2,6 +2,18 @@ import pygame
 from constants import *
 from game.card import Item
 from ui.button import Button
+from game.game_state import GamePhase
+
+
+BUTTONS_BY_GAME_PHASE = {
+    GamePhase.SETUP: ["kick_door"],
+    GamePhase.KICK_DOOR: ["look_for_trouble", "loot"],
+    GamePhase.LOOK_FOR_TROUBLE: [],
+    GamePhase.LOOT_ROOM: [],
+    GamePhase.COMBAT: ["run_away", "use_card", "ask_for_help", "finish_combat"],
+    GamePhase.CHARITY: [],
+}
+
 
 class GameRenderer:
     def __init__(self, screen):
@@ -17,9 +29,13 @@ class GameRenderer:
         # Create buttons with consistent positioning
         button_y = SCREEN_HEIGHT - 100
         self.buttons = {
-            "kick_door": Button(500, button_y, 200, 50, "Kick Down Door", GREEN, (100, 255, 100)),
-            "run_away": Button(750, button_y, 200, 50, "Run Away", RED, (255, 100, 100)),
-            "end_turn": Button(1000, button_y, 200, 50, "End Turn", BLUE, (100, 100, 255))
+            "kick_door": Button(420, button_y, 200, 50, "Kick Down Door", GREEN, (100, 255, 100)),
+            "use_card": Button(420, button_y - 60, 200, 50, "Use item card", GREEN, (100, 255, 100)),
+            "run_away": Button(640, button_y, 200, 50, "Run Away", RED, (255, 100, 100)),
+            "look_for_trouble": Button(860, button_y, 200, 50, "Trouble", BLUE, (100, 100, 255)),
+            "ask_for_help": Button(860, button_y - 60, 200, 50, "Ask for help", BLUE, (100, 100, 255)),
+            "loot": Button(1080, button_y, 200, 50, "Loot", BLUE, (100, 100, 255)),
+            "finish_combat": Button(1080, button_y, 200, 50, "Finish Combat", BLUE, (100, 100, 255))
         }
 
     def draw_gameboard(self):
@@ -28,7 +44,6 @@ class GameRenderer:
 
     def draw_dungeon_background(self):
         self.screen.blit(self.dungeon_background, (402, 0))
-
 
     def draw_game_state(self, game_state):
         # Draw current player info
@@ -147,8 +162,12 @@ class GameRenderer:
                 self.screen.blit(helper_power, (x + 20, y + 210 + i * 25))
 
     def _draw_buttons(self, game_phase):
-        for button in self.buttons.values():
-            button.draw(self.screen)
+        for button_name, button_rect in self.buttons.items():
+            if button_name in BUTTONS_BY_GAME_PHASE[game_phase]:
+                button_rect.activate()
+                button_rect.draw(self.screen)
+            else:
+                button_rect.deactivate()
 
     def set_message(self, message):
         self.message = message

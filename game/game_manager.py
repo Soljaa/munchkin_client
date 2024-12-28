@@ -1,6 +1,6 @@
 import pygame
 from constants import *
-from game.game_state import GameState, GamePhase
+from game.game_state import GameState, GamePhase, EndGameException
 from ui.game_renderer import GameRenderer
 
 
@@ -26,6 +26,8 @@ def main(name: str = "Palyer 1"):
         return
 
     clock = pygame.time.Clock()
+
+    curr_turn = 1
 
     # TODO: entry point for multiplayer
     # Initialize game state, default 1P Vs Com
@@ -54,57 +56,63 @@ def main(name: str = "Palyer 1"):
             # Handle button clicks and card interactions
             action = renderer.handle_event(event, game_state)
             if action:
+                # item management
                 if isinstance(action, tuple):
                     action_type, index = action
                     current_player = game_state.current_player()
 
-                    if action_type == "equip_item":
-                        if index < len(current_player.hand):
-                            card = current_player.hand[index]
-                            if current_player.equip_item(card):
-                                renderer.set_message(f"Equipped {card.name}!")
-                            else:
-                                renderer.set_message("Cannot equip this item!")
+                    if game_state.phase == GamePhase.SETUP:
+                        if action_type == "equip_item":
+                            if index < len(current_player.hand):
+                                card = current_player.hand[index]
+                                if current_player.equip_item(card):
+                                    renderer.set_message(f"Equipped {card.name}!")
+                                else:
+                                    renderer.set_message("Cannot equip this item!")
 
-                    elif action_type == "unequip_item":
-                        if index < len(current_player.equipped_items):
-                            item = current_player.equipped_items[index]
-                            current_player.unequip_item(item)
-                            renderer.set_message(f"Unequipped {item.name}")
+                        elif action_type == "unequip_item":
+                            if index < len(current_player.equipped_items):
+                                item = current_player.equipped_items[index]
+                                current_player.unequip_item(item)
+                                renderer.set_message(f"Unequipped {item.name}")
                 else:
                     print(f"\nButton clicked: {action}")
                     print(f"Current phase: {game_state.phase}")
                     print(f"Current player: {game_state.current_player().name}")
 
                     if action == "kick_door":
+                        game_state.set_game_phase(GamePhase.KICK_DOOR)
                         if game_state.phase == GamePhase.KICK_DOOR:
                             success = game_state.kick_down_door()
                             if success and game_state.current_combat:
-                                renderer.set_message \
-                                    (f"Combat started! Fighting {game_state.current_combat.monster.name}!")
+                                renderer.set_message(f"Combat started! Fighting {game_state.current_combat.monster.name}!")
                             else:
+                                # curse
                                 renderer.set_message("You found something else...")
                     elif action == "run_away":
                         if game_state.current_combat:
                             if game_state.current_combat.try_to_run():
                                 renderer.set_message("Successfully ran away!")
-                                game_state.current_combat = None
+                                game_state.set_combat(None)
                             else:
-                                renderer.set_message \
-                                    (f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
+                                renderer.set_message(f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
                                 game_state.current_player().level_down()
-                            game_state.phase = GamePhase.CHARITY
-                    elif action == "end_turn":
+                            game_state.play_charity_phase()
+                            game_state.next_player()
+                            curr_turn += 1
+                            print("Turno:", curr_turn)
+
+                    elif action == "finish_combat":
                         if game_state.current_combat:
-                            success, result = game_state.resolve_combat()
-                            if success:
-                                renderer.set_message(f"Victory! Gained {result['treasure']} treasure(s)!")
-                            else:
-                                renderer.set_message(f"Defeat! {result['bad_stuff']}")
-                        else:
-                            next_player = game_state.players[(game_state.current_player_index + 1) % len(game_state.players)]
-                            renderer.set_message(f"Turn ended. {next_player.name}'s turn!")
+                            try:
+                                game_state.resolve_combat()
+                            except EndGameException:
+                                # mostrar tela de vencedor
+                                print("Fim de jogo! Vencedor: ", game_state.current_player().name)
+                                raise
                         game_state.next_player()
+                        curr_turn += 1
+                        print("Turno:", curr_turn)
 
         # Draw current game state
         try:
