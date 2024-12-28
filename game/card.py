@@ -1,4 +1,6 @@
 from enum import Enum, auto
+from game.cards.monster_effect import MonsterEffect
+from game.cards.monster_bad_stuff import MonsterBadStuff
 
 class CardType(Enum):
     MONSTER = auto()
@@ -19,11 +21,28 @@ class Card:
         return f"{self.name} (Level: {self.level}, Bonus: {self.bonus})"
 
 class Monster(Card):
-    def __init__(self, name, image, level, treasure, bad_stuff):
+    def __init__(self, name: str, image: str, level: int, treasure: int, 
+                 effect: MonsterEffect = None, bad_stuff: MonsterBadStuff = None):
         super().__init__(name, image, CardType.MONSTER)
-        self.level = level        
-        self.treasure = treasure  
+        self.base_level = level
+        self.level = level
+        self.treasure = treasure
+        self.effect = effect
         self.bad_stuff = bad_stuff
+        self.pursue = True
+
+    def reset_stats(self):
+        self.level = self.base_level
+        self.pursue = True
+
+    def apply_effect(self, player):
+        self.reset_stats()
+        if self.effect:
+            self.effect.apply(self, player)
+    
+    def apply_bad_stuff(self, player):
+        if self.bad_stuff:
+            self.bad_stuff.apply(player)
 
 class Item(Card):
     def __init__(self, name, image, bonus, value, slot=None, size="Small"):
@@ -32,6 +51,8 @@ class Item(Card):
         self.value = value  # Valor do item em ouro
         self.slot = slot    # Slot onde o item é usado (cabeça, pé, etc)
         self.slot = size    # Size é o tamanho (grande, etc) Default é small porque o jogo diz que todo item que não é grande é pequeno
+        self.class_required = None
+        self.class_prohibited = None
 
 class Race(Card):
     def __init__(self, name, image, special_ability):

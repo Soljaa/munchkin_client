@@ -1,3 +1,5 @@
+from game.death import Death
+
 class Player:
     def __init__(self, name, avatar_img_dir):
         self.name = name
@@ -52,6 +54,16 @@ class Player:
         if self.level < 10:
             self.level += 1
 
-    def level_down(self):
-        if self.level > 1:
+    def level_down(self, value):
+        if value:
+            self.level -= value
+        else:
             self.level -= 1
+        if self.level < 1:
+            Death(self).apply()
+
+    # TODO: Fazer
+    def lose_all_class_items(self):
+        pass
+        # self.equipped_items = []
+        # self.hand = []
