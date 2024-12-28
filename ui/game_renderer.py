@@ -31,13 +31,13 @@ class GameRenderer:
         # Create buttons with consistent positioning
         button_y = SCREEN_HEIGHT - 100
         self.buttons = {
-            "kick_door": Button(420, button_y, 200, 50, "Kick Down Door", GREEN, (100, 255, 100)),
-            "use_card": Button(420, button_y - 60, 200, 50, "Use item card", GREEN, (100, 255, 100)),
-            "run_away": Button(640, button_y, 200, 50, "Run Away", RED, (255, 100, 100)),
-            "look_for_trouble": Button(860, button_y, 200, 50, "Trouble", BLUE, (100, 100, 255)),
-            "ask_for_help": Button(860, button_y - 60, 200, 50, "Ask for help", BLUE, (100, 100, 255)),
-            "loot": Button(1080, button_y, 200, 50, "Loot", BLUE, (100, 100, 255)),
-            "finish_combat": Button(1080, button_y, 200, 50, "Finish Combat", BLUE, (100, 100, 255))
+            "kick_door": Button(420, button_y, 250, 80, "assets/game/kick_door.png"),
+            "use_card": Button(410, button_y - 60, 210, 60, "assets/game/use_card.png"),
+            "run_away": Button(620, button_y, 210, 60, "assets/game/run_away.png"),
+            "look_for_trouble": Button(840, button_y, 210, 60, "assets/game/look_for_trouble.png"),
+            "ask_for_help": Button(840, button_y - 60, 210, 60, "assets/game/ask_for_help.png"),
+            "loot": Button(1060, button_y, 210, 60, "assets/game/loot.png"),
+            "finish_combat": Button(1060, button_y, 210, 60, "assets/game/finish_combat.png")
         }
 
     def draw_gameboard(self):
