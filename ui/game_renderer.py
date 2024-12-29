@@ -31,13 +31,13 @@ class GameRenderer:
         # Create buttons with consistent positioning
         button_y = SCREEN_HEIGHT - 100
         self.buttons = {
-            "kick_door": HoverButton("assets/game/kick_door_new.png", 430, button_y - 120, 250, 200),
-            "use_card": HoverButton("assets/game/use_card.png", 410, button_y - 60, 210, 60),
-            "run_away": HoverButton("assets/game/run_away.png", 620, button_y, 210, 60),
+            "kick_door": HoverButton("assets/game/kick_door_new.png", 1010, 10, 250, 200),
+            "use_card": HoverButton("assets/game/use_card.png", 1060, 10, 210, 60),
+            "run_away": HoverButton("assets/game/run_away.png", 840, 80, 210, 60),
             "look_for_trouble": HoverButton("assets/game/look_for_trouble.png", 840, button_y, 210, 60),
-            "ask_for_help": HoverButton("assets/game/ask_for_help.png", 840, button_y - 60, 210, 60),
+            "ask_for_help": HoverButton("assets/game/ask_for_help.png", 840, 10, 210, 60),
             "loot": HoverButton("assets/game/loot.png", 1060, button_y, 210, 60),
-            "finish_combat": HoverButton("assets/game/finish_combat.png", 1060, button_y, 210, 60),
+            "finish_combat": HoverButton("assets/game/finish_combat.png", 1060, 80, 210, 60),
         }
 
     def draw_gameboard(self):
@@ -130,20 +130,20 @@ class GameRenderer:
         # Draw current player info
         player = game_state.current_player()
         players = game_state.players
-        self._draw_player_info(player, 430, 20)
+        self._draw_player_info(player, 430, 10)
 
         # Draw avatars
         self.draw_avatars(players)
 
         # Draw phase indicator at the top
-        self._draw_phase_indicator(game_state.phase, 860, 20)
+        self._draw_phase_indicator(game_state.phase, 570, 105)
         
         # Draw hand
-        self._draw_hand(player, 420, 200)
+        self._draw_hand(player, 430, 230)
         
         # Draw current combat if any
         if game_state.current_combat:
-            self._draw_combat(game_state.current_combat, 800, 200)
+            self._draw_combat(game_state.current_combat, 750, 200)
         
         # Draw buttons based on game phase
         self._draw_buttons(game_state.phase)
@@ -153,10 +153,8 @@ class GameRenderer:
 
     def _draw_phase_indicator(self, phase, x, y):
         font = pygame.font.Font(None, 32)
-        phase_text = f"Current Phase: {phase.name.replace('_', ' ')}"
-        surface = font.render(phase_text, True, BLACK)
-        pygame.draw.rect(self.screen, WHITE, (x - 5, y - 5, surface.get_width() + 10, surface.get_height() + 10))
-        pygame.draw.rect(self.screen, GRAY, (x - 5, y - 5, surface.get_width() + 10, surface.get_height() + 10), 2)
+        phase_text = f"Phase: {phase.name.replace('_', ' ')}"
+        surface = font.render(phase_text, True, WHITE)
         self.screen.blit(surface, (x, y))
 
     def _draw_player_info(self, player, x, y):
@@ -177,7 +175,7 @@ class GameRenderer:
         texts = [
             f"Player: {player.name}",
             f"Level: {player.level}",
-            f"Combat Strength: {player.calculate_combat_strength()}"
+            f"Strength: {player.calculate_combat_strength()}"
         ]
 
         text_x = x + new_width + 20
@@ -187,101 +185,130 @@ class GameRenderer:
 
     def _draw_hand(self, player, x, y):
         font = pygame.font.Font(None, 24)
-        title = font.render("Your Hand:", True, WHITE)
-        self.screen.blit(title, (x, y))
+        CARD_WIDTH = 120  # Increased for better clickability
+        CARD_HEIGHT = 36
+        CARD_SPACING = 140  # Increased to prevent overlapping
 
-        # Constantes para o tamanho das cartas
-        CARD_WIDTH = 100
-        CARD_HEIGHT = 150
-        CARD_SPACING = 120  # Espaçamento entre as cartas
+        # Store card positions for click detection
+        self.card_positions = []  # Add this as instance variable in __init__
 
-        # Desenhar cartas na mão
+        # Equipped Items Section
+        slots = {
+            "head": {"title": "Head:", "items": [], "y_offset": 0},
+            "armor": {"title": "Armor:", "items": [], "y_offset": CARD_HEIGHT + 60},
+            "hands": {"title": "Hands:", "items": [], "y_offset": 2 * (CARD_HEIGHT + 60)},
+            "feet": {"title": "Feet:", "items": [], "y_offset": 3 * (CARD_HEIGHT + 60)},
+        }
+
+        # Organize items by slots
+        for item in player.equipped_items:
+            if item.slot in slots:
+                slots[item.slot]["items"].append(item)
+
+        # Draw items by slot and store equipped item positions
+        for slot_info in slots.values():
+            slot_title = font.render(slot_info["title"], True, WHITE)
+            slot_y = y + slot_info["y_offset"]
+            self.screen.blit(slot_title, (x, slot_y - 25))
+
+            for i, item in enumerate(slot_info["items"]):
+                item_sprite = Sprite(item.image)
+                resized_image = pygame.transform.scale(item_sprite.image, (CARD_WIDTH, CARD_HEIGHT))
+                item_sprite.image = resized_image
+
+                item_x = x + (i * CARD_SPACING)
+                item_y = slot_y
+                item_sprite.x = item_x
+                item_sprite.y = item_y
+                item_sprite.draw()
+
+                # Store equipped item position and data
+                self.card_positions.append({
+                    'rect': pygame.Rect(item_x, item_y, CARD_WIDTH, CARD_HEIGHT),
+                    'type': 'equipped',
+                    'index': len(self.card_positions),
+                    'item': item
+                })
+
+                bonus_text = font.render(f"+{item.bonus}", True, WHITE)
+                self.screen.blit(bonus_text, (item_x + 5, item_y + CARD_HEIGHT + 5))
+
+        # Draw hand cards
+        hand_y = y + 4 * (CARD_HEIGHT + 60)
+        hand_title = font.render("Your Hand:", True, WHITE)
+        self.screen.blit(hand_title, (x, hand_y))
+
+        hand_cards_y = hand_y + 30
         for i, card in enumerate(player.hand):
-            # Carregar e redimensionar a imagem da carta
             card_sprite = Sprite(card.image)
             resized_image = pygame.transform.scale(card_sprite.image, (CARD_WIDTH, CARD_HEIGHT))
             card_sprite.image = resized_image
 
-            # Posicionar e desenhar a carta
-            card_sprite.x = x + (i * CARD_SPACING)
-            card_sprite.y = y + 30
+            card_x = x + (i * CARD_SPACING)
+            card_y = hand_cards_y
+            card_sprite.x = card_x
+            card_sprite.y = card_y
             card_sprite.draw()
 
-            # Desenhar informações adicionais da carta
+            # Store hand card position and data
+            if isinstance(card, Item):
+                self.card_positions.append({
+                    'rect': pygame.Rect(card_x, card_y, CARD_WIDTH, CARD_HEIGHT),
+                    'type': 'hand',
+                    'index': i,
+                    'item': card
+                })
+
             if hasattr(card, 'bonus') and card.bonus:
                 bonus_text = font.render(f"+{card.bonus}", True,
                                          GREEN if isinstance(card, Item) and not card.equipped else WHITE)
-                self.screen.blit(bonus_text, (card_sprite.x + 5, card_sprite.y + CARD_HEIGHT + 5))
-
-        # Desenhar itens equipados
-        equipped_y = y + CARD_HEIGHT + 60
-        equipped_title = font.render("Equipped Items:", True, WHITE)
-        self.screen.blit(equipped_title, (x, equipped_y))
-
-        for i, item in enumerate(player.equipped_items):
-            # Carregar e redimensionar a imagem do item equipado
-            item_sprite = Sprite(item.image)
-            resized_image = pygame.transform.scale(item_sprite.image, (CARD_WIDTH, CARD_HEIGHT))
-            item_sprite.image = resized_image
-
-            # Posicionar e desenhar o item
-            item_sprite.x = x + (i * CARD_SPACING)
-            item_sprite.y = equipped_y + 30
-            item_sprite.draw()
-
-            # Desenhar bônus do item
-            bonus_text = font.render(f"+{item.bonus}", True, WHITE)
-            self.screen.blit(bonus_text, (item_sprite.x + 5, item_sprite.y + CARD_HEIGHT + 5))
+                self.screen.blit(bonus_text, (card_x + 5, card_y + CARD_HEIGHT + 5))
 
     def _draw_combat(self, combat, x, y):
         font = pygame.font.Font(None, 36)
         monster = combat.monster
-        
-        # Draw combat box background with border
-        pygame.draw.rect(self.screen, BLACK, (x - 15, y - 15, 410, 250))
-        pygame.draw.rect(self.screen, RED, (x - 10, y - 10, 400, 240))
-        
-        # Combat title with monster level
-        title = font.render(f"COMBAT: Level {monster.level} {monster.name}", True, WHITE)
-        self.screen.blit(title, (x, y))
-        
-        # Combat stats
+
+        # Desenhar imagem do monstro
+        MONSTER_WIDTH = 200
+        MONSTER_HEIGHT = 300
+        monster_sprite = Sprite(monster.image)
+        resized_image = pygame.transform.scale(monster_sprite.image, (MONSTER_WIDTH, MONSTER_HEIGHT))
+        monster_sprite.image = resized_image
+        monster_sprite.x = x  # Centralizar na área de combate
+        monster_sprite.y = y
+        monster_sprite.draw()
+
+        # Combat title
+        title = font.render(f"{monster.name} | Level {monster.level}", True, WHITE)
+        self.screen.blit(title, (x + MONSTER_WIDTH + 20, y + 20))
+
+        # Estatísticas de combate
         player_strength = combat.get_player_strength()
         monster_strength = combat.get_monster_strength()
-        
-        # Draw VS graphic
-        vs_font = pygame.font.Font(None, 48)
-        vs_text = vs_font.render("  VS", True, WHITE)
-        vs_rect = vs_text.get_rect(center=(x + 200, y + 80))
-        self.screen.blit(vs_text, vs_rect)
-        
-        # Draw player and monster strength in larger font
+
+        # Desenhar VS e forças
         large_font = pygame.font.Font(None, 60)
-        player_text = large_font.render(str(player_strength), True, GREEN if player_strength > monster_strength else WHITE)
-        monster_text = large_font.render(str(monster_strength), True, RED if player_strength > monster_strength else WHITE)
-        
-        self.screen.blit(player_text, (x + 150, y + 60))
-        self.screen.blit(monster_text, (x + 250, y + 60))
-        
-        # Draw combat details
+        vs_text = large_font.render("VS", True, WHITE)
+        player_text = large_font.render(str(player_strength), True,
+                                        GREEN if player_strength > monster_strength else WHITE)
+        monster_text = large_font.render(str(monster_strength), True,
+                                         RED if player_strength > monster_strength else WHITE)
+
+        # Posicionar textos
+        self.screen.blit(vs_text, (x + MONSTER_WIDTH + 100, y + 100))
+        self.screen.blit(player_text, (x + MONSTER_WIDTH + 30, y + 100))
+        self.screen.blit(monster_text, (x + MONSTER_WIDTH + 210, y + 100))
+
+        # Informações adicionais
         details = [
-            f"Helpers: {len(combat.helpers)}",
-            f"Treasure Reward: {monster.treasure}",
-            f"Bad Stuff: {monster.bad_stuff}"
+            f"Treasure: {monster.treasure}",
+            f"Bad Stuff: {monster.bad_stuff}",
+            f"Helpers: {len(combat.helpers)}"
         ]
-        
+
         for i, text in enumerate(details):
             surface = font.render(text, True, WHITE)
-            self.screen.blit(surface, (x, y + 120 + i * 30))
-        
-        # Draw helper info if any
-        if combat.helpers:
-            helper_text = font.render("Helper Combat Power:", True, WHITE)
-            self.screen.blit(helper_text, (x, y + 180))
-            for i, helper in enumerate(combat.helpers):
-                power = helper.calculate_combat_strength()
-                helper_power = font.render(f"{helper.name}: +{power}", True, GREEN)
-                self.screen.blit(helper_power, (x + 20, y + 210 + i * 25))
+            self.screen.blit(surface, (x + MONSTER_WIDTH + 20, 400 + i * 30))
 
     def _draw_buttons(self, game_phase):
         for button_name, button_rect in self.buttons.items():
@@ -299,7 +326,7 @@ class GameRenderer:
         if self.message and self.message_timer > 0:
             font = pygame.font.Font(None, 32)
             text = font.render(self.message, True, BLACK)
-            text_rect = text.get_rect(center=(SCREEN_WIDTH // 2 + 200, SCREEN_HEIGHT-25))
+            text_rect = text.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 200))
             pygame.draw.rect(self.screen, WHITE, (text_rect.x - 10, text_rect.y - 5, text_rect.width + 20, text_rect.height + 10))
             self.screen.blit(text, text_rect)
             self.message_timer -= 1
@@ -309,25 +336,17 @@ class GameRenderer:
         for button_name, button in self.buttons.items():
             if button.handle_event(event):
                 return button_name
-        
-        # Handle card clicks if game_state is provided
+
+        # Handle card clicks
         if game_state and event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = event.pos
-            current_player = game_state.current_player()
-            
-            # Check for clicks in the hand area
-            x, y = 420, 200  # Starting position of hand cards
-            for i, card in enumerate(current_player.hand):
-                card_rect = pygame.Rect(x + 10, y + 30 + i * 25, 200, 20)
-                if card_rect.collidepoint(mouse_pos):
-                    if isinstance(card, Item):
-                        return ("equip_item", i)
-            
-            # Check for clicks in equipped items area
-            equipped_y = y + 30 + len(current_player.hand) * 25 + 20
-            for i, item in enumerate(current_player.equipped_items):
-                card_rect = pygame.Rect(x + 10, equipped_y + 30 + i * 25, 200, 20)
-                if card_rect.collidepoint(mouse_pos):
-                    return ("unequip_item", i)
-        
+
+            # Check for clicks on any stored card positions
+            for card_data in self.card_positions:
+                if card_data['rect'].collidepoint(mouse_pos):
+                    if card_data['type'] == 'hand' and isinstance(card_data['item'], Item):
+                        return ('equip_item', card_data['index'])
+                    elif card_data['type'] == 'equipped':
+                        return ('unequip_item', card_data['index'])
+
         return None
