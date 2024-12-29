@@ -3,4 +3,4 @@ class Death:
         self.player = player
 
     def apply(self):
-        self.player.level = 0
+        self.player.level = 1
