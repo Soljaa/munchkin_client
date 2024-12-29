@@ -254,6 +254,7 @@ class DoorDeck(Deck):
             #Monster("Ghost", 5, 1, "Run away or lose a level"),
             #Monster("Giant Rat", 1, 1, "Lose your food items"),
         ]
+        # comment this to teste loot phase or look_for_trouble_phase
         print(f"Adding {len(monsters)} monsters to deck")
         for monster in monsters:
             self.add_card(monster)

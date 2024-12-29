@@ -116,6 +116,13 @@ class GameState:
 
         return True
 
+    def look_for_trouble(self, monster):
+        print("Monster selected! Initializing combat...")
+        self.set_combat(Combat(self.current_player(), monster))
+        self.set_game_phase(GamePhase.COMBAT)
+        print(f"Combat initialized with monster: {monster.name}")
+        return True
+
     def set_game_phase(self, new_phase):
         if new_phase in [phase for phase in GamePhase]:
             self.phase = new_phase
@@ -126,10 +133,11 @@ class GameState:
         if self.current_combat:
             print("New combat:", self.current_combat.__dict__)
 
-    def play_charity_phase(self):
+    def play_charity_phase(self, died=False):
         # add delay or animation
         self.set_game_phase(GamePhase.CHARITY)
-        donation_cards = self.players[self.current_player_index].donate_cards()
+        donation_cards = self.players[self.current_player_index].hand \
+            if died else self.players[self.current_player_index].donate_cards()
         lowest_cards_players = self.get_lowest_cards_players()
         if len(donation_cards) == 1:
             lowest_cards_players[0].hand += donation_cards
@@ -145,7 +153,7 @@ class GameState:
         return [player for player in players_minus_current if len(player.hand) == min_cards]
 
 
-# donation helper function
+# donation helper function move to utils
 def distribute_cards(players, cards):
     if not players or not cards:
         return {player: [] for player in players}  # Retorna dicionário vazio para cada jogador

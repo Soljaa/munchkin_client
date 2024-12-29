@@ -2,6 +2,8 @@ import pygame
 from constants import *
 from game.game_state import GameState, GamePhase, EndGameException
 from ui.game_renderer import GameRenderer
+from game.deck import (Monster, CompositeEffect, PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect, NotPursueLevelEffect,
+                       LoseLevelBadStuff)
 
 
 def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/avatar1.png"):
@@ -95,6 +97,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 renderer.set_message("You found something else... You are Cursed")
                                 # show look for trouble ou loot
                     elif action == "run_away": # Se aperto para fugir...
+                        player_died = False
                         if game_state.current_combat: # ... e estou em combate
                             game_state.dice.roll() # Então rolo o dado 
                             renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
@@ -107,8 +110,14 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 game_state.current_player().level_down() # Perco um nível
                                 if game_state.current_player().level==0: # Se o jogador estiver morto (logo após a perda do nível)
                                     renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
+                                    # refazer toda essa parte de morte, ta dando respawn mas ta feio
+                                    dead_player = (game_state.current_player().name,
+                                                   game_state.current_player().avatar_img_dir)
+                                    game_state.players.remove(game_state.current_player())
+                                    game_state.add_player(dead_player[0], dead_player[1])
+                                    player_died = True
                             renderer.set_message("Doing charity... Redistributing cards")
-                            game_state.play_charity_phase()
+                            game_state.play_charity_phase(player_died)
                             game_state.next_player()
                             curr_turn += 1
                             print("Turno:", curr_turn)
@@ -140,6 +149,31 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                         game_state.next_player()
                         curr_turn += 1
                         print("Turno:", curr_turn)
+
+                    elif action == "look_for_trouble":
+                        # abre modal pro player escolher um monstro da mão, vou mocar com um monstro aleatorio mas
+                        # tem q fazer a lógica para ver se o cara tem monstro na mão e escolher o monstro mas precisa
+                        # melhorar o display de cartas primeiro, se nao tiver monstro, mostrar aviso e nao fazer
+                        # nada, so restando pra ele saquear
+                        game_state.set_game_phase(GamePhase.LOOK_FOR_TROUBLE)
+                        if game_state.phase == GamePhase.LOOK_FOR_TROUBLE:
+                            monster_selected = Monster(
+                                name="Wight Brothers",
+                                image="assets/door_cards/WightBrothers.png",
+                                level=16,
+                                treasure=4,
+                                effect=CompositeEffect(
+                                    PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect(2),
+                                    NotPursueLevelEffect(3)
+                                ),
+                                bad_stuff=LoseLevelBadStuff(1),
+                            )
+                            success = game_state.look_for_trouble(monster_selected)
+                            if success and game_state.current_combat:
+                                renderer.set_message(
+                                    f"Combat started! Fighting {game_state.current_combat.monster.name}!")
+
+
 
         # Draw current game state
         try:
