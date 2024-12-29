@@ -2,7 +2,7 @@ import pygame
 from constants import *
 from game.game_state import GameState, GamePhase, EndGameException
 from ui.game_renderer import GameRenderer
-from game.deck import (Monster, CompositeEffect, PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect, NotPursueLevelEffect,
+from game.cards.monsters import (Monster, CompositeEffect, PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect, NotPursueLevelEffect,
                        LoseLevelBadStuff)
 
 
@@ -67,7 +67,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                     action_type, index = action
                     current_player = game_state.current_player()
 
-                    if game_state.phase == GamePhase.SETUP:
+                    if game_state.phase == GamePhase.SETUP:                      
                         if action_type == "equip_item":
                             if index < len(current_player.hand): # "Possívelmente" redundante (o index obrigatoriamente já vai ser menor que o tamanho da mão, haja vista que é gerado a partir de uma seleção dessa propria mão)
                                 card = current_player.hand[index]

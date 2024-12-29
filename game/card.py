@@ -71,6 +71,10 @@ class Curse(Card):
         super().__init__(name, image, CardType.CURSE)
         self.effect = effect  # Efeito da maldição ao ser aplicada
 
+    def apply_effect(self, player):
+        if self.effect:
+            self.effect.apply(self, player)
+
 # Classe para cartas de buff
 class Buff(Card):
     def __init__(self, name, image, effect, target):

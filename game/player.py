@@ -1,3 +1,4 @@
+from game.card import CardType
 from game.death import Death
 import random
 
@@ -12,6 +13,7 @@ class Player:
         self.equipped_items = []
         self.race = None
         self.class_ = None
+        self.curse = []
 
     def calculate_combat_strength(self):
         base_strength = self.level
@@ -44,9 +46,17 @@ class Player:
         card = deck.draw()
         if card:
             self.hand.append(card)
-        return card
+    
+    def clean_curses(self):
+        self.curse = []
 
+    # TODO: deve por na pilha de descarte? acredito que as cartas estão sendo perdidas
     def play_card(self, card):
+        # TODO: para CURSE, abrir opção para escolher qual alvo
+        # if card.card_type == CardType.CURSE:
+        #     target_player = open_target_menu()
+        #     target_player.curse.append(card)
+
         if card in self.hand:
             self.hand.remove(card)
             return True
@@ -65,11 +75,9 @@ class Player:
     def lose_items(self, qty):
         pass
 
-    # TODO: Fazer
+    # TODO
     def lose_all_class_items(self):
         pass
-        # self.equipped_items = []
-        # self.hand = []
 
     #TODO
     def lose_all_class_cards(self):
