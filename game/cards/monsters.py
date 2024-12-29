@@ -22,15 +22,16 @@ MONSTERS = [
             effect=CompositeEffect(IncreaseMonsterLevelEffect('Elf', 4), NotPursueLevelEffect(4, exclude_race='Elf')), 
             bad_stuff=DeathBadStuff()
         ),
-        # Hairy Potter      # TODO: Falta png
-        # Monster(
-        #     name="Hairy Potter",
-        #     image="assets/door_cards/HairyPotter.png",
-        #     level=15,
-        #     treasure=4,
-        #     effect=CompositeEffect(IncreaseMonsterLevelEffect('Wizard', 4), IncreaseMonsterLevelEffect('Elf', -3), NotPursueLevelEffect(2)),
-        #     bad_stuff=LoseAllClassItemsBadStuff()
-        # ),
+        # TODO: Falta png
+        # Hairy Potter
+        Monster(
+            name="Hairy Potter",
+            image="assets/door_cards/HairyPotter.png",
+            level=15,
+            treasure=4,
+            effect=CompositeEffect(IncreaseMonsterLevelEffect('Wizard', 4), IncreaseMonsterLevelEffect('Elf', -3), NotPursueLevelEffect(2)),
+            bad_stuff=LoseAllClassItemsBadStuff()
+        ),
 
         # Amazon #TODO
         Monster(name="Amazon", image="assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
@@ -41,20 +42,20 @@ MONSTERS = [
             image="assets/door_cards/Bigfoot.png", 
             level=12,
             treasure=3,
-            effect= CompositeEffect(
+            effect=CompositeEffect(
                 IncreaseMonsterLevelEffect("Dwarf", 3),
                 IncreaseMonsterLevelEffect("Halfling", 3),
             ),
-            bad_stuff= LoseTheEquippedHeadgearBadStuff,
+            bad_stuff=LoseTheEquippedHeadgearBadStuff,
         ),
         #Bullrog
         Monster(
-            name= "Bullrog",
-            image= "assets/door_cards/Bullrog.png",
+            name="Bullrog",
+            image="assets/door_cards/Bullrog.png",
             level=18, 
             treasure=5, 
-            effect= CompositeBadStuff(NotPursueLevelEffect(4)),
-            bad_stuff= DeathBadStuff(),
+            effect=CompositeBadStuff(NotPursueLevelEffect(4)),
+            bad_stuff=DeathBadStuff(),
         ),
         
         #Crabs
@@ -63,12 +64,12 @@ MONSTERS = [
         Monster("Drooling Slime", "assets/door_cards/DroolingSlime.png", 1, 1, "X"),
         
         #Face Sucker
-        Monster(name= "Face Sucker",
-                image= "assets/door_cards/FaceSucker.png",
-                level= 8,
+        Monster(name="Face Sucker",
+                image="assets/door_cards/FaceSucker.png",
+                level=8,
                 treasure= 2, 
-                effect= CompositeEffect(IncreaseMonsterLevelEffect("Elf", 6)),
-                bad_stuff= CompositeBadStuff(
+                effect=CompositeEffect(IncreaseMonsterLevelEffect("Elf", 6)),
+                bad_stuff=CompositeBadStuff(
                     LoseTheEquippedHeadgearBadStuff(),
                     LoseLevelBadStuff(1),
                 ),
@@ -91,18 +92,17 @@ MONSTERS = [
         # Insurance Salesman #TODO
         Monster("Insurance Salesman", "assets/door_cards/InsuranceSalesman.png", 14, 4, "X"),
 
-        
         # King Tut
         Monster(
-            name= "King Tut",
-            image= "assets/door_cards/KingTut.png",
-            level= 16,
-            treasure= 4,
+            name="King Tut",
+            image="assets/door_cards/KingTut.png",
+            level=16,
+            treasure=4,
             effect=CompositeEffect(
                 NotPursueLevelEffect(3), 
                 PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect(2)
             ),
-            bad_stuff= LoseAllItemsBadStuff(),
+            bad_stuff=LoseAllItemsBadStuff(),
         ),
         
         #Lame Goblin #TODO
@@ -114,21 +114,21 @@ MONSTERS = [
         
         #Leperchaun
         Monster(
-            name= "Leperchaun",
-            image= "assets/door_cards/Leperchaun.png",
-            level= 4,
-            treasure= 2,
-            effect= CompositeEffect(IncreaseMonsterLevelEffect("Elf", 5)),
-            bad_stuff= LoseItemsBadStuff(2),
+            name="Leperchaun",
+            image="assets/door_cards/Leperchaun.png",
+            level=4,
+            treasure=2,
+            effect=CompositeEffect(IncreaseMonsterLevelEffect("Elf", 5)),
+            bad_stuff=LoseItemsBadStuff(2),
         ),
         #Maul Rat
         Monster(
-            name= "Maul Rat",
+            name="Maul Rat",
                 image="assets/door_cards/MaulRat.png",
-                level= 1,
-                treasure= 1,
-                effect= CompositeEffect(IncreaseMonsterLevelEffect("Cleric", 3)),
-                bad_stuff= LoseLevelBadStuff(1),
+                level=1,
+                treasure=1,
+                effect=CompositeEffect(IncreaseMonsterLevelEffect("Cleric", 3)),
+                bad_stuff=LoseLevelBadStuff(1),
             ),
         
         #Mr. Bones #TODO
@@ -142,19 +142,19 @@ MONSTERS = [
         
         # Plutonium Dragon
         Monster(
-            name= "Plutonium Dragon",
-            image= "assets/door_cards/PlutoniumDragon.png",
-            level= 20,
-            treasure= 5, 
-            effect= CompositeEffect(NotPursueLevelEffect(5)),
-            bad_stuff= DeathBadStuff(),
+            name="Plutonium Dragon",
+            image="assets/door_cards/PlutoniumDragon.png",
+            level=20,
+            treasure=5, 
+            effect=CompositeEffect(NotPursueLevelEffect(5)),
+            bad_stuff=DeathBadStuff(),
         ),
         # Potted Plant
         Monster(
-            name= "Potted Plant",
-            image= "assets/door_cards/PottedPlant.png",
-            level= 1,
-            treasure= 1, 
+            name="Potted Plant",
+            image="assets/door_cards/PottedPlant.png",
+            level=1,
+            treasure=1, 
             effect= CompositeEffect(MoreTreasureEffect(1, "Elf")),
             bad_stuff= None
         ),
@@ -173,11 +173,11 @@ MONSTERS = [
         # Undead Horse
         Monster(
             name="Undead Horse",
-            image= "assets/door_cards/UndeadHorse.png", 
+            image="assets/door_cards/UndeadHorse.png", 
             level=4, 
             treasure=2,
             effect=CompositeEffect(IncreaseMonsterLevelEffect("Dwarves", 5)),
-            bad_stuff= LoseLevelBadStuff(2),
+            bad_stuff=LoseLevelBadStuff(2),
         ), # TODO: Ele é undead
         
         # Unspeakably Awful Indescriblabe Horror #TODO
@@ -187,15 +187,15 @@ MONSTERS = [
         # Wight Brothers
         
         Monster(
-            name= "Wight Brothers",
-            image= "assets/door_cards/WightBrothers.png",
-            level= 16,
-            treasure= 4,
-            effect= CompositeEffect(
+            name="Wight Brothers",
+            image="assets/door_cards/WightBrothers.png",
+            level=16,
+            treasure=4,
+            effect=CompositeEffect(
                 PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect(2), 
                 NotPursueLevelEffect(3)
             ),
-            bad_stuff= LoseLevelBadStuff(1),
+            bad_stuff=LoseLevelBadStuff(1),
             
         )
 

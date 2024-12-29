@@ -1,6 +1,7 @@
 import random
 from game.card import Item, Race, Curse
-from game.cards.monster_bad_stuff import LoseLevelBadStuff
+from game.cards.curse_effect import ApplyDiscardCardBadStuffCurseEffect
+from game.cards.curses import CURSES
 from game.cards.monsters import MONSTERS
 
 class Dice:
@@ -46,17 +47,8 @@ class DoorDeck(Deck):
         for monster in MONSTERS:
             self.add_card(monster)
 
-        curses = [
-            Curse(name="Curse! Lose 1 Level",
-                  image="assets/door_cards/Curse!LoseALevel1.png",
-                  effect=LoseLevelBadStuff(1)),
-            Curse(name="Curse! Lose 2 Levels",
-                  image="assets/door_cards/Curse!LoseALevel2.png",
-                  effect=LoseLevelBadStuff(2))
-        ]
-
-        print(f"Adding {len(curses)} races to deck")
-        for curse in curses:
+        print(f"Adding {len(CURSES)} races to deck")
+        for curse in CURSES:
             self.add_card(curse)
 
         print(f"Door deck initialized with {len(self.cards)} cards")
