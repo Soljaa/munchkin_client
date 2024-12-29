@@ -49,6 +49,10 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
         # Render the gameboard
         renderer.draw_gameboard()
 
+        # Revive jogador morto
+        if game_state.current_player().level==0: # Se o jogador morreu
+            game_state.current_player().level_up() # Revive (dando +1 de nível, ficando com nível 1)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
@@ -100,6 +104,8 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             else: # Se não consigo fugir (value<5)
                                 renderer.set_message(f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
                                 game_state.current_player().level_down() # Perco um nível
+                                if game_state.current_player().level==0: # Se o jogador estiver morto (logo após a perda do nível)
+                                    renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
                             game_state.play_charity_phase()
                             game_state.next_player()
                             curr_turn += 1

@@ -126,6 +126,37 @@ class GameRenderer:
         dice.draw_value_dice(SCREEN_WIDTH/2-dice.sprite_value_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_value_dice.height/2)
         time.sleep(1)
 
+    def draw_alert_player_die(self, player): #TODO Talvez colocar algo dentro de Death.draw()
+        # Background
+        self.screen.blit(pygame.image.load("assets/death_background.jpg"), (0, 0))
+
+        # Cria o objeto de fonte para o texto
+        font = pygame.font.SysFont("Comic Sans MS", 40, bold=True)
+
+        # Texto dividido em duas linhas
+        text_lines = [
+            font.render(f"{player.name}", True, (255, 255, 255)),  # Primeira linha
+            font.render("morreu!", True, (255, 255, 255))  # Segunda linha
+        ]
+
+        # Calcula a posição central da tela
+        center_x = self.screen.get_width() // 2
+        center_y = self.screen.get_height() // 2
+
+        # Avatar do referido jogador
+        avatar_img = pygame.image.load(player.avatar_img_dir)
+        self.screen.blit(avatar_img, (center_x - avatar_img.get_width()/2,60))
+
+        # Desenha o texto, linha por linha
+        pos_y = center_y-40
+        for line in text_lines:
+            text_rect = line.get_rect(center=(center_x + 5, pos_y))
+            self.screen.blit(line, text_rect)
+            pos_y += 70
+
+        pygame.display.flip()
+        time.sleep(2.5)
+        
     def draw_game_state(self, game_state):
         # Draw current player info
         player = game_state.current_player()

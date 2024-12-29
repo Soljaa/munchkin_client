@@ -4,3 +4,7 @@ class Death:
 
     def apply(self):
         self.player.level = 0
+
+    def draw(self):
+        """Função que desenha o aviso de morte do player"""
+        pass
