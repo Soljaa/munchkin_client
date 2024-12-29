@@ -223,7 +223,7 @@ class GameRenderer:
     def _draw_hand(self, player, x, y):
         font = pygame.font.Font(None, 24)
 
-        # Dimensões para cartas na mão
+        # Dimensões para cartas na mão do jogador
         HAND_CARD_WIDTH = 90
         HAND_CARD_HEIGHT = 135
 
