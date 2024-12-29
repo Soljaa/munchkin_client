@@ -39,7 +39,7 @@ class GameRenderer:
         self.buttons = {
             "kick_door": HoverButton("assets/game/kick_door_new.png", 1010, 10, 250, 200),
             "use_card": HoverButton("assets/game/use_card.png", 1060, 10, 210, 60),
-            "run_away": HoverButton("assets/game/run_away.png", 840, 80, 210, 60),
+            "run_away": HoverButton("assets/game/run_away.png", 840, 80, 2100, 60),
             "look_for_trouble": HoverButton("assets/game/look_for_trouble.png", 840, button_y, 210, 60),
             "ask_for_help": HoverButton("assets/game/ask_for_help.png", 840, 10, 210, 60),
             "loot": HoverButton("assets/game/loot.png", 1060, button_y, 210, 60),
@@ -351,10 +351,10 @@ class GameRenderer:
     def _draw_buttons(self, game_state):
         current_phase_buttons = BUTTONS_BY_GAME_PHASE[game_state.phase]
 
-        for button_name, button_rect in self.buttons.items():
+        for button_name, button in self.buttons.items():
             # Verifica se o botão é relevante para a fase atual do jogo
             if button_name not in current_phase_buttons:
-                button_rect.deactivate()
+                button.deactivate()
                 continue
 
             # Caso seja a fase de combate, verifica as condições específicas
@@ -363,14 +363,14 @@ class GameRenderer:
                 combat_buttons = COMBAT_CONDITIONS.get(combat_state, [])
 
                 if button_name in combat_buttons:
-                    button_rect.activate()
-                    button_rect.draw(self.screen)
+                    button.activate()
+                    button.draw()
                 else:
-                    button_rect.deactivate()
+                    button.deactivate()
             else:
                 # Para fases que não são de combate
-                button_rect.activate()
-                button_rect.draw(self.screen)
+                button.activate()
+                button.draw()
 
     def set_message(self, message):
         self.message = message
@@ -388,7 +388,7 @@ class GameRenderer:
     def handle_event(self, event, game_state=None):
         # Handle button clicks
         for button_name, button in self.buttons.items():
-            if button.handle_event(event):
+            if button.handle_event():
                 return button_name
 
         # Handle card clicks

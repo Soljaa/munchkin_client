@@ -1,27 +1,34 @@
-import pygame
-
 from ui.button import Button
 
 class HoverButton(Button):
-    def __init__(self, image_path, x, y, width, height, scale_factor=1.1):
-        super().__init__(x, y, width, height, image_path)
+    def __init__(self, image_path, x, y, width=None, height=None, scale_factor=1.1, acao=None):
+        super().__init__(image_path, x, y, width, height, acao)
         
         # Fator de escala para aumentar o tamanho no hover
         self.scale_factor = scale_factor
-        self.original_width = width
-        self.original_height = height
 
-    def draw(self, screen):
-        # Se o botão está sendo hoverado, aumenta o tamanho
-        if self.is_hovered:
-            # Aumenta o tamanho do botão de acordo com scale_factor
-            new_width = int(self.original_width * self.scale_factor)
-            new_height = int(self.original_height * self.scale_factor)
-            scaled_rect = pygame.Rect(self.rect.x - (new_width - self.original_width) // 2,
-                                      self.rect.y - (new_height - self.original_height) // 2,
-                                      new_width, new_height)
-            # Desenha a imagem redimensionada
-            screen.blit(pygame.transform.scale(self.image, (new_width, new_height)), scaled_rect)
+        
+
+        # Guarda o tamanho original do botão
+        self.original_x = x
+        self.original_y = y
+        self.original_width = self.sprite.width 
+        self.original_height = self.sprite.height
+        self.hovered_width = self.original_width * self.scale_factor  
+        self.hovered_height = self.original_height * self.scale_factor 
+
+    def update(self):  # Atualiza o estado do botão (verifica hover)
+        if self.mouse.is_over_object(self.sprite):
+            self.sprite.set_scale(self.hovered_width / self.original_width, 
+                                  self.hovered_height / self.original_height)  # Muda o tamanho
+            self.sprite.x = self.original_x - self.sprite.width / 2  # Recentraliza o botão
+            self.sprite.y = self.original_y - self.sprite.height / 2  # Recentraliza o botão
+
         else:
-            # Caso contrário, desenha o botão com o tamanho original
-            super().draw(screen)
+            self.sprite.set_scale(1, 1)  # Volta ao tamanho original
+            self.sprite.x = self.original_x - self.sprite.width / 2  # Recentraliza o botão
+            self.sprite.y = self.original_y - self.sprite.height / 2  # Recentraliza o botão
+
+    def draw(self):  # Desenhar os Botões
+        self.update()  # Atualiza o estado antes de desenhar
+        self.sprite.draw()

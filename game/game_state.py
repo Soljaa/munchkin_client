@@ -70,6 +70,7 @@ class GameState:
         elif card.card_type == CardType.CURSE:
             print(card.name)
             # TODO: aplicar efeito da curse
+            card.effect.apply(self.current_player())
         return True
 
     def resolve_combat(self):
@@ -141,6 +142,7 @@ class GameState:
         lowest_cards_players = self.get_lowest_cards_players()
         if len(donation_cards) == 1:
             lowest_cards_players[0].hand += donation_cards
+            return True # Acho que tem que ter
         distribution = distribute_cards(lowest_cards_players, donation_cards)
         for player, card_array in distribution.items():
             player.hand += card_array

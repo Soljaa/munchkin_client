@@ -1,10 +1,11 @@
 import os
+import time
 from PPlay.window import *
 from PPlay.mouse import *
 from PPlay.gameimage import *
 import pygame
-from widgets.button.hover_button import HoverButton
-from widgets.button.click_button import ClickButton
+from ui.hover_button import HoverButton
+from ui.click_button import ClickButton
 from game.game_manager import main
 
 
@@ -43,25 +44,25 @@ class PlayerSelection:
                 "assets/menu/back_button.png",
                 0.05 * self.window.width,
                 0.08 * self.window.height,
-                self.back
+                acao = self.back
             ),
             "continue": HoverButton(
                 "assets/selecao_player/continue_button.png",
                 self.window.width / 2,
                 500,
-                self.game
+                acao = self.game
             ),
             "left_arrow": ClickButton(
                 "assets/selecao_player/seta_esq.png",
                 self.window.width / 2 - 135,
                 270,
-                lambda: self.update_avatar(1)
+                acao = lambda: self.update_avatar(1)
             ),
             "right_arrow": ClickButton(
                 "assets/selecao_player/seta_dir.png",
                 self.window.width / 2 + 135,
                 270,
-                lambda: self.update_avatar(-1)
+                acao = lambda: self.update_avatar(-1)
             ),
         }
 
@@ -107,7 +108,9 @@ class PlayerSelection:
     
     def update_avatar(self, incremento):
         """Atualiza a navegação dos avatares."""
-        self.avatar_index = (self.avatar_index + incremento) % len(self.avatars)
+        if self.reload_mouse <= 0:
+            self.avatar_index = (self.avatar_index + incremento) % len(self.avatars)
+            self.reload_mouse = 0.2
 
     def back(self):
         """Ação para o botão 'back'."""
@@ -140,9 +143,10 @@ class PlayerSelection:
             # Botões 
             for button in self.buttons.values():
                 button.draw()
-                if self.mouse.is_over_object(button.sprite) and self.mouse.is_button_pressed(1) and self.reload_mouse <= 0:
-                    self.reload_mouse = 0.2
-                    button.acao()
+                button.handle()
+                #if self.mouse.is_over_object(button.sprite) and self.mouse.#is_button_pressed(1) and self.reload_mouse <= 0:
+                    #self.reload_mouse = 0.2
+                    #button.acao()
 
             # Imagem Avatar
             self.avatar = GameImage(self.avatars[self.avatar_index])
