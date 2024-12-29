@@ -5,6 +5,7 @@ from game.card import Item
 from ui.hover_button import HoverButton
 from game.dice import Dice
 from game.game_state import GamePhase
+from game.combat import CombatStates
 
 
 BUTTONS_BY_GAME_PHASE = {
@@ -14,6 +15,11 @@ BUTTONS_BY_GAME_PHASE = {
     GamePhase.LOOT_ROOM: [],
     GamePhase.COMBAT: ["run_away", "use_card", "ask_for_help", "finish_combat"],
     GamePhase.CHARITY: [],
+}
+
+COMBAT_CONDITIONS = {
+    CombatStates.WINNING: ["use_card", "finish_combat"],
+    CombatStates.LOSING: ["run_away", "use_card", "ask_for_help"]
 }
 
 
@@ -126,6 +132,37 @@ class GameRenderer:
         dice.draw_value_dice(SCREEN_WIDTH/2-dice.sprite_value_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_value_dice.height/2)
         time.sleep(1)
 
+    def draw_alert_player_die(self, player): #TODO Talvez colocar algo dentro de Death.draw()
+        # Background
+        self.screen.blit(pygame.image.load("assets/death_background.jpg"), (0, 0))
+
+        # Cria o objeto de fonte para o texto
+        font = pygame.font.SysFont("Comic Sans MS", 40, bold=True)
+
+        # Texto dividido em duas linhas
+        text_lines = [
+            font.render(f"{player.name}", True, (255, 255, 255)),  # Primeira linha
+            font.render("morreu!", True, (255, 255, 255))  # Segunda linha
+        ]
+
+        # Calcula a posição central da tela
+        center_x = self.screen.get_width() // 2
+        center_y = self.screen.get_height() // 2
+
+        # Avatar do referido jogador
+        avatar_img = pygame.image.load(player.avatar_img_dir)
+        self.screen.blit(avatar_img, (center_x - avatar_img.get_width()/2,60))
+
+        # Desenha o texto, linha por linha
+        pos_y = center_y-40
+        for line in text_lines:
+            text_rect = line.get_rect(center=(center_x + 5, pos_y))
+            self.screen.blit(line, text_rect)
+            pos_y += 70
+
+        pygame.display.flip()
+        time.sleep(2.5)
+        
     def draw_game_state(self, game_state):
         # Draw current player info
         player = game_state.current_player()
@@ -146,7 +183,7 @@ class GameRenderer:
             self._draw_combat(game_state.current_combat, 750, 200)
         
         # Draw buttons based on game phase
-        self._draw_buttons(game_state.phase)
+        self._draw_buttons(game_state)
         
         # Draw message if any
         self._draw_message()
@@ -310,13 +347,29 @@ class GameRenderer:
             surface = font.render(text, True, WHITE)
             self.screen.blit(surface, (x + MONSTER_WIDTH + 20, 400 + i * 30))
 
-    def _draw_buttons(self, game_phase):
+    def _draw_buttons(self, game_state):
+        current_phase_buttons = BUTTONS_BY_GAME_PHASE[game_state.phase]
+
         for button_name, button_rect in self.buttons.items():
-            if button_name in BUTTONS_BY_GAME_PHASE[game_phase]:
+            # Verifica se o botão é relevante para a fase atual do jogo
+            if button_name not in current_phase_buttons:
+                button_rect.deactivate()
+                continue
+
+            # Caso seja a fase de combate, verifica as condições específicas
+            if game_state.phase == GamePhase.COMBAT:
+                combat_state = game_state.current_combat.get_combat_state()
+                combat_buttons = COMBAT_CONDITIONS.get(combat_state, [])
+
+                if button_name in combat_buttons:
+                    button_rect.activate()
+                    button_rect.draw(self.screen)
+                else:
+                    button_rect.deactivate()
+            else:
+                # Para fases que não são de combate
                 button_rect.activate()
                 button_rect.draw(self.screen)
-            else:
-                button_rect.deactivate()
 
     def set_message(self, message):
         self.message = message

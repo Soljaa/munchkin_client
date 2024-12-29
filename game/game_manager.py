@@ -2,6 +2,8 @@ import pygame
 from constants import *
 from game.game_state import GameState, GamePhase, EndGameException
 from ui.game_renderer import GameRenderer
+from game.deck import (Monster, CompositeEffect, PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect, NotPursueLevelEffect,
+                       LoseLevelBadStuff)
 
 
 def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/avatar1.png"):
@@ -49,6 +51,10 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
         # Render the gameboard
         renderer.draw_gameboard()
 
+        # Revive jogador morto
+        if game_state.current_player().level==0: # Se o jogador morreu
+            game_state.current_player().level_up() # Revive (dando +1 de nível, ficando com nível 1)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
@@ -88,8 +94,10 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 renderer.set_message(f"Combat started! Fighting {game_state.current_combat.monster.name}!")
                             else:
                                 # curse
-                                renderer.set_message("You found something else...")
+                                renderer.set_message("You found something else... You are Cursed")
+                                # show look for trouble ou loot
                     elif action == "run_away": # Se aperto para fugir...
+                        player_died = False
                         if game_state.current_combat: # ... e estou em combate
                             game_state.dice.roll() # Então rolo o dado 
                             renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
@@ -100,36 +108,77 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             else: # Se não consigo fugir (value<5)
                                 renderer.set_message(f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
                                 game_state.current_player().level_down() # Perco um nível
-                            game_state.play_charity_phase()
+                                if game_state.current_player().level==0: # Se o jogador estiver morto (logo após a perda do nível)
+                                    renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
+                                    # refazer toda essa parte de morte, ta dando respawn mas ta feio
+                                    dead_player = (game_state.current_player().name,
+                                                   game_state.current_player().avatar_img_dir)
+                                    game_state.players.remove(game_state.current_player())
+                                    game_state.add_player(dead_player[0], dead_player[1])
+                                    player_died = True
+                            renderer.set_message("Doing charity... Redistributing cards")
+                            game_state.play_charity_phase(player_died)
                             game_state.next_player()
                             curr_turn += 1
                             print("Turno:", curr_turn)
 
-                    elif action == "loot": # Se aperto por buscar encrenca
+                    elif action == "loot": # Se aperto por saquear
                         if game_state.phase == GamePhase.KICK_DOOR: # Acho que deve ser uma fase intermediária entre KICK_DOOR e LOOT_ROOM, caso sim, dps trocar
                             game_state.set_game_phase(GamePhase.LOOT_ROOM)
                             if game_state.phase == GamePhase.LOOT_ROOM: # "Possivelmente" redundante, pois já foi setado acima"
                                 game_state.loot()
+                                renderer.set_message("Doing charity... Redistributing cards")
                                 game_state.play_charity_phase()
+                                game_state.next_player()
+                                curr_turn += 1
+                                print("Turno:", curr_turn)
 
                     elif action == "finish_combat": # Se aperto para finalizar o combate...
                         if game_state.current_combat: #... e estou na fase de combate
                             try:
                                 game_state.resolve_combat() # Resolve o combate, aplicando as devidas bonificações ou penalizações
-                                game_state.play_charity_phase() 
+                                renderer.set_message("Doing charity... Redistributing cards")
+                                game_state.play_charity_phase()
+                                game_state.next_player()
+                                curr_turn += 1
+                                print("Turno:", curr_turn)
                             except EndGameException:
                                 # mostrar tela de vencedor
                                 print("Fim de jogo! Vencedor:", game_state.current_player().name)
                                 raise
                         game_state.next_player()
-                        curr_turn += 1
-                        print("Turno:", curr_turn)
+
+                    elif action == "look_for_trouble":
+                        # abre modal pro player escolher um monstro da mão, vou mocar com um monstro aleatorio mas
+                        # tem q fazer a lógica para ver se o cara tem monstro na mão e escolher o monstro mas precisa
+                        # melhorar o display de cartas primeiro, se nao tiver monstro, mostrar aviso e nao fazer
+                        # nada, so restando pra ele saquear
+                        game_state.set_game_phase(GamePhase.LOOK_FOR_TROUBLE)
+                        if game_state.phase == GamePhase.LOOK_FOR_TROUBLE:
+                            monster_selected = Monster(
+                                name="Wight Brothers",
+                                image="assets/door_cards/WightBrothers.png",
+                                level=16,
+                                treasure=4,
+                                effect=CompositeEffect(
+                                    PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect(2),
+                                    NotPursueLevelEffect(3)
+                                ),
+                                bad_stuff=LoseLevelBadStuff(1),
+                            )
+                            success = game_state.look_for_trouble(monster_selected)
+                            if success and game_state.current_combat:
+                                renderer.set_message(
+                                    f"Combat started! Fighting {game_state.current_combat.monster.name}!")
+
+
 
         # Draw current game state
         try:
             renderer.draw_game_state(game_state)
             pygame.display.flip()
         except Exception as e:
+            raise e
             print(f"Error during rendering: {e}")
 
         # Cap the frame rate

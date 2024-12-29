@@ -1,4 +1,6 @@
 from game.death import Death
+import random
+
 
 class Player:
     def __init__(self, name, avatar_img_dir):
@@ -84,3 +86,15 @@ class Player:
     #TODO
     def lose_equipped_headgear(self):
         pass
+
+    def shuffle_hand(self):
+        random.shuffle(self.hand)
+
+    def donate_cards(self, max_hand_size=5):  # retorna a lista de cartas para doação ou [] se tiver 5 cartas
+        hand_size = len(self.hand)
+        if hand_size > max_hand_size:
+            self.shuffle_hand()
+            donation_cards = [self.hand.pop() for _ in range(hand_size - max_hand_size)]
+            return donation_cards
+        return []
+

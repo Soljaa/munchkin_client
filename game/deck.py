@@ -1,5 +1,5 @@
 import random
-from game.card import Monster, Item, Race
+from game.card import Monster, Item, Race, Curse
 from game.death import Death
 from game.cards.monster_effect import *
 from game.cards.monster_bad_stuff import *
@@ -254,12 +254,18 @@ class DoorDeck(Deck):
             #Monster("Ghost", 5, 1, "Run away or lose a level"),
             #Monster("Giant Rat", 1, 1, "Lose your food items"),
         ]
+        # comment this to teste loot phase or look_for_trouble_phase
         print(f"Adding {len(monsters)} monsters to deck")
         for monster in monsters:
             self.add_card(monster)
 
         curses = [
-
+            Curse(name="Curse! Lose 1 Level",
+                  image="assets/door_cards/Curse!LoseALevel1.png",
+                  effect=LoseLevelBadStuff(1)),
+            Curse(name="Curse! Lose 2 Levels",
+                  image="assets/door_cards/Curse!LoseALevel2.png",
+                  effect=LoseLevelBadStuff(2))
         ]
 
         print(f"Adding {len(curses)} races to deck")
