@@ -1,14 +1,18 @@
 from PPlay.sprite import *
-from widgets.button.button import Button  # Importa a classe Button
+from ui.button import Button  # Importa a classe Button
 
 class ClickButton(Button):
-    def __init__(self, image_path, x, y, acao=None):  # Inicializa o botão
+    def __init__(self, image_path, x, y, width=None, height=None, acao=None):  # Inicializa o botão
         # Chama o construtor da classe base (Button) para inicializar o sprite e os parâmetros comuns
-        super().__init__(image_path, x, y, acao)
+        super().__init__(image_path, x, y, width, height, acao)
         
         # Atribuindo as variáveis específicas do ClickButton (Tudo isso pra fazer o movimento do clique)
         self.original_x = x
         self.original_y = y
+
+        if width and height:
+            self.sprite.resize(width, height)
+
         self.original_width = self.sprite.width  # Guarda o tamanho original do botão
         self.original_height = self.sprite.height
         self.hovered_width = self.original_width * 0.9 

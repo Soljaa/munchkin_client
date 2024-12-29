@@ -4,7 +4,7 @@ from PPlay.window import *
 from PPlay.sprite import *
 from PPlay.mouse import *
 from PPlay.gameimage import *
-from widgets.button.hover_button import HoverButton
+from ui.hover_button import HoverButton
 from ui.player_selection import PlayerSelection
 
 
@@ -14,7 +14,6 @@ class Menu:
         self.initialize_buttons()
         self.running = True
         self.fullscreen = False
-        self.reload_mouse = 1
 
     def initialize_window(self, width, height):
         """Inicializa a window e a imagem de fundo."""
@@ -31,20 +30,20 @@ class Menu:
             "play": HoverButton(
                 "assets/menu/jogar_button.png",
                 self.window.width/2, 
-                0.36*self.window.height, 
-                self.play
+                0.36*self.window.height,
+                acao=self.play,
             ),
             "options": HoverButton(
                 "assets/menu/opcoes_button.png",
                 self.window.width/2, 
                 0.49*self.window.height,
-                self.options
+                acao=self.options
             ),
             "exit": HoverButton(
                 "assets/menu/sair_button.png",
                 self.window.width/2, 
                 0.62*self.window.height,
-                self.quit
+                acao= self.quit
             )
         }
 
@@ -70,12 +69,7 @@ class Menu:
             self.bg.draw()  
             for button in self.buttons.values():
                 button.draw()
-                if self.mouse.is_over_object(button.sprite) and self.mouse.is_button_pressed(1) and self.reload_mouse <= 0:
-                    self.reload_mouse = 1
-                    button.acao()
-
-            if self.reload_mouse > 0:
-                self.reload_mouse -= 0.02
+                button.handle()
 
             self.window.update()
 
