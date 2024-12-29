@@ -108,7 +108,7 @@ class GameRenderer:
             player_sprite.draw()
 
     def draw_dice_animation(self, dice):
-        roll_time_seconds = 4  # Tempo total de animação do dado rolando em segundos
+        roll_time_seconds = 1.5  # Tempo total de animação do dado rolando em segundos
         elapsed_time = 0  # Variável para controlar o tempo de animação
         
         clock = pygame.time.Clock()
@@ -187,28 +187,51 @@ class GameRenderer:
 
     def _draw_hand(self, player, x, y):
         font = pygame.font.Font(None, 24)
-        # Draw hand title
         title = font.render("Your Hand:", True, WHITE)
         self.screen.blit(title, (x, y))
-        
-        # Draw cards in hand
+
+        # Constantes para o tamanho das cartas
+        CARD_WIDTH = 100
+        CARD_HEIGHT = 150
+        CARD_SPACING = 120  # Espaçamento entre as cartas
+
+        # Desenhar cartas na mão
         for i, card in enumerate(player.hand):
-            card_text = f"{card.name}"
+            # Carregar e redimensionar a imagem da carta
+            card_sprite = Sprite(card.image)
+            resized_image = pygame.transform.scale(card_sprite.image, (CARD_WIDTH, CARD_HEIGHT))
+            card_sprite.image = resized_image
+
+            # Posicionar e desenhar a carta
+            card_sprite.x = x + (i * CARD_SPACING)
+            card_sprite.y = y + 30
+            card_sprite.draw()
+
+            # Desenhar informações adicionais da carta
             if hasattr(card, 'bonus') and card.bonus:
-                card_text += f" (+{card.bonus})"
-            color = GREEN if isinstance(card, Item) and not card.equipped else WHITE
-            surface = font.render(card_text, True, color)
-            self.screen.blit(surface, (x + 10, y + 30 + i * 25))
-            
-        # Draw equipped items section
-        equipped_y = y + 30 + len(player.hand) * 25 + 20
+                bonus_text = font.render(f"+{card.bonus}", True,
+                                         GREEN if isinstance(card, Item) and not card.equipped else WHITE)
+                self.screen.blit(bonus_text, (card_sprite.x + 5, card_sprite.y + CARD_HEIGHT + 5))
+
+        # Desenhar itens equipados
+        equipped_y = y + CARD_HEIGHT + 60
         equipped_title = font.render("Equipped Items:", True, WHITE)
         self.screen.blit(equipped_title, (x, equipped_y))
-        
+
         for i, item in enumerate(player.equipped_items):
-            item_text = f"{item.name} (+{item.bonus})"
-            surface = font.render(item_text, True, WHITE)
-            self.screen.blit(surface, (x + 10, equipped_y + 30 + i * 25))
+            # Carregar e redimensionar a imagem do item equipado
+            item_sprite = Sprite(item.image)
+            resized_image = pygame.transform.scale(item_sprite.image, (CARD_WIDTH, CARD_HEIGHT))
+            item_sprite.image = resized_image
+
+            # Posicionar e desenhar o item
+            item_sprite.x = x + (i * CARD_SPACING)
+            item_sprite.y = equipped_y + 30
+            item_sprite.draw()
+
+            # Desenhar bônus do item
+            bonus_text = font.render(f"+{item.bonus}", True, WHITE)
+            self.screen.blit(bonus_text, (item_sprite.x + 5, item_sprite.y + CARD_HEIGHT + 5))
 
     def _draw_combat(self, combat, x, y):
         font = pygame.font.Font(None, 36)

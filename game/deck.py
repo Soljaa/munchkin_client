@@ -51,7 +51,7 @@ class DoorDeck(Deck):
             # 3,872 Orcs
             Monster(
                 name="3,872 Orcs",
-                image="../assets/door_cards/3872Orcs.png",
+                image="assets/door_cards/3872Orcs.png",
                 level=10,
                 treasure=3,
                 effect=IncreaseMonsterLevelEffect('Dwarf', 6),
@@ -60,7 +60,7 @@ class DoorDeck(Deck):
             # Squidzilla
             Monster(
                 name="Squidzilla", 
-                image="../assets/door_cards/Squidzilla.png", 
+                image="assets/door_cards/Squidzilla.png", 
                 level=18, 
                 treasure=4, 
                 effect=CompositeEffect(IncreaseMonsterLevelEffect('Elf', 4), NotPursueLevelEffect(4, exclude_race='Elf')), 
@@ -69,7 +69,7 @@ class DoorDeck(Deck):
             # Hairy Potter
             Monster(
                 name="Hairy Potter", 
-                image="../assets/door_cards/HairyPotter.png", 
+                image="assets/door_cards/HairyPotter.png", 
                 level=15, 
                 treasure=4, 
                 effect=CompositeEffect(IncreaseMonsterLevelEffect('Wizard', 4), IncreaseMonsterLevelEffect('Elf', -3), NotPursueLevelEffect(2)),
@@ -77,12 +77,12 @@ class DoorDeck(Deck):
             ),
 
             # Amazon #TODO
-            Monster(name="Amazon", image="../assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
+            Monster(name="Amazon", image="assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
             
             # Bigfoot
             Monster(
                 name="Bigfoot",
-                image="../assets/door_cards/Bigfoot.png", 
+                image="assets/door_cards/Bigfoot.png", 
                 level=12,
                 treasure=3,
                 effect= CompositeEffect(
@@ -94,7 +94,7 @@ class DoorDeck(Deck):
             #Bullrog
             Monster(
                 name= "Bullrog",
-                image= "../assets/door_cards/Bullrog.png",
+                image= "assets/door_cards/Bullrog.png",
                 level=18, 
                 treasure=5, 
                 effect= CompositeBadStuff(NotPursueLevelEffect(4)),
@@ -102,13 +102,13 @@ class DoorDeck(Deck):
             ),
             
             #Crabs
-            Monster("Crabs", "../assets/door_cards/Crabs.png", level=1, treasure=1, bad_stuff=None),
+            Monster("Crabs", "assets/door_cards/Crabs.png", level=1, treasure=1, bad_stuff=None),
             # Drooling Slime #TODO
-            Monster("Drooling Slime", "../assets/door_cards/DroolingSlime.png", 1, 1, "X"),
+            Monster("Drooling Slime", "assets/door_cards/DroolingSlime.png", 1, 1, "X"),
             
             #Face Sucker
             Monster(name= "Face Sucker",
-                    image= "../assets/door_cards/FaceSucker.png",
+                    image= "assets/door_cards/FaceSucker.png",
                     level= 8,
                     treasure= 2, 
                     effect= CompositeEffect(IncreaseMonsterLevelEffect("Elf", 6)),
@@ -119,27 +119,27 @@ class DoorDeck(Deck):
                 ),
             
             # Floating Nose #TODO
-            Monster("Floating Nose", "../assets/door_cards/FloatingNose.png", 10, 3, "X"),
+            Monster("Floating Nose", "assets/door_cards/FloatingNose.png", 10, 3, "X"),
             # Flying Frogs #TODO
-            Monster("Flying Frogs", "../assets/door_cards/FlyingFrogs.png", 2, 1, "X"),
+            Monster("Flying Frogs", "assets/door_cards/FlyingFrogs.png", 2, 1, "X"),
             # Gazebo #TODO
-            Monster("Gazebo", "../assets/door_cards/Gazebo.png", 8, 2, "X"),
+            Monster("Gazebo", "assets/door_cards/Gazebo.png", 8, 2, "X"),
             # Gelatinous Octahedron #TODO
-            Monster("Gelatinous Octahedron", "../assets/door_cards/Gazebo.png", 2, 1, "X"),
+            Monster("Gelatinous Octahedron", "assets/door_cards/Gazebo.png", 2, 1, "X"),
             # Ghoulfiends #TODO
-            Monster("Ghoulfiends", "../assets/door_cards/Ghoulfiends.png", 8, 2, "X"),
+            Monster("Ghoulfiends", "assets/door_cards/Ghoulfiends.png", 8, 2, "X"),
             # Harpies #TODO
-            Monster("Harpies", "../assets/door_cards/Harpies.png", 4, 2, "X"),
+            Monster("Harpies", "assets/door_cards/Harpies.png", 4, 2, "X"),
             # Hippogriff #TODO
-            Monster("Hippogriff", "../assets/door_cards/Hippogriff.png", 16, 4, "X"),
+            Monster("Hippogriff", "assets/door_cards/Hippogriff.png", 16, 4, "X"),
             # Insurance Salesman #TODO
-            Monster("Insurance Salesman", "../assets/door_cards/InsuranceSalesman.png", 14, 4, "X"),
+            Monster("Insurance Salesman", "assets/door_cards/InsuranceSalesman.png", 14, 4, "X"),
 
             
             # King Tut
             Monster(
                 name= "King Tut",
-                image= "../assets/door_cards/KingTut.png",
+                image= "assets/door_cards/KingTut.png",
                 level= 16,
                 treasure= 4,
                 effect=CompositeEffect(
@@ -150,16 +150,16 @@ class DoorDeck(Deck):
             ),
             
             #Lame Goblin #TODO
-            Monster("Lame Goblin", "../assets/door_cards/LameGoblin.png", 1, 1, "X"),
+            Monster("Lame Goblin", "assets/door_cards/LameGoblin.png", 1, 1, "X"),
             #Large Angry Chicken #TODO
-            Monster("Large Angry Chicken", "../assets/door_cards/LargeAngryChicken.png", 2, 1, "X"),
+            Monster("Large Angry Chicken", "assets/door_cards/LargeAngryChicken.png", 2, 1, "X"),
             #Lawyers #TODO
-            Monster("Lawyers", "../assets/door_cards/Lawyers.png", 6, 2, "X"),
+            Monster("Lawyers", "assets/door_cards/Lawyers.png", 6, 2, "X"),
             
             #Leperchaun
             Monster(
                 name= "Leperchaun",
-                image= "../assets/door_cards/Leperchaun.png",
+                image= "assets/door_cards/Leperchaun.png",
                 level= 4,
                 treasure= 2,
                 effect= CompositeEffect(IncreaseMonsterLevelEffect("Elf", 5)),
@@ -168,7 +168,7 @@ class DoorDeck(Deck):
             #Maul Rat
             Monster(
                 name= "Maul Rat",
-                    image="../assets/door_cards/MaulRat.png",
+                    image="assets/door_cards/MaulRat.png",
                     level= 1,
                     treasure= 1,
                     effect= CompositeEffect(IncreaseMonsterLevelEffect("Cleric", 3)),
@@ -176,18 +176,18 @@ class DoorDeck(Deck):
                 ),
             
             #Mr. Bones #TODO
-            Monster("Mr. Bones", "../assets/door_cards/MrBones.png", 2, 1, "X"), # TODO: Ele é undead
+            Monster("Mr. Bones", "assets/door_cards/MrBones.png", 2, 1, "X"), # TODO: Ele é undead
             # Net Troll #TODO
-            Monster("Net Troll", "../assets/door_cards/NetTroll.png", 10, 3, "X"),
+            Monster("Net Troll", "assets/door_cards/NetTroll.png", 10, 3, "X"),
             #Pit Bull #TODO
-            Monster("Pit Bull", "../assets/door_cards/PitBull.png", 2, 1, "X"),
+            Monster("Pit Bull", "assets/door_cards/PitBull.png", 2, 1, "X"),
             # Platycore #TODO
-            Monster("Platycore", "../assets/door_cards/Platycore.png", 6, 2, "X"),
+            Monster("Platycore", "assets/door_cards/Platycore.png", 6, 2, "X"),
             
             # Plutonium Dragon
             Monster(
                 name= "Plutonium Dragon",
-                image= "../assets/door_cards/PlutoniumDragon.png",
+                image= "assets/door_cards/PlutoniumDragon.png",
                 level= 20,
                 treasure= 5, 
                 effect= CompositeEffect(NotPursueLevelEffect(5)),
@@ -196,7 +196,7 @@ class DoorDeck(Deck):
             # Potted Plant
             Monster(
                 name= "Potted Plant",
-                image= "../assets/door_cards/PottedPlant.png",
+                image= "assets/door_cards/PottedPlant.png",
                 level= 1,
                 treasure= 1, 
                 effect= CompositeEffect(MoreTreasureEffect(1, "Elf")),
@@ -204,20 +204,20 @@ class DoorDeck(Deck):
             ),
 
             # Pukachu #TODO
-            Monster("Pukachu", "../assets/door_cards/Pukachu.png", 6, 2, "X"),
+            Monster("Pukachu", "assets/door_cards/Pukachu.png", 6, 2, "X"),
             # Shrieking Geek #TODO
-            Monster("Shrieking Geek", "../assets/door_cards/ShriekingGeek.png", 6, 2, "X"),
+            Monster("Shrieking Geek", "assets/door_cards/ShriekingGeek.png", 6, 2, "X"),
             # Snails on Speed #TODO
-            Monster("Snails on Speed", "../assets/door_cards/SnailsOnSpeed.png", 4, 2, "X"),
+            Monster("Snails on Speed", "assets/door_cards/SnailsOnSpeed.png", 4, 2, "X"),
             # Stoned Golem #TODO
-            Monster("Stoned Golem", "../assets/door_cards/StonedGolem.png", 14, 4, "X"),
+            Monster("Stoned Golem", "assets/door_cards/StonedGolem.png", 14, 4, "X"),
             # Tongue Demon #TODO
-            Monster("Tongue Demon", "../assets/door_cards/TongueDemon.png", 12, 3, "X"), 
+            Monster("Tongue Demon", "assets/door_cards/TongueDemon.png", 12, 3, "X"), 
             
             # Undead Horse
             Monster(
                 name="Undead Horse",
-                image= "../assets/door_cards/UndeadHorse.png", 
+                image= "assets/door_cards/UndeadHorse.png", 
                 level=4, 
                 treasure=2,
                 effect=CompositeEffect(IncreaseMonsterLevelEffect("Dwarves", 5)),
@@ -225,14 +225,14 @@ class DoorDeck(Deck):
             ), # TODO: Ele é undead
             
             # Unspeakably Awful Indescriblabe Horror #TODO
-            Monster("Unspeakably Awful Indescriblabe Horror", "../assets/door_cards/UnspeakablyAwfulIndescriblabeHorror.png", 14, 4, "X"),
+            Monster("Unspeakably Awful Indescribable Horror", "assets/door_cards/UnspeakablyAwfulIndescribableHorror.png", 14, 4, "X"),
             # Wannabe Vampire #TODO
-            Monster("Wannabe Vampire", "../assets/door_cards/WannabeVampire.png", 12, 3, "X"),
+            Monster("Wannabe Vampire", "assets/door_cards/WannabeVampire.png", 12, 3, "X"),
             # Wight Brothers
             
             Monster(
                 name= "Wight Brothers",
-                image= "../assets/door_cards/WightBrothers.png",
+                image= "assets/door_cards/WightBrothers.png",
                 level= 16,
                 treasure= 4,
                 effect= CompositeEffect(
@@ -281,38 +281,38 @@ class TreasureDeck(Deck):
         items = [
             # TODO: Poção entra como item? 
             # TODO: Observar o "slot" e "size".
-            Item("Bad-Ass Bandana", "../assets/treasure_cards/BadAssBandana.png", 3, 400, "Headgear"),
-            Item("Boots of Butt-Kicking", "../assets/treasure_cards/BootOfButtKicking.png", 2, 400, "Footgear"),
-            Item("Bow with Ribbons", "../assets/treasure_cards/BowWithRibbons.png", 4, 800, "2 Hands"),
-            Item("Broad Sword", "../assets/treasure_cards/BroadSword.png", 3, 400, "1 Hand"),
-            Item("Buckler of Swashing", "../assets/treasure_cards/BucklerOfSwashing.png", 2, 400, "1 Hand"),
-            Item("Chainsaw of Bloody Dismemberment", "../assets/treasure_cards/ChainsawOfBloodyDismemberment.png", 3, 600, "2 Hands" , "Big"),
-            Item("Cheese Grater of Peace", "../assets/treasure_cards/CheeseGraterOfPeace.png", 3, 400, "1 Hand"),
-            Item("Cloak of Obscurity", "../assets/treasure_cards/CloakOfObscurity.png", 4, 600),
-            Item("Dagger of Treachery", "../assets/treasure_cards/DaggerOfTreachery.png", 3, 400, "1 Hand"),
-            Item("Eleven-Foot Pole", "../assets/treasure_cards/ElevenFootPole.png", 1, 200, "2 Hands"),
-            Item("Flaming Armor", "../assets/treasure_cards/FlamingArmor.png", 2, 400, "Armor"),
-            Item("Gentlemen´s Club", "../assets/treasure_cards/GentlemensClub.png", 3, 400, "1 Hand"),
-            Item("Hammer of Kneecapping", "../assets/treasure_cards/HammerOfKneecapping.png", 4, 600, "1 Hand"),
-            Item("Helm of Courage", "../assets/treasure_cards/HelmOfCourage.png", 1, 200, "Headgear"),
-            Item("Horny Helmet", "../assets/treasure_cards/HornyHelmet.png", "1, mas se for elfo é 3 ", 600, "Headgear"), #TODO bonus. Como fazer?
-            Item("Huge Rock", "../assets/treasure_cards/HugeRock.png", 3, None, "2 Hands", "Big"),
-            Item("Leather Armor", "../assets/treasure_cards/LeatherArmor.png", 1, 200, "Armor"),
-            Item("Limburger and Anchovy Sandwich", "../assets/treasure_cards/LimburgerAndAnchovySandwich.png", 3, 400),
-            Item("Mace of Sharpness", "../assets/treasure_cards/MaceOfSharpness.png", 4, 600, "1 Hand"),
-            Item("Mithril Armor", "../assets/treasure_cards/MithrilArmor.png", 3, 600, "Armor", "Big"),
-            Item("Pantyhose of Giant Strength", "../assets/treasure_cards/PantyhoseOfGiantStrength.png", 3, 600),
-            Item("Pointy Hat of Power", "../assets/treasure_cards/PointyHatofPower.png", 3, 400, "Headgear"),
-            Item("Rapier of Unfairness", "../assets/treasure_cards/RapierOfUnfairness.png", 3, 600, "1 Hand"),
-            Item("Rat on a Stick", "../assets/treasure_cards/RatOnAStick.png", 1, None, "1 Hand"),
-            Item("Short Wide Armor", "../assets/treasure_cards/ShortWideArmor.png", 3, 400, "Armor"),
-            Item("Singing & Dancing Sword", "../assets/treasure_cards/SingingAndDancingSword.png", 2, 400),
-            Item("Slimy Armor", "../assets/treasure_cards/SlimyArmor.png", 1, 200, "Armor"),
-            Item("Sneaky Bastard Sword", "../assets/treasure_cards/SneakyBastardSword.png", 2, 400, "1 Hand"),
-            Item("Spiky Knees", "../assets/treasure_cards/SpikyKnees.png", 1, 200),
-            Item("Staff of Napalm", "../assets/treasure_cards/StaffOfNapalm.png", 5, 800),
-            Item("Stepladder", "../assets/treasure_cards/Stepladder.png", 3, 400),
-            Item("Swiss Army Polearm", "../assets/treasure_cards/SwissArmyPolearm.png", 4, 600),               
+            Item("Bad-Ass Bandana", "assets/treasure_cards/BadAssBandana.png", 3, 400, "Headgear"),
+            Item("Boots of Butt-Kicking", "assets/treasure_cards/BootOfButtKicking.png", 2, 400, "Footgear"),
+            Item("Bow with Ribbons", "assets/treasure_cards/BowWithRibbons.png", 4, 800, "2 Hands"),
+            Item("Broad Sword", "assets/treasure_cards/BroadSword.png", 3, 400, "1 Hand"),
+            Item("Buckler of Swashing", "assets/treasure_cards/BucklerOfSwashing.png", 2, 400, "1 Hand"),
+            Item("Chainsaw of Bloody Dismemberment", "assets/treasure_cards/ChainsawOfBloodyDismemberment.png", 3, 600, "2 Hands" , "Big"),
+            Item("Cheese Grater of Peace", "assets/treasure_cards/CheeseGraterOfPeace.png", 3, 400, "1 Hand"),
+            Item("Cloak of Obscurity", "assets/treasure_cards/CloakOfObscurity.png", 4, 600),
+            Item("Dagger of Treachery", "assets/treasure_cards/DaggerOfTreachery.png", 3, 400, "1 Hand"),
+            Item("Eleven-Foot Pole", "assets/treasure_cards/ElevenFootPole.png", 1, 200, "2 Hands"),
+            Item("Flaming Armor", "assets/treasure_cards/FlamingArmor.png", 2, 400, "Armor"),
+            Item("Gentlemen´s Club", "assets/treasure_cards/GentlemensClub.png", 3, 400, "1 Hand"),
+            Item("Hammer of Kneecapping", "assets/treasure_cards/HammerOfKneecapping.png", 4, 600, "1 Hand"),
+            Item("Helm of Courage", "assets/treasure_cards/HelmOfCourage.png", 1, 200, "Headgear"),
+            Item("Horny Helmet", "assets/treasure_cards/HornyHelmet.png", "1, mas se for elfo é 3 ", 600, "Headgear"), #TODO bonus. Como fazer?
+            Item("Huge Rock", "assets/treasure_cards/HugeRock.png", 3, None, "2 Hands", "Big"),
+            Item("Leather Armor", "assets/treasure_cards/LeatherArmor.png", 1, 200, "Armor"),
+            Item("Limburger and Anchovy Sandwich", "assets/treasure_cards/LimburgerAndAnchovySandwich.png", 3, 400),
+            Item("Mace of Sharpness", "assets/treasure_cards/MaceOfSharpness.png", 4, 600, "1 Hand"),
+            Item("Mithril Armor", "assets/treasure_cards/MithrilArmor.png", 3, 600, "Armor", "Big"),
+            Item("Pantyhose of Giant Strength", "assets/treasure_cards/PantyhoseOfGiantStrength.png", 3, 600),
+            Item("Pointy Hat of Power", "assets/treasure_cards/PointyHatofPower.png", 3, 400, "Headgear"),
+            Item("Rapier of Unfairness", "assets/treasure_cards/RapierOfUnfairness.png", 3, 600, "1 Hand"),
+            Item("Rat on a Stick", "assets/treasure_cards/RatOnAStick.png", 1, None, "1 Hand"),
+            Item("Short Wide Armor", "assets/treasure_cards/ShortWideArmor.png", 3, 400, "Armor"),
+            Item("Singing & Dancing Sword", "assets/treasure_cards/SingingAndDancingSword.png", 2, 400),
+            Item("Slimy Armor", "assets/treasure_cards/SlimyArmor.png", 1, 200, "Armor"),
+            Item("Sneaky Bastard Sword", "assets/treasure_cards/SneakyBastardSword.png", 2, 400, "1 Hand"),
+            Item("Spiky Knees", "assets/treasure_cards/SpikyKnees.png", 1, 200),
+            Item("Staff of Napalm", "assets/treasure_cards/StaffOfNapalm.png", 5, 800),
+            Item("Stepladder", "assets/treasure_cards/Stepladder.png", 3, 400),
+            Item("Swiss Army Polearm", "assets/treasure_cards/SwissArmyPolearm.png", 4, 600),               
 
             #Item("Sword of Slashing", "image", 3, 400),
             #Item("Shield of Protection", 2, 300),
@@ -332,10 +332,10 @@ class TreasureDeck(Deck):
         # Add races with special abilities
         races = [
             # TODO: Faltam cartas de raça (com imagem das raças)
-            Race("Elf", "image", "Can sell items for levels"),
-            Race("Dwarf", "image", "Can carry extra items"),
-            Race("Halfling", "image", "Can sell one item per turn"),
-            Race("Human", "image", "Get bonus on running away"),
+            #Race("Elf", "image", "Can sell items for levels"),
+            #Race("Dwarf", "image", "Can carry extra items"),
+            #Race("Halfling", "image", "Can sell one item per turn"),
+            #Race("Human", "image", "Get bonus on running away"),
         ]
 
         print(f"Adding {len(races)} races to deck")
