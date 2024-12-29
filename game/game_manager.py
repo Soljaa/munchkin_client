@@ -147,8 +147,6 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 print("Fim de jogo! Vencedor:", game_state.current_player().name)
                                 raise
                         game_state.next_player()
-                        curr_turn += 1
-                        print("Turno:", curr_turn)
 
                     elif action == "look_for_trouble":
                         # abre modal pro player escolher um monstro da mão, vou mocar com um monstro aleatorio mas
