@@ -20,14 +20,21 @@ class EndGameException(Exception):
 
 
 class GameState:
+    _instance = None
+
     def __init__(self):
+        GameState._instance = self
         self.door_deck = DoorDeck()
         self.treasure_deck = TreasureDeck()
-        self.players = []
+        self.players: list[Player] = []
         self.dice = Dice()
         self.current_player_index = 0
         self.phase = GamePhase.SETUP
         self.current_combat = None
+
+    @staticmethod
+    def get_instance():
+        return GameState._instance
 
     def add_player(self, name, img_dir):
         player = Player(name, img_dir)
@@ -39,6 +46,11 @@ class GameState:
 
     def next_player(self):
         self.current_player_index = (self.current_player_index + 1) % len(self.players)
+
+        for curse in self.current_player().curse: # As curses recebidas são aplicadas no início do turno
+            curse.apply_effect(self.current_player())
+        self.current_player().clean_curses()
+
         self.phase = GamePhase.SETUP
         self.set_combat(None)
 
@@ -68,9 +80,8 @@ class GameState:
             print(f"Combat initialized with monster: {card.name}")
         # handle curse
         elif card.card_type == CardType.CURSE:
+            card.apply_effect(self.current_player())
             print(card.name)
-            # TODO: aplicar efeito da curse
-            card.effect.apply(self.current_player())
         return True
 
     def resolve_combat(self):

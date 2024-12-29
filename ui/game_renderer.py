@@ -177,11 +177,11 @@ class GameRenderer:
         self._draw_phase_indicator(game_state.phase, 570, 105)
         
         # Draw hand
-        self._draw_hand(player, 430, 230)
+        self._draw_hand(player, 430, 190)
         
         # Draw current combat if any
         if game_state.current_combat:
-            self._draw_combat(game_state.current_combat, 750, 200)
+            self._draw_combat(game_state.current_combat, 620, 180)
         
         # Draw buttons based on game phase
         self._draw_buttons(game_state)
@@ -223,19 +223,27 @@ class GameRenderer:
 
     def _draw_hand(self, player, x, y):
         font = pygame.font.Font(None, 24)
-        CARD_WIDTH = 120  # Increased for better clickability
-        CARD_HEIGHT = 36
-        CARD_SPACING = 140  # Increased to prevent overlapping
 
-        # Store card positions for click detection
-        self.card_positions = []  # Add this as instance variable in __init__
+        # Dimensões para cartas na mão
+        HAND_CARD_WIDTH = 90
+        HAND_CARD_HEIGHT = 135
+
+        # Dimensões para cartas equipadas (1/3 do tamanho)
+        EQUIPPED_CARD_WIDTH = HAND_CARD_WIDTH // 3
+        EQUIPPED_CARD_HEIGHT = HAND_CARD_HEIGHT // 3
+
+        # Ajuste do espaçamento baseado no novo tamanho
+        HAND_CARD_SPACING = HAND_CARD_WIDTH + 20  # 20px de margem entre cartas
+        EQUIPPED_CARD_SPACING = EQUIPPED_CARD_WIDTH + 10  # 10px de margem entre cartas equipadas
+
+        self.card_positions = []
 
         # Equipped Items Section
         slots = {
             "head": {"title": "Head:", "items": [], "y_offset": 0},
-            "armor": {"title": "Armor:", "items": [], "y_offset": CARD_HEIGHT + 60},
-            "hands": {"title": "Hands:", "items": [], "y_offset": 2 * (CARD_HEIGHT + 60)},
-            "feet": {"title": "Feet:", "items": [], "y_offset": 3 * (CARD_HEIGHT + 60)},
+            "armor": {"title": "Armor:", "items": [], "y_offset": EQUIPPED_CARD_HEIGHT + 40},
+            "hands": {"title": "Hands:", "items": [], "y_offset": 2 * (EQUIPPED_CARD_HEIGHT + 40)},
+            "feet": {"title": "Feet:", "items": [], "y_offset": 3 * (EQUIPPED_CARD_HEIGHT + 40)},
         }
 
         # Organize items by slots
@@ -243,64 +251,69 @@ class GameRenderer:
             if item.slot in slots:
                 slots[item.slot]["items"].append(item)
 
-        # Draw items by slot and store equipped item positions
+        # Draw items by slot
         for slot_info in slots.values():
             slot_title = font.render(slot_info["title"], True, WHITE)
             slot_y = y + slot_info["y_offset"]
             self.screen.blit(slot_title, (x, slot_y - 25))
 
             for i, item in enumerate(slot_info["items"]):
-                item_sprite = Sprite(item.image)
-                resized_image = pygame.transform.scale(item_sprite.image, (CARD_WIDTH, CARD_HEIGHT))
-                item_sprite.image = resized_image
+                try:
+                    item_sprite = Sprite(item.image)
+                    item_sprite.image = pygame.transform.scale(item_sprite.image,
+                                                               (EQUIPPED_CARD_WIDTH, EQUIPPED_CARD_HEIGHT))
 
-                item_x = x + (i * CARD_SPACING)
-                item_y = slot_y
-                item_sprite.x = item_x
-                item_sprite.y = item_y
-                item_sprite.draw()
+                    item_x = x + (i * EQUIPPED_CARD_SPACING)
+                    item_y = slot_y
+                    item_sprite.x = item_x
+                    item_sprite.y = item_y
+                    item_sprite.draw()
 
-                # Store equipped item position and data
-                self.card_positions.append({
-                    'rect': pygame.Rect(item_x, item_y, CARD_WIDTH, CARD_HEIGHT),
-                    'type': 'equipped',
-                    'index': len(self.card_positions),
-                    'item': item
-                })
+                    self.card_positions.append({
+                        'rect': pygame.Rect(item_x, item_y, EQUIPPED_CARD_WIDTH, EQUIPPED_CARD_HEIGHT),
+                        'type': 'equipped',
+                        'index': len(self.card_positions),
+                        'item': item
+                    })
 
-                bonus_text = font.render(f"+{item.bonus}", True, WHITE)
-                self.screen.blit(bonus_text, (item_x + 5, item_y + CARD_HEIGHT + 5))
+                    # Draw bonus text if item has bonus
+                    if hasattr(item, 'bonus'):
+                        bonus_text = font.render(f"+{item.bonus}", True, WHITE)
+                        self.screen.blit(bonus_text, (item_x + 5, item_y + EQUIPPED_CARD_HEIGHT + 5))
+                except Exception as e:
+                    print(f"Error drawing equipped item: {e}")
 
         # Draw hand cards
-        hand_y = y + 4 * (CARD_HEIGHT + 60)
+        hand_y = y + 4 * (EQUIPPED_CARD_HEIGHT + 40)
         hand_title = font.render("Your Hand:", True, WHITE)
         self.screen.blit(hand_title, (x, hand_y))
 
         hand_cards_y = hand_y + 30
         for i, card in enumerate(player.hand):
-            card_sprite = Sprite(card.image)
-            resized_image = pygame.transform.scale(card_sprite.image, (CARD_WIDTH, CARD_HEIGHT))
-            card_sprite.image = resized_image
+            try:
+                card_sprite = Sprite(card.image)
+                card_sprite.image = pygame.transform.scale(card_sprite.image, (HAND_CARD_WIDTH, HAND_CARD_HEIGHT))
 
-            card_x = x + (i * CARD_SPACING)
-            card_y = hand_cards_y
-            card_sprite.x = card_x
-            card_sprite.y = card_y
-            card_sprite.draw()
+                card_x = x + (i * HAND_CARD_SPACING)
+                card_y = hand_cards_y
+                card_sprite.x = card_x
+                card_sprite.y = card_y
+                card_sprite.draw()
 
-            # Store hand card position and data
-            if isinstance(card, Item):
-                self.card_positions.append({
-                    'rect': pygame.Rect(card_x, card_y, CARD_WIDTH, CARD_HEIGHT),
-                    'type': 'hand',
-                    'index': i,
-                    'item': card
-                })
+                if isinstance(card, Item):
+                    self.card_positions.append({
+                        'rect': pygame.Rect(card_x, card_y, HAND_CARD_WIDTH, HAND_CARD_HEIGHT),
+                        'type': 'hand',
+                        'index': i,
+                        'item': card
+                    })
 
-            if hasattr(card, 'bonus') and card.bonus:
-                bonus_text = font.render(f"+{card.bonus}", True,
-                                         GREEN if isinstance(card, Item) and not card.equipped else WHITE)
-                self.screen.blit(bonus_text, (card_x + 5, card_y + CARD_HEIGHT + 5))
+                if hasattr(card, 'bonus') and card.bonus:
+                    bonus_text = font.render(f"+{card.bonus}", True,
+                                             GREEN if isinstance(card, Item) and not card.equipped else WHITE)
+                    self.screen.blit(bonus_text, (card_x + 5, card_y + HAND_CARD_HEIGHT + 5))
+            except Exception as e:
+                print(f"Error drawing hand card: {e}")
 
     def _draw_combat(self, combat, x, y):
         font = pygame.font.Font(None, 36)
@@ -380,7 +393,7 @@ class GameRenderer:
         if self.message and self.message_timer > 0:
             font = pygame.font.Font(None, 32)
             text = font.render(self.message, True, BLACK)
-            text_rect = text.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 200))
+            text_rect = text.get_rect(center=(850, 520))
             pygame.draw.rect(self.screen, WHITE, (text_rect.x - 10, text_rect.y - 5, text_rect.width + 20, text_rect.height + 10))
             self.screen.blit(text, text_rect)
             self.message_timer -= 1

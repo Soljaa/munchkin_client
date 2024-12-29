@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from game.death import Death
-from game.dice import Dice
 
 class MonsterEffect(ABC):
     @abstractmethod
