@@ -57,33 +57,6 @@ class GameState:
     def current_player(self):
         return self.players[self.current_player_index]
 
-    def kick_down_door(self):
-        print(f"Attempting to kick door in phase: {self.phase}")
-        if self.phase != GamePhase.KICK_DOOR:
-            print("Wrong phase for kicking door")
-            return False
-
-        card = self.door_deck.draw()
-        if not card:
-            print("No card drawn, reshuffling deck")
-            self.door_deck.shuffle()
-            card = self.door_deck.draw()
-            if not card:
-                print("Still no card after shuffle")
-                return False
-
-        print(f"Drew card: {card.name} of type {card.card_type}")
-        if card.card_type == CardType.MONSTER:
-            print("Monster encountered! Initializing combat...")
-            self.set_combat(Combat(self.current_player(), card))
-            self.set_game_phase(GamePhase.COMBAT) # Caso tenha saído um monstro, seta a fase de combate
-            print(f"Combat initialized with monster: {card.name}")
-        # handle curse
-        elif card.card_type == CardType.CURSE:
-            card.apply_effect(self.current_player())
-            print(card.name)
-        return True
-
     def resolve_combat(self):
         if not self.current_combat:
             return False
@@ -109,32 +82,6 @@ class GameState:
         except EndGameException:
             raise
 
-    def loot(self):
-        print(f"Attempting to loot the room in phase: {self.phase}")
-        if self.phase != GamePhase.LOOT_ROOM:
-            print("Wrong phase for looting the room")
-            return False
-        
-        card = self.treasure_deck.draw()
-        if not card:
-            print("No card drawn, reshuffling deck")
-            self.door_deck.shuffle()
-            card = self.door_deck.draw()
-            if not card:
-                print("Still no card after shuffle")
-                return False
-        
-        self.current_player().hand.append(card)
-
-        return True
-
-    def look_for_trouble(self, monster):
-        print("Monster selected! Initializing combat...")
-        self.set_combat(Combat(self.current_player(), monster))
-        self.set_game_phase(GamePhase.COMBAT)
-        print(f"Combat initialized with monster: {monster.name}")
-        return True
-
     def set_game_phase(self, new_phase):
         if new_phase in [phase for phase in GamePhase]:
             self.phase = new_phase
@@ -144,39 +91,3 @@ class GameState:
         self.current_combat = combat
         if self.current_combat:
             print("New combat:", self.current_combat.__dict__)
-
-    def play_charity_phase(self, died=False):
-        # add delay or animation
-        self.set_game_phase(GamePhase.CHARITY)
-        donation_cards = self.players[self.current_player_index].hand \
-            if died else self.players[self.current_player_index].donate_cards()
-        lowest_cards_players = self.get_lowest_cards_players()
-        if len(donation_cards) == 1:
-            lowest_cards_players[0].hand += donation_cards
-            return True # Acho que tem que ter
-        distribution = distribute_cards(lowest_cards_players, donation_cards)
-        for player, card_array in distribution.items():
-            player.hand += card_array
-        return True
-
-    def get_lowest_cards_players(self):
-        curr_player = self.players[self.current_player_index]
-        players_minus_current = [player for player in self.players if player != curr_player]
-        min_cards = min(len(player.hand) for player in players_minus_current)
-        return [player for player in players_minus_current if len(player.hand) == min_cards]
-
-
-# donation helper function move to utils
-def distribute_cards(players, cards):
-    if not players or not cards:
-        return {player: [] for player in players}  # Retorna dicionário vazio para cada jogador
-
-    distribution = {player: [] for player in players}
-    num_players = len(players)
-
-    for i, card in enumerate(cards):
-        # Atribuir a carta ao jogador correspondente
-        current_player = players[i % num_players]
-        distribution[current_player].append(card)
-
-    return distribution

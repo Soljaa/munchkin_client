@@ -1,5 +1,9 @@
 import pygame
 from constants import *
+from game.game_phases.charity_phase import CharityPhase
+from game.game_phases.kick_door_phase import KickDoorFase
+from game.game_phases.look_for_trouble_phase import LookForTroublePhase
+from game.game_phases.loot_room_phase import LootRoomPhase
 from game.game_state import GameState, GamePhase, EndGameException
 from ui.game_renderer import GameRenderer
 from game.cards.monsters import (Monster, CompositeEffect, PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect, NotPursueLevelEffect,
@@ -62,12 +66,12 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
             # Handle button clicks and card interactions
             action = renderer.handle_event(event, game_state)
             if action:
-                # item management
+                # item management É COMO SE FOSSE A FASE DE **PREPARAÇÃO**
                 if isinstance(action, tuple): # Se o clique for em um item
                     action_type, index = action
                     current_player = game_state.current_player()
 
-                    if game_state.phase == GamePhase.SETUP:                      
+                    if game_state.phase == GamePhase.SETUP:
                         if action_type == "equip_item":
                             if index < len(current_player.hand): # "Possívelmente" redundante (o index obrigatoriamente já vai ser menor que o tamanho da mão, haja vista que é gerado a partir de uma seleção dessa propria mão)
                                 card = current_player.hand[index]
@@ -86,17 +90,12 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                     print(f"Current phase: {game_state.phase}")
                     print(f"Current player: {game_state.current_player().name}")
 
-                    if action == "kick_door": # Se aperto para chutar porta
+                    if action == "kick_door": # Se aperto para chutar porta # KICK DOOR
                         game_state.set_game_phase(GamePhase.KICK_DOOR)
                         if game_state.phase == GamePhase.KICK_DOOR: # "Possívelmente" redundante (pois essa fase acaba de ser setada acima)
-                            success = game_state.kick_down_door() # True ou False para se retirou uma carta com sucesso
-                            if success and game_state.current_combat: # Se tirou carta com sucesso e estamos na fase de combate (fase de combate é setada em "game_state.kick_down_door()" caso tenha retirado um monstro)
-                                renderer.set_message(f"Combat started! Fighting {game_state.current_combat.monster.name}!")
-                            else:
-                                # curse
-                                renderer.set_message("You found something else... You are Cursed")
-                                # show look for trouble ou loot
-                    elif action == "run_away": # Se aperto para fugir...
+                            kick_door_phase = KickDoorFase(game_state)
+                            kick_door_phase.run()
+                    elif action == "run_away": # Se aperto para fugir... # RUN AWAY
                         player_died = False
                         if game_state.current_combat: # ... e estou em combate
                             game_state.dice.roll() # Então rolo o dado 
@@ -117,19 +116,24 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                     #game_state.add_player(dead_player[0], dead_player[1])
                                     player_died = True
                             renderer.set_message("Doing charity... Redistributing cards")
-                            game_state.play_charity_phase(player_died)
+                            charity_phase = CharityPhase(game_state)
+                            charity_phase.run(player_died)
                             game_state.next_player()
                             curr_turn += 1
                             print("Turno:", curr_turn)
 
-                    elif action == "loot": # Se aperto por saquear
+                    elif action == "loot": # Se aperto por saquear # LOOT
                         if game_state.phase == GamePhase.KICK_DOOR: # Acho que deve ser uma fase intermediária entre KICK_DOOR e LOOT_ROOM, caso sim, dps trocar
                             game_state.set_game_phase(GamePhase.LOOT_ROOM)
                             if game_state.phase == GamePhase.LOOT_ROOM: # "Possivelmente" redundante, pois já foi setado acima"
-                                game_state.loot()
-                                renderer.set_message("Doing charity... Redistributing cards")
-                                game_state.play_charity_phase()
+                                loot_room_phase = LootRoomPhase(game_state)
+                                loot_room_phase.run()
+                                print("Doing charity... Redistributing cards")
+                                charity_phase = CharityPhase(game_state)
+                                charity_phase.run(player_died)
+                                # Passa para o próximo jogador
                                 game_state.next_player()
+                                print(f"Turno concluído. Próximo jogador: {game_state.current_player().name}")
                                 curr_turn += 1
                                 print("Turno:", curr_turn)
 
@@ -138,7 +142,8 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             try:
                                 game_state.resolve_combat() # Resolve o combate, aplicando as devidas bonificações ou penalizações
                                 renderer.set_message("Doing charity... Redistributing cards")
-                                game_state.play_charity_phase()
+                                charity_phase = CharityPhase(game_state)
+                                charity_phase.run()
                                 game_state.next_player()
                                 curr_turn += 1
                                 print("Turno:", curr_turn)
@@ -148,28 +153,13 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 raise
                         #game_state.next_player()
 
-                    elif action == "look_for_trouble":
+                    elif action == "look_for_trouble": #LOOK FOR TROUBLE
                         # abre modal pro player escolher um monstro da mão, vou mocar com um monstro aleatorio mas
                         # tem q fazer a lógica para ver se o cara tem monstro na mão e escolher o monstro mas precisa
                         # melhorar o display de cartas primeiro, se nao tiver monstro, mostrar aviso e nao fazer
                         # nada, so restando pra ele saquear
-                        game_state.set_game_phase(GamePhase.LOOK_FOR_TROUBLE)
-                        if game_state.phase == GamePhase.LOOK_FOR_TROUBLE:
-                            monster_selected = Monster(
-                                name="Wight Brothers",
-                                image="assets/door_cards/WightBrothers.png",
-                                level=16,
-                                treasure=4,
-                                effect=CompositeEffect(
-                                    PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect(2),
-                                    NotPursueLevelEffect(3)
-                                ),
-                                bad_stuff=LoseLevelBadStuff(1),
-                            )
-                            success = game_state.look_for_trouble(monster_selected)
-                            if success and game_state.current_combat:
-                                renderer.set_message(
-                                    f"Combat started! Fighting {game_state.current_combat.monster.name}!")
+                        look_for_trouble_phase = LookForTroublePhase(game_state)
+                        look_for_trouble_phase.run()
 
 
 
