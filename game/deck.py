@@ -87,7 +87,8 @@ class TreasureDeck(Deck):
             Item("Mace of Sharpness", "assets/treasure_cards/MaceOfSharpness.png", 4, 600, "hands"),
             Item("Mithril Armor", "assets/treasure_cards/MithrilArmor.png", 3, 600, "armor", "Big"),
             Item("Pantyhose of Giant Strength", "assets/treasure_cards/PantyhoseOfGiantStrength.png", 3, 600),
-            Item("Pointy Hat of Power", "assets/treasure_cards/PointyHatofPower.png", 3, 400, "head"),
+            # TODO: Falta png
+            # Item("Pointy Hat of Power", "assets/treasure_cards/PointyHatofPower.png", 3, 400, "head"),
             Item("Rapier of Unfairness", "assets/treasure_cards/RapierOfUnfairness.png", 3, 600, "hands"),
             Item("Rat on a Stick", "assets/treasure_cards/RatOnAStick.png", 1, None, "hands"),
             Item("Short Wide Armor", "assets/treasure_cards/ShortWideArmor.png", 3, 400, "armor"),
