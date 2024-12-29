@@ -67,10 +67,9 @@ class GameState:
             self.set_game_phase(GamePhase.COMBAT) # Caso tenha saído um monstro, seta a fase de combate
             print(f"Combat initialized with monster: {card.name}")
         # handle curse
-        else:
-            print("Non-monster card drawn, adding to hand")
-            self.current_player().hand.append(card)
-            #self.set_game_phase(GamePhase.LOOK_FOR_TROUBLE) # TODO Achei interessante remover, pois, ao não sair um monstro o player tem DUAS opções: look_for_trouble ou loot
+        elif card.card_type == CardType.CURSE:
+            print(card.name)
+            # TODO: aplicar efeito da curse
         return True
 
     def resolve_combat(self):
@@ -89,12 +88,12 @@ class GameState:
                         self.current_player().hand.append(card) # Coloca ela na mão do player
             else: # Se perdeu combate
                 # Handle bad stuff
-                if "level" in result['bad_stuff'].lower():
-                    self.current_player().level_down()
+                if result['bad_stuff'] and result['bad_stuff'] is str:
+                    if "level" in result['bad_stuff'].lower():
+                        self.current_player().level_down()
             print(result['message'])
 
             self.current_combat = None
-            #self.play_charity_phase() Passei para o game_manager
         except EndGameException:
             raise
 
@@ -104,7 +103,7 @@ class GameState:
             print("Wrong phase for looting the room")
             return False
         
-        card = self.door_deck.draw()
+        card = self.treasure_deck.draw()
         if not card:
             print("No card drawn, reshuffling deck")
             self.door_deck.shuffle()
@@ -113,8 +112,7 @@ class GameState:
                 print("Still no card after shuffle")
                 return False
         
-        self.current_player.hand.append(card)
-        self.set_game_phase(GamePhase.CHARITY)
+        self.current_player().hand.append(card)
 
         return True
 
@@ -129,4 +127,35 @@ class GameState:
             print("New combat:", self.current_combat.__dict__)
 
     def play_charity_phase(self):
-        pass
+        # add delay or animation
+        self.set_game_phase(GamePhase.CHARITY)
+        donation_cards = self.players[self.current_player_index].donate_cards()
+        lowest_cards_players = self.get_lowest_cards_players()
+        if len(donation_cards) == 1:
+            lowest_cards_players[0].hand += donation_cards
+        distribution = distribute_cards(lowest_cards_players, donation_cards)
+        for player, card_array in distribution.items():
+            player.hand += card_array
+        return True
+
+    def get_lowest_cards_players(self):
+        curr_player = self.players[self.current_player_index]
+        players_minus_current = [player for player in self.players if player != curr_player]
+        min_cards = min(len(player.hand) for player in players_minus_current)
+        return [player for player in players_minus_current if len(player.hand) == min_cards]
+
+
+# donation helper function
+def distribute_cards(players, cards):
+    if not players or not cards:
+        return {player: [] for player in players}  # Retorna dicionário vazio para cada jogador
+
+    distribution = {player: [] for player in players}
+    num_players = len(players)
+
+    for i, card in enumerate(cards):
+        # Atribuir a carta ao jogador correspondente
+        current_player = players[i % num_players]
+        distribution[current_player].append(card)
+
+    return distribution

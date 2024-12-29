@@ -92,7 +92,8 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 renderer.set_message(f"Combat started! Fighting {game_state.current_combat.monster.name}!")
                             else:
                                 # curse
-                                renderer.set_message("You found something else...")
+                                renderer.set_message("You found something else... You are Cursed")
+                                # show look for trouble ou loot
                     elif action == "run_away": # Se aperto para fugir...
                         if game_state.current_combat: # ... e estou em combate
                             game_state.dice.roll() # Então rolo o dado 
@@ -106,23 +107,32 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 game_state.current_player().level_down() # Perco um nível
                                 if game_state.current_player().level==0: # Se o jogador estiver morto (logo após a perda do nível)
                                     renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
+                            renderer.set_message("Doing charity... Redistributing cards")
                             game_state.play_charity_phase()
                             game_state.next_player()
                             curr_turn += 1
                             print("Turno:", curr_turn)
 
-                    elif action == "loot": # Se aperto por buscar encrenca
+                    elif action == "loot": # Se aperto por saquear
                         if game_state.phase == GamePhase.KICK_DOOR: # Acho que deve ser uma fase intermediária entre KICK_DOOR e LOOT_ROOM, caso sim, dps trocar
                             game_state.set_game_phase(GamePhase.LOOT_ROOM)
                             if game_state.phase == GamePhase.LOOT_ROOM: # "Possivelmente" redundante, pois já foi setado acima"
                                 game_state.loot()
+                                renderer.set_message("Doing charity... Redistributing cards")
                                 game_state.play_charity_phase()
+                                game_state.next_player()
+                                curr_turn += 1
+                                print("Turno:", curr_turn)
 
                     elif action == "finish_combat": # Se aperto para finalizar o combate...
                         if game_state.current_combat: #... e estou na fase de combate
                             try:
                                 game_state.resolve_combat() # Resolve o combate, aplicando as devidas bonificações ou penalizações
-                                game_state.play_charity_phase() 
+                                renderer.set_message("Doing charity... Redistributing cards")
+                                game_state.play_charity_phase()
+                                game_state.next_player()
+                                curr_turn += 1
+                                print("Turno:", curr_turn)
                             except EndGameException:
                                 # mostrar tela de vencedor
                                 print("Fim de jogo! Vencedor:", game_state.current_player().name)
@@ -136,6 +146,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
             renderer.draw_game_state(game_state)
             pygame.display.flip()
         except Exception as e:
+            raise e
             print(f"Error during rendering: {e}")
 
         # Cap the frame rate

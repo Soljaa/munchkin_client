@@ -1,3 +1,11 @@
+from enum import Enum, auto
+
+
+class CombatStates(Enum):
+    WINNING = auto()
+    LOSING = auto()
+
+
 class Combat:
     def __init__(self, player, monster):
         self.player = player
@@ -55,3 +63,13 @@ class Combat:
             'bad_stuff': self.monster.bad_stuff,
             'message': f"Defeat! {self.monster.bad_stuff}"
         }
+
+    def get_combat_state(self):
+        player_strength = self.get_player_strength()
+        monster_strength = self.get_monster_strength()
+
+        if player_strength > monster_strength:
+            return CombatStates.WINNING
+
+        return CombatStates.LOSING
+

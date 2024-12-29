@@ -5,6 +5,7 @@ from game.card import Item
 from ui.hover_button import HoverButton
 from game.dice import Dice
 from game.game_state import GamePhase
+from game.combat import CombatStates
 
 
 BUTTONS_BY_GAME_PHASE = {
@@ -14,6 +15,11 @@ BUTTONS_BY_GAME_PHASE = {
     GamePhase.LOOT_ROOM: [],
     GamePhase.COMBAT: ["run_away", "use_card", "ask_for_help", "finish_combat"],
     GamePhase.CHARITY: [],
+}
+
+COMBAT_CONDITIONS = {
+    CombatStates.WINNING: ["use_card", "finish_combat"],
+    CombatStates.LOSING: ["run_away", "use_card", "ask_for_help"]
 }
 
 
@@ -177,7 +183,7 @@ class GameRenderer:
             self._draw_combat(game_state.current_combat, 800, 200)
         
         # Draw buttons based on game phase
-        self._draw_buttons(game_state.phase)
+        self._draw_buttons(game_state)
         
         # Draw message if any
         self._draw_message()
@@ -314,13 +320,29 @@ class GameRenderer:
                 helper_power = font.render(f"{helper.name}: +{power}", True, GREEN)
                 self.screen.blit(helper_power, (x + 20, y + 210 + i * 25))
 
-    def _draw_buttons(self, game_phase):
+    def _draw_buttons(self, game_state):
+        current_phase_buttons = BUTTONS_BY_GAME_PHASE[game_state.phase]
+
         for button_name, button_rect in self.buttons.items():
-            if button_name in BUTTONS_BY_GAME_PHASE[game_phase]:
+            # Verifica se o botão é relevante para a fase atual do jogo
+            if button_name not in current_phase_buttons:
+                button_rect.deactivate()
+                continue
+
+            # Caso seja a fase de combate, verifica as condições específicas
+            if game_state.phase == GamePhase.COMBAT:
+                combat_state = game_state.current_combat.get_combat_state()
+                combat_buttons = COMBAT_CONDITIONS.get(combat_state, [])
+
+                if button_name in combat_buttons:
+                    button_rect.activate()
+                    button_rect.draw(self.screen)
+                else:
+                    button_rect.deactivate()
+            else:
+                # Para fases que não são de combate
                 button_rect.activate()
                 button_rect.draw(self.screen)
-            else:
-                button_rect.deactivate()
 
     def set_message(self, message):
         self.message = message

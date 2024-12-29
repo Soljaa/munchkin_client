@@ -1,5 +1,5 @@
 import random
-from game.card import Monster, Item, Race
+from game.card import Monster, Item, Race, Curse
 from game.death import Death
 from game.cards.monster_effect import *
 from game.cards.monster_bad_stuff import *
@@ -67,14 +67,14 @@ class DoorDeck(Deck):
                 bad_stuff=DeathBadStuff()
             ),
             # Hairy Potter
-            Monster(
-                name="Hairy Potter", 
-                image="assets/door_cards/HairyPotter.png", 
-                level=15, 
-                treasure=4, 
-                effect=CompositeEffect(IncreaseMonsterLevelEffect('Wizard', 4), IncreaseMonsterLevelEffect('Elf', -3), NotPursueLevelEffect(2)),
-                bad_stuff=LoseAllClassItemsBadStuff()
-            ),
+            # Monster(
+            #     name="Hairy Potter",
+            #     image="assets/door_cards/HairyPotter.png",
+            #     level=15,
+            #     treasure=4,
+            #     effect=CompositeEffect(IncreaseMonsterLevelEffect('Wizard', 4), IncreaseMonsterLevelEffect('Elf', -3), NotPursueLevelEffect(2)),
+            #     bad_stuff=LoseAllClassItemsBadStuff()
+            # ),
 
             # Amazon #TODO
             Monster(name="Amazon", image="assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
@@ -259,7 +259,12 @@ class DoorDeck(Deck):
             self.add_card(monster)
 
         curses = [
-
+            Curse(name="Curse! Lose 1 Level",
+                  image="assets/door_cards/Curse!LoseALevel1.png",
+                  effect=LoseLevelBadStuff(1)),
+            Curse(name="Curse! Lose 2 Levels",
+                  image="assets/door_cards/Curse!LoseALevel2.png",
+                  effect=LoseLevelBadStuff(2))
         ]
 
         print(f"Adding {len(curses)} races to deck")
