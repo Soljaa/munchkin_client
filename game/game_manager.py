@@ -111,10 +111,10 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 if game_state.current_player().level==0: # Se o jogador estiver morto (logo após a perda do nível)
                                     renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
                                     # refazer toda essa parte de morte, ta dando respawn mas ta feio
-                                    dead_player = (game_state.current_player().name,
-                                                   game_state.current_player().avatar_img_dir)
-                                    game_state.players.remove(game_state.current_player())
-                                    game_state.add_player(dead_player[0], dead_player[1])
+                                    #dead_player = (game_state.current_player().name,
+                                                   #game_state.current_player().avatar_img_dir)
+                                    #game_state.players.remove(game_state.current_player())
+                                    #game_state.add_player(dead_player[0], dead_player[1])
                                     player_died = True
                             renderer.set_message("Doing charity... Redistributing cards")
                             game_state.play_charity_phase(player_died)
@@ -146,7 +146,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 # mostrar tela de vencedor
                                 print("Fim de jogo! Vencedor:", game_state.current_player().name)
                                 raise
-                        game_state.next_player()
+                        #game_state.next_player()
 
                     elif action == "look_for_trouble":
                         # abre modal pro player escolher um monstro da mão, vou mocar com um monstro aleatorio mas

@@ -56,6 +56,7 @@ class GameRenderer:
     def draw_avatars(self, players):
         # Configuração de posição inicial e incrementos para cada nível dos avatares
         level_positions = {
+            0: {"base_x": 150, "base_y": 620, "increment_x": 30, "increment_y": 30},
             1: {"base_x": 230, "base_y": 550, "increment_x": 35, "increment_y": 0},
             2: {"base_x": 305, "base_y": 430, "increment_x": 25, "increment_y": 35},
             3: {"base_x": 175, "base_y": 440, "increment_x": 40, "increment_y": 25},
