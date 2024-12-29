@@ -65,11 +65,9 @@ class Player:
     def lose_items(self, qty):
         pass
 
-    # TODO: Fazer
+    # TODO
     def lose_all_class_items(self):
         pass
-        # self.equipped_items = []
-        # self.hand = []
 
     #TODO
     def lose_all_class_cards(self):
