@@ -51,7 +51,7 @@ class Item(Card):
         self.bonus = bonus  # Bônus concedido pelo item
         self.value = value  # Valor do item em ouro
         self.slot = slot    # Slot onde o item é usado (cabeça, pé, etc)
-        self.slot = size    # Size é o tamanho (grande, etc) Default é small porque o jogo diz que todo item que não é grande é pequeno
+        self.size = size    # Size é o tamanho (grande, etc) Default é small porque o jogo diz que todo item que não é grande é pequeno
         self.class_required = None
         self.class_prohibited = None
 
