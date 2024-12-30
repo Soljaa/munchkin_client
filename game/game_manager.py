@@ -62,10 +62,11 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
             # Handle button clicks and card interactions
             action = renderer.handle_event(event, game_state)
             if action:
+                current_player = game_state.current_player()
+
                 # item management
                 if isinstance(action, tuple): # Se o clique for em um item
                     action_type, index = action
-                    current_player = game_state.current_player()
 
                     if game_state.phase == GamePhase.SETUP:                      
                         if action_type == "equip_item":
@@ -84,36 +85,38 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                 else: # Se o clique não for em um item (for em um botão)
                     print(f"\nButton clicked: {action}")
                     print(f"Current phase: {game_state.phase}")
-                    print(f"Current player: {game_state.current_player().name}")
+                    print(f"Current player: {current_player.name}")
+                    current_combat = game_state.current_combat
 
                     if action == "kick_door": # Se aperto para chutar porta
                         game_state.set_game_phase(GamePhase.KICK_DOOR)
                         if game_state.phase == GamePhase.KICK_DOOR: # "Possívelmente" redundante (pois essa fase acaba de ser setada acima)
                             success = game_state.kick_down_door() # True ou False para se retirou uma carta com sucesso
-                            if success and game_state.current_combat: # Se tirou carta com sucesso e estamos na fase de combate (fase de combate é setada em "game_state.kick_down_door()" caso tenha retirado um monstro)
-                                renderer.set_message(f"Combat started! Fighting {game_state.current_combat.monster.name}!")
+                            if success and current_combat: # Se tirou carta com sucesso e estamos na fase de combate (fase de combate é setada em "game_state.kick_down_door()" caso tenha retirado um monstro)
+                                renderer.set_message(f"Combat started! Fighting {current_combat.monster.name}!")
                             else:
                                 # curse
                                 renderer.set_message("You found something else... You are Cursed")
                                 # show look for trouble ou loot
                     elif action == "run_away": # Se aperto para fugir...
                         player_died = False
-                        if game_state.current_combat: # ... e estou em combate
+                        if current_combat: # ... e estou em combate
                             game_state.dice.roll() # Então rolo o dado 
                             renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
                             value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
-                            if game_state.current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
+                            if current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
                                 renderer.set_message("Successfully ran away!")
                                 game_state.set_combat(None)
                             else: # Se não consigo fugir (value<5)
-                                renderer.set_message(f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
-                                game_state.current_player().level_down() # Perco um nível
-                                if game_state.current_player().level==0: # Se o jogador estiver morto (logo após a perda do nível)
-                                    renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
+                                renderer.set_message(f"Failed to run away! {current_combat.monster.bad_stuff}")
+                                current_combat.monster.apply_bad_stuff(current_player)
+
+                                if current_player.level <= 0: # Se o jogador estiver morto
+                                    renderer.draw_alert_player_die(current_player) # Desenha imagem do aviso da death do jogador
                                     # refazer toda essa parte de morte, ta dando respawn mas ta feio
-                                    #dead_player = (game_state.current_player().name,
-                                                   #game_state.current_player().avatar_img_dir)
-                                    #game_state.players.remove(game_state.current_player())
+                                    #dead_player = (current_player().name,
+                                                   #current_player().avatar_img_dir)
+                                    #game_state.players.remove(current_player())
                                     #game_state.add_player(dead_player[0], dead_player[1])
                                     player_died = True
                             renderer.set_message("Doing charity... Redistributing cards")
@@ -134,7 +137,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 print("Turno:", curr_turn)
 
                     elif action == "finish_combat": # Se aperto para finalizar o combate...
-                        if game_state.current_combat: #... e estou na fase de combate
+                        if current_combat: #... e estou na fase de combate
                             try:
                                 game_state.resolve_combat() # Resolve o combate, aplicando as devidas bonificações ou penalizações
                                 renderer.set_message("Doing charity... Redistributing cards")
@@ -167,9 +170,9 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 bad_stuff=LoseLevelBadStuff(1),
                             )
                             success = game_state.look_for_trouble(monster_selected)
-                            if success and game_state.current_combat:
+                            if success and current_combat:
                                 renderer.set_message(
-                                    f"Combat started! Fighting {game_state.current_combat.monster.name}!")
+                                    f"Combat started! Fighting {current_combat.monster.name}!")
 
 
 

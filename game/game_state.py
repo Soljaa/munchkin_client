@@ -46,11 +46,6 @@ class GameState:
 
     def next_player(self):
         self.current_player_index = (self.current_player_index + 1) % len(self.players)
-
-        for curse in self.current_player().curse: # As curses recebidas são aplicadas no início do turno
-            curse.apply_effect(self.current_player())
-        self.current_player().clean_curses()
-
         self.phase = GamePhase.SETUP
         self.set_combat(None)
 

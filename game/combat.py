@@ -20,10 +20,11 @@ class Combat:
         helper_strength = sum(helper.calculate_combat_strength() for helper in self.helpers)
         return base_strength + helper_strength + self.player_modifiers
 
+    def apply_monster_effect(self):
+        self.monster.apply_effect(self.player)
+
     def get_monster_strength(self):
-        # Monster gets stronger with more players
-        num_players = 1 + len(self.helpers)
-        return (self.monster.level * (1 if num_players == 1 else 1.5)) + self.monster_modifiers
+        return self.monster.level + self.monster_modifiers
 
     def add_helper(self, player):
         if player not in self.helpers and player != self.player:
@@ -52,6 +53,7 @@ class Combat:
     def resolve_combat(self):
         player_strength = self.get_player_strength()
         monster_strength = self.get_monster_strength()
+        self.apply_monster_effect()
 
         if player_strength > monster_strength:
             return True, {
