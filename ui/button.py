@@ -2,16 +2,17 @@ import pygame
 from PPlay.sprite import *
 from PPlay.window import Window
 
+
 class Button:
     def __init__(self, image_path, x, y, width=None, height=None, acao=None):
+
         self.sprite = Sprite(image_path)
         self.sprite.x = x - self.sprite.width/2
         self.sprite.y = y - self.sprite.height/2
         self.acao = acao
 
         if width and height:
-            resized_image = pygame.transform.scale(self.sprite.image, (width, height))
-            self.sprite.image = resized_image
+            self.sprite.resize(width, height)
 
         self.is_hovered = False
         self.is_active = True

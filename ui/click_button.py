@@ -10,9 +10,6 @@ class ClickButton(Button):
         self.original_x = x
         self.original_y = y
 
-        if width and height:
-            self.sprite.resize(width, height)
-
         self.original_width = self.sprite.width  # Guarda o tamanho original do botão
         self.original_height = self.sprite.height
         self.hovered_width = self.original_width * 0.9 
