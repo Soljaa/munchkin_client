@@ -29,7 +29,7 @@ class NotPursueLevelEffect(MonsterEffect):
 
     def apply(self, monster, player) -> None:
         if self.exclude_race and player.race == self.exclude_race:
-                return
+            return
         if player.level <= self.level_limit:
             monster.pursue = False
 
@@ -47,8 +47,6 @@ class MoreTreasureEffect(MonsterEffect):
         self.include_race = include_race
 
     def apply(self, monster, player) -> None:
-        monster.treasure = monster.base_treasure
-
         if not self.include_race:
             monster.treasure += 1
         elif self.include_race and player.race==self.include_race:

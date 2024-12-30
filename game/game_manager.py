@@ -73,7 +73,8 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                 else: # Se o clique não for em um item (for em um botão)
                     print(f"\nButton clicked: {action}")
                     print(f"Current phase: {game_state.phase}")
-                    print(f"Current player: {game_state.current_player().name}")
+                    print(f"Current player: {current_player.name}")
+                    current_combat = game_state.current_combat
 
                     if action == "kick_door": # Se aperto para chutar porta # KICK DOOR
                         if game_state.phase == GamePhase.SETUP:
@@ -86,13 +87,14 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             game_state.dice.roll() # Então rolo o dado 
                             renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
                             value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
-                            if game_state.current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
+                            if current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
                                 renderer.set_message("Successfully ran away!")
                                 game_state.set_combat(None)
                             else: # Se não consigo fugir (value<5)
                                 renderer.set_message(f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
-                                game_state.current_player().level_down() # Perco um nível
-                                if game_state.current_player().level==0: # Se o jogador estiver morto (logo após a perda do nível)
+                                current_combat.monster.apply_bad_stuff(game_state.current_player())
+
+                                if game_state.current_player().level <= 0: # Se o jogador estiver morto (logo após a perda do nível)
                                     renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
                                     player_died = True
                             charity_phase = CharityPhase(game_state, renderer)

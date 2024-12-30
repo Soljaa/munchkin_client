@@ -1,6 +1,5 @@
 import random
-from game.card import Item, Race, Curse
-from game.cards.curse_effect import ApplyDiscardCardBadStuffCurseEffect
+from game.card import Item
 from game.cards.curses import CURSES
 from game.cards.monsters import MONSTERS
 
@@ -47,13 +46,39 @@ class DoorDeck(Deck):
         for monster in MONSTERS:
             self.add_card(monster)
 
-        print(f"Adding {len(CURSES)} races to deck")
+        print(f"Adding {len(CURSES)} curses to deck")
         for curse in CURSES:
             self.add_card(curse)
+
+        races = [
+            # TODO: Faltam cartas de raça (com imagem das raças)
+            #Race("Elf", "image", "Can sell items for levels"),
+            #Race("Dwarf", "image", "Can carry extra items"),
+            #Race("Halfling", "image", "Can sell one item per turn"),
+            #Race("Human", "image", "Get bonus on running away"),
+        ]
+        print(f"Adding {len(races)} races to deck")
+        for race in races:
+            self.add_card(race)
+
+        classes = [
+            # TODO: Faltam cartas de classe (com imagem das classes)
+        ]
+        print(f"Adding {len(classes)} classes to deck")
+        for class_ in classes:
+            self.add_card(class_)
+
+        door_buffs = [
+            # TODO: Buffs
+        ]
+        print(f"Adding {len(door_buffs)} door buffs to deck")
+        for buff in door_buffs:
+            self.add_card(buff)
 
         print(f"Door deck initialized with {len(self.cards)} cards")
         self.shuffle()
         print("Door deck shuffled")
+
 
 class TreasureDeck(Deck):
     def __init__(self):
@@ -64,7 +89,7 @@ class TreasureDeck(Deck):
         print("Initializing Treasure Deck...")
         # Add various items with different bonuses and values
         items = [
-            # TODO: Poção entra como item? 
+            # TODO: Poção entra como item?
             # TODO: Observar o "slot" e "size".
             Item("Bad-Ass Bandana", "assets/treasure_cards/BadAssBandana.png", 3, 400, "head"),
             Item("Boots of Butt-Kicking", "assets/treasure_cards/BootOfButtKicking.png", 2, 400, "feet"),
@@ -115,18 +140,12 @@ class TreasureDeck(Deck):
         for item in items:
             self.add_card(item)
 
-        # Add races with special abilities
-        races = [
-            # TODO: Faltam cartas de raça (com imagem das raças)
-            #Race("Elf", "image", "Can sell items for levels"),
-            #Race("Dwarf", "image", "Can carry extra items"),
-            #Race("Halfling", "image", "Can sell one item per turn"),
-            #Race("Human", "image", "Get bonus on running away"),
+        treasure_buffs = [
+            # TODO: Buffs
         ]
-
-        print(f"Adding {len(races)} races to deck")
-        for race in races:
-            self.add_card(race)
+        print(f"Adding {len(treasure_buffs)} treasure buffs to deck")
+        for buff in treasure_buffs:
+            self.add_card(buff)
 
         print(f"Treasure deck initialized with {len(self.cards)} cards")
         self.shuffle()
