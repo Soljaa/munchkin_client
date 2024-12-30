@@ -34,14 +34,18 @@ class OrcsBadStuff(MonsterBadStuff):
             player.level_down(roll)
 
 class LoseItemsBadStuff(MonsterBadStuff):
-    def __init__(self, qty: int):
+    def __init__(self, qty=None): # Se qty = None, remove todos
         self.qty = qty
-    def apply(self, player) -> None:
-        player.lose_items(self.qty)
 
-class LoseAllClassItemsBadStuff(MonsterBadStuff):
     def apply(self, player) -> None:
-        player.lose_all_class_items()
+        player.remove_equipped_items(self.qty)
+
+class LoseHandCardsBadStuff(MonsterBadStuff):
+    def __init__(self, qty=None): # Se qty = None, remove todos
+        self.qty = qty
+
+    def apply(self, player) -> None:
+        player.remove_hand_cards(self.qty)
 
 class LoseLevelBadStuff(MonsterBadStuff):
     def __init__(self, level_loss: int):
@@ -50,13 +54,15 @@ class LoseLevelBadStuff(MonsterBadStuff):
     def apply(self, player) -> None:
         player.level_down(self.level_loss)
 
-class LoseAllItemsBadStuff(MonsterBadStuff):
-    def apply(self, player) -> None:
-        player.lose_all_items()
+class LoseEquippedItemBadStuff(MonsterBadStuff):
+    def __init__(self, item_type: str):
+        self.item_type = item_type
 
-class LoseTheEquippedHeadgearBadStuff(MonsterBadStuff):
     def apply(self, player) -> None:
-        player.lose_equipped_headgear() 
+        player.remove_equipped_item_type(self.item_type) 
     
+class LoseAllClassItemsBadStuff(MonsterBadStuff):
+    def apply(self, player) -> None:
+        player.lose_all_equipped_class_items()
 
 # TODO: Continuar com os outros bad stuffs

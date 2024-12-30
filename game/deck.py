@@ -47,13 +47,32 @@ class DoorDeck(Deck):
         for monster in MONSTERS:
             self.add_card(monster)
 
-        print(f"Adding {len(CURSES)} races to deck")
+        print(f"Adding {len(CURSES)} curses to deck")
         for curse in CURSES:
             self.add_card(curse)
+
+        races = [
+            # TODO: Faltam cartas de raça (com imagem das raças)
+            #Race("Elf", "image", "Can sell items for levels"),
+            #Race("Dwarf", "image", "Can carry extra items"),
+            #Race("Halfling", "image", "Can sell one item per turn"),
+            #Race("Human", "image", "Get bonus on running away"),
+        ]
+        print(f"Adding {len(races)} races to deck")
+        for race in races:
+            self.add_card(race)
+
+        classes = [
+            # TODO: Faltam cartas de classe (com imagem das classes)
+        ]
+        print(f"Adding {len(classes)} classes to deck")
+        for class_ in classes:
+            self.add_card(class_)
 
         print(f"Door deck initialized with {len(self.cards)} cards")
         self.shuffle()
         print("Door deck shuffled")
+
 
 class TreasureDeck(Deck):
     def __init__(self):
@@ -114,19 +133,6 @@ class TreasureDeck(Deck):
         print(f"Adding {len(items)} items to deck")
         for item in items:
             self.add_card(item)
-
-        # Add races with special abilities
-        races = [
-            # TODO: Faltam cartas de raça (com imagem das raças)
-            #Race("Elf", "image", "Can sell items for levels"),
-            #Race("Dwarf", "image", "Can carry extra items"),
-            #Race("Halfling", "image", "Can sell one item per turn"),
-            #Race("Human", "image", "Get bonus on running away"),
-        ]
-
-        print(f"Adding {len(races)} races to deck")
-        for race in races:
-            self.add_card(race)
 
         print(f"Treasure deck initialized with {len(self.cards)} cards")
         self.shuffle()

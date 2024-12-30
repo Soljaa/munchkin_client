@@ -46,12 +46,25 @@ class Player:
         if card:
             self.hand.append(card)
 
-    # TODO: deve por na pilha de descarte? acredito que as cartas estão sendo perdidas
+    def add_to_discard_pile(self, card):
+        from game.game_state import GameState
+        game_state = GameState.get_instance()
+
+        door_deck = game_state.door_deck
+        treasure_deck = game_state.treasure_deck
+
+        if card.card_type == CardType.DOOR_BUFF or card.card_type == CardType.CURSE or card.card_type == CardType.MONSTER or card.card_type == CardType.RACE or card.card_type == CardType.CLASS:
+            door_deck.discard_pile.append(card)
+        if card.card_type == CardType.TREASURE_BUFF or card.card_type == CardType.ITEM:
+            treasure_deck.discard_pile.append(card)
+
     def play_card(self, card):
         # TODO: para CURSE, abrir opção para escolher qual alvo
         # if card.card_type == CardType.CURSE:
         #     target_player = open_target_menu()
         #     card.apply_effect(target_player)
+
+        self.add_to_discard_pile(card)
 
         if card in self.hand:
             self.hand.remove(card)
@@ -67,13 +80,62 @@ class Player:
         if self.level < 1:
             Death(self).apply()
 
-    #TODO
-    def lose_items(self, qty):
-        pass
+    def replace_class(self, card):
+        self.remove_class()
+        self.class_ = card
 
-    # TODO
-    def lose_all_class_items(self):
-        pass
+    def remove_class(self):
+        self.add_to_discard_pile(self.class_)
+        self.class_ = None
+    
+    def remove_hand_card(self, card):
+        self.add_to_discard_pile(card)
+        self.hand.remove(card)
+
+    def lose_all_hand_cards(self):
+        for card in self.hand:
+            self.remove_hand_card(card)
+
+    def remove_equipped_items(self, quantity=None):
+        if quantity:
+            random.shuffle(self.equipped_items)
+            for item in self.equipped_items[:quantity]:
+                item.equipped = False
+                self.add_to_discard_pile(item)
+            self.equipped_items = self.equipped_items[quantity:]
+        else:
+            for item in self.equipped_items:
+                item.equipped = False
+                self.add_to_discard_pile(item)
+            self.equipped_items.clear()
+
+    def remove_hand_cards(self, quantity=None):
+        if quantity:
+            random.shuffle(self.hand)
+            for card in self.hand[:quantity]:
+                self.add_to_discard_pile(card)
+            self.hand = self.hand[quantity:]
+        else:
+            for card in self.hand:
+                self.add_to_discard_pile(card)
+            self.hand.clear()
+
+    def lose_all_equipped_class_items(self):
+        items_to_remove = [item for item in self.equipped_items 
+                          if item.class_required == self.class_]
+        
+        for item in items_to_remove:
+            item.equipped = False
+            self.add_to_discard_pile(item)
+            self.equipped_items.remove(item)
+
+    def remove_equipped_item_type(self, item_type: str):
+        items_to_remove = [item for item in self.equipped_items if item.slot == item_type]
+        
+        for item in items_to_remove:
+            item.equipped = False
+            self.add_to_discard_pile(item)
+            self.equipped_items.remove(item)
 
     #TODO
     def lose_all_class_cards(self):
@@ -81,14 +143,6 @@ class Player:
 
     #TODO
     def lose_all_race_cards(self):
-        pass
-
-    #TODO
-    def lose_all_items(self):
-        pass
-
-    #TODO
-    def lose_equipped_headgear(self):
         pass
 
     def shuffle_hand(self):

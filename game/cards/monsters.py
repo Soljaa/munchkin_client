@@ -46,7 +46,7 @@ MONSTERS = [
                 IncreaseMonsterLevelEffect("Dwarf", 3),
                 IncreaseMonsterLevelEffect("Halfling", 3),
             ),
-            bad_stuff=LoseTheEquippedHeadgearBadStuff,
+            bad_stuff=LoseEquippedItemBadStuff('headgear'),
         ),
         #Bullrog
         Monster(
@@ -70,7 +70,7 @@ MONSTERS = [
                 treasure= 2, 
                 effect=CompositeEffect(IncreaseMonsterLevelEffect("Elf", 6)),
                 bad_stuff=CompositeBadStuff(
-                    LoseTheEquippedHeadgearBadStuff(),
+                    LoseEquippedItemBadStuff('headgear'),
                     LoseLevelBadStuff(1),
                 ),
             ),
@@ -102,7 +102,10 @@ MONSTERS = [
                 NotPursueLevelEffect(3), 
                 PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect(2)
             ),
-            bad_stuff=LoseAllItemsBadStuff(),
+            bad_stuff=CompositeBadStuff(
+                LoseItemsBadStuff(),
+                LoseHandCardsBadStuff(),
+            ),
         ),
         
         #Lame Goblin #TODO

@@ -8,7 +8,8 @@ class CardType(Enum):
     RACE = auto()
     CLASS = auto()
     ITEM = auto()
-    BUFF = auto()
+    DOOR_BUFF = auto()
+    TREASURE_BUFF = auto()
 
 class Card:
     def __init__(self, name, image, card_type):
