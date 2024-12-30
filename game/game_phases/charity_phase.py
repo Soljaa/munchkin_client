@@ -3,14 +3,16 @@ from game.game_state import GamePhase
 
 
 class CharityPhase(GamePhases):
-    def __init__(self, game_state):
+    def __init__(self, game_state, renderer):
         super().__init__(game_state)  # Inicializa a classe base
         self.players = game_state.players
         self.current_player_index = game_state.current_player_index
+        self.renderer = renderer
 
     def run(self, died=False):
         print("Executing Charity Phase")
         self.game_state.set_game_phase(GamePhase.CHARITY)
+        self.renderer.set_message("Doing charity... Redistributing cards")
 
         current_player = self.players[self.current_player_index]
         donation_cards = current_player.hand if died else current_player.donate_cards()

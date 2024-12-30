@@ -16,6 +16,7 @@ class LookForTroublePhase(GamePhases):
         Executa a lógica da fase 'Look For Trouble'.
         """
         print("Entering LookForTroublePhase...")
+        self.game_state.set_game_phase(GamePhase.LOOK_FOR_TROUBLE)
 
         # abre modal pro player escolher um monstro da mão, vou mocar com um monstro aleatorio mas
         # tem q fazer a lógica para ver se o cara tem monstro na mão e escolher o monstro mas precisa

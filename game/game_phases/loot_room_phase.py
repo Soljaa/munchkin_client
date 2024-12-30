@@ -9,6 +9,7 @@ class LootRoomPhase(GamePhases):
         self.current_player = game_state.current_player()  
 
     def run(self):
+        self.game_state.set_game_phase(GamePhase.LOOT_ROOM)
         print(f"Attempting to loot the room in phase: {self.game_state.phase}")
         
         # Verifica se a fase atual é LOOT_ROOM
