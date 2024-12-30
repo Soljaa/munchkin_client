@@ -14,6 +14,7 @@ BUTTONS_BY_GAME_PHASE = {
     GamePhase.LOOK_FOR_TROUBLE: [],
     GamePhase.LOOT_ROOM: [],
     GamePhase.COMBAT: ["run_away", "use_card", "ask_for_help", "finish_combat"],
+    GamePhase.FINAL_SETUP: ["finish_final_setup"],
     GamePhase.CHARITY: [],
 }
 
@@ -47,6 +48,7 @@ class GameRenderer:
             "ask_for_help": HoverButton("assets/game/ask_for_help.png", buttons_x, button_y3, 160, 66),
             "loot": HoverButton("assets/game/loot.png", buttons_x, button_y2, 160, 66),
             "finish_combat": HoverButton("assets/game/finish_combat.png", buttons_x, button_y1, 160, 66),
+            "finish_final_setup": HoverButton("assets/game/finish_combat.png", buttons_x, button_y1, 160, 66)
         }
 
     def draw_gameboard(self):

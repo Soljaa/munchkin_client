@@ -90,6 +90,9 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             if current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
                                 renderer.set_message("Successfully ran away!")
                                 game_state.set_combat(None)
+                                game_state.set_game_phase(GamePhase.FINAL_SETUP)
+                                final_setup_phase = SetupPhase(game_state, action, renderer)
+                                final_setup_phase.run()
                             else: # Se não consigo fugir (value<5)
                                 renderer.set_message(f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
                                 current_combat.monster.apply_bad_stuff(game_state.current_player())
@@ -97,31 +100,33 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 if game_state.current_player().level <= 0: # Se o jogador estiver morto (logo após a perda do nível)
                                     renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
                                     player_died = True
-                            charity_phase = CharityPhase(game_state, renderer)
-                            charity_phase.run(player_died)
-                            game_state.next_player()
-                            curr_turn = increase_global_turns(curr_turn, game_state)
-                            print("Turno:", curr_turn)
+
+                                    charity_phase = CharityPhase(game_state, renderer) # TODO Dps pensar em colocar o next+plyaer e turn incremente dentro
+                                    charity_phase.run(player_died)
+                                    game_state.next_player()
+                                    curr_turn = increase_global_turns(curr_turn, game_state)
+                                    print("Turno:", curr_turn)
+
+                                if not player_died:
+                                    game_state.set_game_phase(GamePhase.FINAL_SETUP)
+                                    final_setup_phase = SetupPhase(game_state, action, renderer)
+                                    final_setup_phase.run()
 
                     elif action == "loot": # Se aperto por saquear # LOOT
                         if game_state.phase == GamePhase.KICK_DOOR:
                             loot_room_phase = LootRoomPhase(game_state)
                             loot_room_phase.run()
-                            charity_phase = CharityPhase(game_state, renderer)
-                            charity_phase.run()
-                            game_state.next_player()
-                            curr_turn = increase_global_turns(curr_turn, game_state)
-                            print("Turno:", curr_turn)
+                            game_state.set_game_phase(GamePhase.FINAL_SETUP)
+                            final_setup_phase = SetupPhase(game_state, action, renderer)
+                            final_setup_phase.run()
 
                     elif action == "finish_combat": # Se aperto para finalizar o combate...
                         if game_state.phase == GamePhase.COMBAT and game_state.current_combat: #... e estou na fase de combate
                             try:
                                 game_state.resolve_combat() # Resolve o combate, aplicando as devidas bonificações ou penalizações
-                                charity_phase = CharityPhase(game_state, renderer)
-                                charity_phase.run()
-                                game_state.next_player()
-                                curr_turn = increase_global_turns(curr_turn, game_state)
-                                print("Turno:", curr_turn)
+                                game_state.set_game_phase(GamePhase.FINAL_SETUP)
+                                final_setup_phase = SetupPhase(game_state, action, renderer)
+                                final_setup_phase.run()
                             except EndGameException:
                                 # mostrar tela de vencedor
                                 print("Fim de jogo! Vencedor:", game_state.current_player().name)
@@ -135,6 +140,14 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                         if game_state.phase == GamePhase.KICK_DOOR:
                             look_for_trouble_phase = LookForTroublePhase(game_state)
                             look_for_trouble_phase.run()
+
+                    elif action == "finish_final_setup": # Se aperto para FINALIZAR O FINAL SETUP
+                        if game_state.phase == GamePhase.FINAL_SETUP:
+                            charity_phase = CharityPhase(game_state, renderer)
+                            charity_phase.run()
+                            game_state.next_player()
+                            curr_turn = increase_global_turns(curr_turn, game_state)
+                            print("Turno:", curr_turn)  
 
         # Draw current game state
         try:

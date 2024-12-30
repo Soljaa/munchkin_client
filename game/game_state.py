@@ -12,6 +12,7 @@ class GamePhase(Enum):
     LOOK_FOR_TROUBLE = auto()
     LOOT_ROOM = auto()
     COMBAT = auto()
+    FINAL_SETUP = auto()
     CHARITY = auto()
 
 
