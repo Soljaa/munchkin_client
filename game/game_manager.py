@@ -73,7 +73,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                 else: # Se o clique não for em um item (for em um botão)
                     print(f"\nButton clicked: {action}")
                     print(f"Current phase: {game_state.phase}")
-                    print(f"Current player: {current_player.name}")
+                    print(f"Current player: {game_state.current_player().name}")
                     current_combat = game_state.current_combat
 
                     if action == "kick_door": # Se aperto para chutar porta # KICK DOOR

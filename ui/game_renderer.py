@@ -123,6 +123,8 @@ class GameRenderer:
         
         clock = pygame.time.Clock()
         
+        rolling_dice_sound = pygame.mixer.Sound("assets/sounds/rolling_dice.mp3")
+        rolling_dice_sound.play()
         while elapsed_time < roll_time_seconds:
             # Calcula o tempo entre quadros
             delta_time = clock.tick(60) / 1000.0  # 60 FPS

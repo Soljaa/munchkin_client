@@ -1,3 +1,4 @@
+import pygame
 from ui.button import Button
 
 class HoverButton(Button):
@@ -30,3 +31,7 @@ class HoverButton(Button):
     def draw(self):  # Desenhar os Botões
         self.update()  # Atualiza o estado antes de desenhar
         self.sprite.draw()
+
+    def play_sound(self):
+        hovered_button_sound = pygame.mixer.Sound("assets/sounds/hovered_button.mp3")
+        hovered_button_sound.play()

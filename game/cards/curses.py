@@ -33,11 +33,11 @@ CURSES = [
         image="assets/door_cards/Curse!LoseYourClass.png",
         effect=LoseClassCurseEffect()
     ),
-    Curse(
-        name="Curse! Dying Curse",
-        image="assets/door_cards/Curse!DyingCurse.png", # TODO: Falta png
-        effect=ApplyDiscardCardBadStuffCurseEffect()
-    ),
+    #Curse(
+        #name="Curse! Dying Curse",
+        #image="assets/door_cards/Curse!DyingCurse.png", # TODO: Falta png
+        #effect=ApplyDiscardCardBadStuffCurseEffect()
+    #),
     Curse(
         name="Curse! Lose The Footgear You Are Wearing",
         image="assets/door_cards/Curse!LoseTheFootgearYouAreWearing.png",

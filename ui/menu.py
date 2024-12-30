@@ -4,6 +4,7 @@ from PPlay.window import *
 from PPlay.sprite import *
 from PPlay.mouse import *
 from PPlay.gameimage import *
+from game.game_manager import main
 from ui.hover_button import HoverButton
 from ui.player_selection import PlayerSelection
 
@@ -47,12 +48,31 @@ class Menu:
             )
         }
 
+    def play_music(self):
+        music_path = "assets/sounds/medieval_music.mp3"
+        self.medieval_music_sound = pygame.mixer.Sound(music_path)
+        self.medieval_music_sound.play()
+        
+    def stop_music(self):
+        self.medieval_music_sound.fadeout(800)
+
+    def play_transition_fade_sound(self):
+        sound_path = "assets/sounds/transition_fade.mp3"
+        self.transition_fade_sound = pygame.mixer.Sound(sound_path)
+        self.transition_fade_sound.set_volume(0.3)
+        self.transition_fade_sound.play()
+
 
     def play(self):
         """Função chamada ao pressionar o botão de jogar."""
         selecao_player = PlayerSelection(self.window)
-        selecao_player.run()
-        self.quit()
+        result = selecao_player.run()  # Retorna o nickname e avatar_img_dir
+        if result:
+            nickname, avatar_img_dir = result
+            self.stop_music()
+            self.play_transition_fade_sound()
+            main(nickname, avatar_img_dir)  # Passa os valores para o main()
+            self.quit()
         
     def quit(self):
         sys.exit()
@@ -61,6 +81,7 @@ class Menu:
         return
 
     def run(self):
+        self.play_music()
         """Executa o loop principal do menu."""
         while self.running:
             # if pygame.key.get_pressed()[pygame.K_F11]:

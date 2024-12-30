@@ -121,8 +121,9 @@ class PlayerSelection:
         nickname = self.input_text.strip()
         avatar_img_dir = self.avatars[self.avatar_index]
         if self.is_valid_nickname(nickname):
-            main(nickname, avatar_img_dir)
-            self.quit()
+            # Ao invés de chamar main() diretamente, vamos retornar os dados
+            return nickname, avatar_img_dir
+        return None, None  # Caso o nickname não seja válido
 
     def quit(self):
         self.running = False
@@ -143,10 +144,10 @@ class PlayerSelection:
             # Botões 
             for button in self.buttons.values():
                 button.draw()
-                button.handle()
-                #if self.mouse.is_over_object(button.sprite) and self.mouse.#is_button_pressed(1) and self.reload_mouse <= 0:
-                    #self.reload_mouse = 0.2
-                    #button.acao()
+                if button.handle():
+                    return button.handle()
+                else:
+                    button.handle()
 
             # Imagem Avatar
             self.avatar = GameImage(self.avatars[self.avatar_index])
@@ -160,10 +161,6 @@ class PlayerSelection:
                     self.handle_text_input(event)
                     
             # Desenha o campo de entrada (box)
-            input_box_width = 400
-            input_box_height = 40
-            input_box_x = (self.window.width - input_box_width) // 2
-            input_box_y = ((self.window.height - input_box_height) // 2) + 50
             pygame.draw.rect(self.window.screen, (0,0,0), (input_box_x, input_box_y, input_box_width, input_box_height), 2)
             
             # Textos
@@ -184,5 +181,11 @@ class PlayerSelection:
                 self.reload_mouse -= 0.02
 
             self.window.update()
-            #pygame.display.flip()  # Atualiza a tela do Pygame
             self.clock.tick(60)  # Limita o loop a 60 FPS
+
+            """
+            # Se o jogador pressionou "continuar", retorna os valores
+            if self.buttons["continue"].mouse.is_button_pressed(1) and self.input_text.strip() and self.input_text.isalnum():
+                nickname, avatar_img_dir = self.game()
+                if nickname and avatar_img_dir:
+                    return nickname, avatar_img_dir  # Retorna o nickname e o caminho do avatar"""
