@@ -34,16 +34,19 @@ class GameRenderer:
         self._init_buttons()
 
     def _init_buttons(self):
-        # Create buttons with consistent positioning
-        button_y = SCREEN_HEIGHT - 100
+        button_y0 = SCREEN_HEIGHT - 270
+        button_y1 = SCREEN_HEIGHT - 410
+        button_y2 = SCREEN_HEIGHT - 490
+        button_y3 = SCREEN_HEIGHT - 570
+        buttons_x = SCREEN_WIDTH - 100
         self.buttons = {
-            "kick_door": HoverButton("assets/game/kick_door_new.png", 1010, 10, 250, 200),
-            "use_card": HoverButton("assets/game/use_card.png", 1060, 10, 210, 60),
-            "run_away": HoverButton("assets/game/run_away.png", 840, 80, 2100, 60),
-            "look_for_trouble": HoverButton("assets/game/look_for_trouble.png", 840, button_y, 210, 60),
-            "ask_for_help": HoverButton("assets/game/ask_for_help.png", 840, 10, 210, 60),
-            "loot": HoverButton("assets/game/loot.png", 1060, button_y, 210, 60),
-            "finish_combat": HoverButton("assets/game/finish_combat.png", 1060, 80, 210, 60),
+            "kick_door": HoverButton("assets/game/kick_door_new.png", buttons_x, button_y0, 147, 142),
+            "use_card": HoverButton("assets/game/use_card.png", buttons_x, button_y2, 160, 66),
+            "run_away": HoverButton("assets/game/run_away.png", buttons_x, button_y1, 160, 66),
+            "look_for_trouble": HoverButton("assets/game/look_for_trouble.png", buttons_x, button_y1, 160, 66),
+            "ask_for_help": HoverButton("assets/game/ask_for_help.png", buttons_x, button_y3, 160, 66),
+            "loot": HoverButton("assets/game/loot.png", buttons_x, button_y2, 160, 66),
+            "finish_combat": HoverButton("assets/game/finish_combat.png", buttons_x, button_y1, 160, 66),
         }
 
     def draw_gameboard(self):

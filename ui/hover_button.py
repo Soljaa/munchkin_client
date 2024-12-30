@@ -7,8 +7,6 @@ class HoverButton(Button):
         # Fator de escala para aumentar o tamanho no hover
         self.scale_factor = scale_factor
 
-        
-
         # Guarda o tamanho original do botão
         self.original_x = x
         self.original_y = y

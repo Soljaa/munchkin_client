@@ -55,6 +55,13 @@ class Sprite(animation.Animation):
         self.rect = self.image.get_rect(topleft=(self.x, self.y))  # Atualiza o retângulo da imagem redimensionada
         self.width, self.height = self.image.get_size()
 
+    def resize(self, width, height):
+        self.image = pygame.transform.scale(self.original_image, (width, height))  # Redimensiona a imagem
+        self.original_image = self.image
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))  # Atualiza o retângulo da imagem redimensionada
+        self.width, self.height = self.image.get_size()
+
+
     #def draw(self):
         #window.Window.get_screen().blit(self.image, (self.x, self.y))  # Desenha a imagem na tela
             
