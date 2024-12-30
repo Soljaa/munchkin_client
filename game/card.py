@@ -23,7 +23,7 @@ class Card:
 
 class Monster(Card):
     def __init__(self, name: str, image: str, level: int, treasure: int, 
-                 effect: MonsterEffect = None, bad_stuff: MonsterBadStuff = None):
+                 effect: MonsterEffect = None, bad_stuff: MonsterBadStuff = None, reward_two_levels: bool = False):
         super().__init__(name, image, CardType.MONSTER)
         self.base_level = level
         self.level = level
@@ -31,10 +31,12 @@ class Monster(Card):
         self.treasure = treasure
         self.effect = effect
         self.bad_stuff = bad_stuff
+        self.reward_two_levels = reward_two_levels
         self.pursue = True
 
     def reset_stats(self):
         self.level = self.base_level
+        self.treasure = self.base_treasure
         self.pursue = True
 
     def apply_effect(self, player):

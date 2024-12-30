@@ -80,14 +80,22 @@ class Player:
         if self.level < 1:
             Death(self).apply()
 
+    def remove_class(self):
+        self.add_to_discard_pile(self.class_)
+        self.class_ = None
+
     def replace_class(self, card):
         self.remove_class()
         self.class_ = card
 
-    def remove_class(self):
-        self.add_to_discard_pile(self.class_)
-        self.class_ = None
-    
+    def remove_race(self):
+        self.add_to_discard_pile(self.race)
+        self.race = None
+
+    def replace_race(self, card):
+        self.remove_race()
+        self.race = card
+
     def remove_hand_card(self, card):
         self.add_to_discard_pile(card)
         self.hand.remove(card)

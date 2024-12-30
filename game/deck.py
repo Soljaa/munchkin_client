@@ -1,6 +1,5 @@
 import random
-from game.card import Item, Race, Curse
-from game.cards.curse_effect import ApplyDiscardCardBadStuffCurseEffect
+from game.card import Item
 from game.cards.curses import CURSES
 from game.cards.monsters import MONSTERS
 
@@ -69,6 +68,13 @@ class DoorDeck(Deck):
         for class_ in classes:
             self.add_card(class_)
 
+        door_buffs = [
+            # TODO: Buffs
+        ]
+        print(f"Adding {len(door_buffs)} door buffs to deck")
+        for buff in door_buffs:
+            self.add_card(buff)
+
         print(f"Door deck initialized with {len(self.cards)} cards")
         self.shuffle()
         print("Door deck shuffled")
@@ -83,7 +89,7 @@ class TreasureDeck(Deck):
         print("Initializing Treasure Deck...")
         # Add various items with different bonuses and values
         items = [
-            # TODO: Poção entra como item? 
+            # TODO: Poção entra como item?
             # TODO: Observar o "slot" e "size".
             Item("Bad-Ass Bandana", "assets/treasure_cards/BadAssBandana.png", 3, 400, "head"),
             Item("Boots of Butt-Kicking", "assets/treasure_cards/BootOfButtKicking.png", 2, 400, "feet"),
@@ -133,6 +139,13 @@ class TreasureDeck(Deck):
         print(f"Adding {len(items)} items to deck")
         for item in items:
             self.add_card(item)
+
+        treasure_buffs = [
+            # TODO: Buffs
+        ]
+        print(f"Adding {len(treasure_buffs)} treasure buffs to deck")
+        for buff in treasure_buffs:
+            self.add_card(buff)
 
         print(f"Treasure deck initialized with {len(self.cards)} cards")
         self.shuffle()

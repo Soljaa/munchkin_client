@@ -3,8 +3,6 @@ from game.cards.monster_effect import *
 from game.cards.monster_bad_stuff import *
 
 MONSTERS = [
-        #TODO: O "BadStuff" está com X, pois tem uns que não são tão complexos como apenas "Lose 2 levels". Pensar em como fazer depois
-        # 3,872 Orcs
         Monster(
             name="3,872 Orcs",
             image="assets/door_cards/3872Orcs.png",
@@ -13,33 +11,20 @@ MONSTERS = [
             effect=IncreaseMonsterLevelEffect('Dwarf', 6),
             bad_stuff=OrcsBadStuff(),
         ),
-        # Squidzilla
-        Monster(
-            name="Squidzilla", 
-            image="assets/door_cards/Squidzilla.png", 
-            level=18, 
-            treasure=4, 
-            effect=CompositeEffect(IncreaseMonsterLevelEffect('Elf', 4), NotPursueLevelEffect(4, exclude_race='Elf')), 
-            bad_stuff=DeathBadStuff()
-        ),
-        # TODO: Falta png
-        # Hairy Potter
-        Monster(
-            name="Hairy Potter",
-            image="assets/door_cards/HairyPotter.png",
-            level=15,
-            treasure=4,
-            effect=CompositeEffect(IncreaseMonsterLevelEffect('Wizard', 4), IncreaseMonsterLevelEffect('Elf', -3), NotPursueLevelEffect(2)),
-            bad_stuff=LoseAllClassItemsBadStuff()
-        ),
-
-        # Amazon #TODO
+        # Amazon #TODO tem coisa de female character.
         Monster(name="Amazon", image="assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
-        
-        # Bigfoot
+        Monster(
+            name="Auntie Paladin",
+            image="assets/door_cards/AuntiePaladin.png", # TODO: Falta png
+            level=18,
+            treasure=4,
+            effect=IncreaseMonsterLevelEffect("Cleric", 5), # TODO: também é +5 contra male character. Vamos fazer isso ou ignorar?
+            bad_stuff=CompositeBadStuff(LoseEquippedItemBadStuff('armor'), LoseLevelBadStuff(3)),
+            reward_two_levels=True
+        ),
         Monster(
             name="Bigfoot",
-            image="assets/door_cards/Bigfoot.png", 
+            image="assets/door_cards/Bigfoot.png",
             level=12,
             treasure=3,
             effect=CompositeEffect(
@@ -48,7 +33,6 @@ MONSTERS = [
             ),
             bad_stuff=LoseEquippedItemBadStuff('headgear'),
         ),
-        #Bullrog
         Monster(
             name="Bullrog",
             image="assets/door_cards/Bullrog.png",
@@ -56,14 +40,12 @@ MONSTERS = [
             treasure=5, 
             effect=CompositeBadStuff(NotPursueLevelEffect(4)),
             bad_stuff=DeathBadStuff(),
+            reward_two_levels=True
         ),
-        
-        #Crabs
+        #Crabs #TODO
         Monster("Crabs", "assets/door_cards/Crabs.png", level=1, treasure=1, bad_stuff=None),
         # Drooling Slime #TODO
         Monster("Drooling Slime", "assets/door_cards/DroolingSlime.png", 1, 1, "X"),
-        
-        #Face Sucker
         Monster(name="Face Sucker",
                 image="assets/door_cards/FaceSucker.png",
                 level=8,
@@ -73,8 +55,7 @@ MONSTERS = [
                     LoseEquippedItemBadStuff('headgear'),
                     LoseLevelBadStuff(1),
                 ),
-            ),
-        
+            ),    
         # Floating Nose #TODO
         Monster("Floating Nose", "assets/door_cards/FloatingNose.png", 10, 3, "X"),
         # Flying Frogs #TODO
@@ -85,6 +66,15 @@ MONSTERS = [
         Monster("Gelatinous Octahedron", "assets/door_cards/Gazebo.png", 2, 1, "X"),
         # Ghoulfiends #TODO
         Monster("Ghoulfiends", "assets/door_cards/Ghoulfiends.png", 8, 2, "X"),
+        Monster(
+            name="Hairy Potter",
+            image="assets/door_cards/HairyPotter.png", # TODO: Falta png
+            level=15,
+            treasure=4,
+            effect=CompositeEffect(IncreaseMonsterLevelEffect('Wizard', 4), IncreaseMonsterLevelEffect('Elf', -3), NotPursueLevelEffect(2)),
+            bad_stuff=LoseAllClassItemsBadStuff(),
+            reward_two_levels=True
+        ),
         # Harpies #TODO
         Monster("Harpies", "assets/door_cards/Harpies.png", 4, 2, "X"),
         # Hippogriff #TODO
@@ -133,6 +123,17 @@ MONSTERS = [
                 effect=CompositeEffect(IncreaseMonsterLevelEffect("Cleric", 3)),
                 bad_stuff=LoseLevelBadStuff(1),
             ),
+
+        # TODO: Falta png
+        Monster(
+            name="Medusa",
+            image="assets/door_cards/Medusa.png",
+            level=19,
+            treasure=5,
+            effect=IncreaseMonsterLevelEffect("Elf", 4),
+            bad_stuff=DeathBadStuff(), # TODO: E não permitir ninguém pegar os items. Vamos fazer isso ou ignorar?
+            reward_two_levels=True
+        ),
         
         #Mr. Bones #TODO
         Monster("Mr. Bones", "assets/door_cards/MrBones.png", 2, 1, "X"), # TODO: Ele é undead
@@ -142,6 +143,8 @@ MONSTERS = [
         Monster("Pit Bull", "assets/door_cards/PitBull.png", 2, 1, "X"),
         # Platycore #TODO
         Monster("Platycore", "assets/door_cards/Platycore.png", 6, 2, "X"),
+
+        # Polly Hedron --> pensar se vale fazer (falha próximo Run Away)
         
         # Plutonium Dragon
         Monster(
@@ -149,8 +152,9 @@ MONSTERS = [
             image="assets/door_cards/PlutoniumDragon.png",
             level=20,
             treasure=5, 
-            effect=CompositeEffect(NotPursueLevelEffect(5)),
+            effect=NotPursueLevelEffect(5),
             bad_stuff=DeathBadStuff(),
+            reward_two_levels=True
         ),
         # Potted Plant
         Monster(
@@ -158,8 +162,8 @@ MONSTERS = [
             image="assets/door_cards/PottedPlant.png",
             level=1,
             treasure=1, 
-            effect= CompositeEffect(MoreTreasureEffect(1, "Elf")),
-            bad_stuff= None
+            effect= MoreTreasureEffect(1, "Elf"),
+            bad_stuff=None
         ),
 
         # Pukachu #TODO
@@ -168,18 +172,26 @@ MONSTERS = [
         Monster("Shrieking Geek", "assets/door_cards/ShriekingGeek.png", 6, 2, "X"),
         # Snails on Speed #TODO
         Monster("Snails on Speed", "assets/door_cards/SnailsOnSpeed.png", 4, 2, "X"),
+        Monster(
+            name="Squidzilla", 
+            image="assets/door_cards/Squidzilla.png", 
+            level=18, 
+            treasure=4, 
+            effect=CompositeEffect(IncreaseMonsterLevelEffect('Elf', 4), NotPursueLevelEffect(4, exclude_race='Elf')), 
+            bad_stuff=DeathBadStuff(),
+            reward_two_levels=True
+        ),
         # Stoned Golem #TODO
         Monster("Stoned Golem", "assets/door_cards/StonedGolem.png", 14, 4, "X"),
         # Tongue Demon #TODO
         Monster("Tongue Demon", "assets/door_cards/TongueDemon.png", 12, 3, "X"), 
-        
         # Undead Horse
         Monster(
             name="Undead Horse",
             image="assets/door_cards/UndeadHorse.png", 
             level=4, 
             treasure=2,
-            effect=CompositeEffect(IncreaseMonsterLevelEffect("Dwarves", 5)),
+            effect=IncreaseMonsterLevelEffect("Dwarves", 5),
             bad_stuff=LoseLevelBadStuff(2),
         ), # TODO: Ele é undead
         
@@ -199,7 +211,7 @@ MONSTERS = [
                 NotPursueLevelEffect(3)
             ),
             bad_stuff=LoseLevelBadStuff(1),
-            
+            reward_two_levels=True
         )
 
         #Monster("Dragon", "image", 20, 5, "Lose 2 levels"),

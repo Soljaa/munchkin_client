@@ -58,7 +58,7 @@ class Combat:
         if player_strength > monster_strength:
             return True, {
                 'treasure': self.monster.treasure,
-                'level_gain': 1,
+                'level_gain': 2 if self.monster.reward_two_levels else 1,
                 'message': f"Victory! Gained {self.monster.treasure} treasure(s)!"
             }
         return False, {
