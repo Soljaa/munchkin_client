@@ -188,7 +188,7 @@ class GameRenderer:
             self.screen.blit(kick_door_transition, (0, 0))
             pygame.display.update()
 
-    def draw_loot_the_room_transition(self):
+    def draw_loot_the_room_transition(self, loot_card):
         loot_the_room_transition = pygame.image.load("assets/game/loot_the_room_transition.jpg")
 
         roll_time_seconds = 2.5  # Tempo total de animação do dado rolando em segundos
@@ -201,10 +201,20 @@ class GameRenderer:
             # Calcula o tempo entre quadros
             delta_time = clock.tick(60) / 1000.0  # 60 FPS
 
+            card_sprite = Sprite(loot_card.image)
+            #card_sprite.image = pygame.transform.scale(card_sprite.image, (HAND_CARD_WIDTH, HAND_CARD_HEIGHT))
+
+            card_x = 40
+            card_y = 40
+            card_sprite.x = card_x
+            card_sprite.y = card_y
+            card_sprite.draw()
+
             elapsed_time += delta_time  # Atualiza o tempo decorrido
             
 
             self.screen.blit(loot_the_room_transition, (0, 0))
+            card_sprite.draw()
             pygame.display.update()
         
     def draw_game_state(self, game_state):

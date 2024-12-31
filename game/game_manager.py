@@ -89,9 +89,11 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
                             value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
                             if current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
+                                # TODO: Pode colocar uma imagem referente ao sucesso na fuga
                                 renderer.set_message("Successfully ran away!")
                                 game_state.set_combat(None)
                             else: # Se não consigo fugir (value<5)
+                                 # TODO: Pode colocar uma imagem referente a falha na fuga
                                 renderer.set_message(f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
                                 current_combat.monster.apply_bad_stuff(game_state.current_player())
 
@@ -106,9 +108,11 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
 
                     elif action == "loot": # Se aperto por saquear # LOOT
                         if game_state.phase == GamePhase.KICK_DOOR:
-                            renderer.draw_loot_the_room_transition()
+                            #renderer.draw_loot_the_room_transition()
                             loot_room_phase = LootRoomPhase(game_state)
                             loot_room_phase.run()
+                            loot_card = loot_room_phase.show_loot_card()
+                            renderer.draw_loot_the_room_transition(loot_card)
                             charity_phase = CharityPhase(game_state, renderer)
                             charity_phase.run()
                             game_state.next_player()

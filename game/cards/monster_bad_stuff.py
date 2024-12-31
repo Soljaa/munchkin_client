@@ -27,7 +27,7 @@ class DeathBadStuff(MonsterBadStuff):
 
 class OrcsBadStuff(MonsterBadStuff):
     def apply(self, player) -> None:
-        roll = Dice.roll()
+        roll = Dice.roll() # TODO: Dá erro -> TypeError: Dice.roll() missing 1 required positional argument: 'self' (Estranho pq era para funcionar)
         if roll <= 2:
             Death(player).apply()
         else:

@@ -3,6 +3,7 @@ from game.cards.monster_effect import *
 from game.cards.monster_bad_stuff import *
 
 MONSTERS = [
+        # 3,872 Orcs
         Monster(
             name="3,872 Orcs",
             image="assets/door_cards/3872Orcs.png",
@@ -13,9 +14,10 @@ MONSTERS = [
         ),
         # Amazon #TODO tem coisa de female character.
         Monster(name="Amazon", image="assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
+        # Auntie Paladin
         Monster(
             name="Auntie Paladin",
-            image="assets/door_cards/AuntiePaladin.png", # TODO: Falta png
+            image="assets/door_cards/AuntiePaladin.png",
             level=18,
             treasure=4,
             effect=IncreaseMonsterLevelEffect("Cleric", 5), # TODO: também é +5 contra male character. Vamos fazer isso ou ignorar?
@@ -42,10 +44,12 @@ MONSTERS = [
             bad_stuff=DeathBadStuff(),
             reward_two_levels=True
         ),
-        #Crabs #TODO
+        # Crabs #TODO
         Monster("Crabs", "assets/door_cards/Crabs.png", level=1, treasure=1, bad_stuff=None),
         # Drooling Slime #TODO
-        Monster("Drooling Slime", "assets/door_cards/DroolingSlime.png", 1, 1, "X"),
+        #Monster("Drooling Slime", "assets/door_cards/DroolingSlime.png", 1, 1, "X"),
+
+        # Face Sucker
         Monster(name="Face Sucker",
                 image="assets/door_cards/FaceSucker.png",
                 level=8,
@@ -57,15 +61,17 @@ MONSTERS = [
                 ),
             ),    
         # Floating Nose #TODO
-        Monster("Floating Nose", "assets/door_cards/FloatingNose.png", 10, 3, "X"),
+        #Monster("Floating Nose", "assets/door_cards/FloatingNose.png", 10, 3, "X"),
         # Flying Frogs #TODO
-        Monster("Flying Frogs", "assets/door_cards/FlyingFrogs.png", 2, 1, "X"),
+        #Monster("Flying Frogs", "assets/door_cards/FlyingFrogs.png", 2, 1, "X"),
         # Gazebo #TODO
-        Monster("Gazebo", "assets/door_cards/Gazebo.png", 8, 2, "X"),
+        #Monster("Gazebo", "assets/door_cards/Gazebo.png", 8, 2, "X"),
         # Gelatinous Octahedron #TODO
-        Monster("Gelatinous Octahedron", "assets/door_cards/Gazebo.png", 2, 1, "X"),
+        #Monster("Gelatinous Octahedron", "assets/door_cards/Gazebo.png", 2, 1, "X"),
         # Ghoulfiends #TODO
-        Monster("Ghoulfiends", "assets/door_cards/Ghoulfiends.png", 8, 2, "X"),
+        #Monster("Ghoulfiends", "assets/door_cards/Ghoulfiends.png", 8, 2, "X"),
+        
+        #Hairy Potter
         Monster(
             name="Hairy Potter",
             image="assets/door_cards/HairyPotter.png", # TODO: Falta png
@@ -76,11 +82,11 @@ MONSTERS = [
             reward_two_levels=True
         ),
         # Harpies #TODO
-        Monster("Harpies", "assets/door_cards/Harpies.png", 4, 2, "X"),
+        #Monster("Harpies", "assets/door_cards/Harpies.png", 4, 2, "X"),
         # Hippogriff #TODO
-        Monster("Hippogriff", "assets/door_cards/Hippogriff.png", 16, 4, "X"),
+        #Monster("Hippogriff", "assets/door_cards/Hippogriff.png", 16, 4, "X"),
         # Insurance Salesman #TODO
-        Monster("Insurance Salesman", "assets/door_cards/InsuranceSalesman.png", 14, 4, "X"),
+        #Monster("Insurance Salesman", "assets/door_cards/InsuranceSalesman.png", 14, 4, "X"),
 
         # King Tut
         Monster(
@@ -99,11 +105,11 @@ MONSTERS = [
         ),
         
         #Lame Goblin #TODO
-        Monster("Lame Goblin", "assets/door_cards/LameGoblin.png", 1, 1, "X"),
+        #Monster("Lame Goblin", "assets/door_cards/LameGoblin.png", 1, 1, "X"),
         #Large Angry Chicken #TODO
-        Monster("Large Angry Chicken", "assets/door_cards/LargeAngryChicken.png", 2, 1, "X"),
+        #Monster("Large Angry Chicken", "assets/door_cards/LargeAngryChicken.png", 2, 1, "X"),
         #Lawyers #TODO
-        Monster("Lawyers", "assets/door_cards/Lawyers.png", 6, 2, "X"),
+        #Monster("Lawyers", "assets/door_cards/Lawyers.png", 6, 2, "X"),
         
         #Leperchaun
         Monster(
@@ -136,13 +142,13 @@ MONSTERS = [
         ),
         
         #Mr. Bones #TODO
-        Monster("Mr. Bones", "assets/door_cards/MrBones.png", 2, 1, "X"), # TODO: Ele é undead
+        #Monster("Mr. Bones", "assets/door_cards/MrBones.png", 2, 1, "X"), # TODO: Ele é undead
         # Net Troll #TODO
-        Monster("Net Troll", "assets/door_cards/NetTroll.png", 10, 3, "X"),
+        #Monster("Net Troll", "assets/door_cards/NetTroll.png", 10, 3, "X"),
         #Pit Bull #TODO
-        Monster("Pit Bull", "assets/door_cards/PitBull.png", 2, 1, "X"),
+        #Monster("Pit Bull", "assets/door_cards/PitBull.png", 2, 1, "X"),
         # Platycore #TODO
-        Monster("Platycore", "assets/door_cards/Platycore.png", 6, 2, "X"),
+        #Monster("Platycore", "assets/door_cards/Platycore.png", 6, 2, "X"),
 
         # Polly Hedron --> pensar se vale fazer (falha próximo Run Away)
         
@@ -167,11 +173,13 @@ MONSTERS = [
         ),
 
         # Pukachu #TODO
-        Monster("Pukachu", "assets/door_cards/Pukachu.png", 6, 2, "X"),
+        #Monster("Pukachu", "assets/door_cards/Pukachu.png", 6, 2, "X"),
         # Shrieking Geek #TODO
-        Monster("Shrieking Geek", "assets/door_cards/ShriekingGeek.png", 6, 2, "X"),
+        #Monster("Shrieking Geek", "assets/door_cards/ShriekingGeek.png", 6, 2, "X"),
         # Snails on Speed #TODO
-        Monster("Snails on Speed", "assets/door_cards/SnailsOnSpeed.png", 4, 2, "X"),
+        #Monster("Snails on Speed", "assets/door_cards/SnailsOnSpeed.png", 4, 2, "X"),
+        
+        # Squidzilla
         Monster(
             name="Squidzilla", 
             image="assets/door_cards/Squidzilla.png", 
@@ -182,9 +190,10 @@ MONSTERS = [
             reward_two_levels=True
         ),
         # Stoned Golem #TODO
-        Monster("Stoned Golem", "assets/door_cards/StonedGolem.png", 14, 4, "X"),
+        #Monster("Stoned Golem", "assets/door_cards/StonedGolem.png", 14, 4, "X"),
         # Tongue Demon #TODO
-        Monster("Tongue Demon", "assets/door_cards/TongueDemon.png", 12, 3, "X"), 
+        #Monster("Tongue Demon", "assets/door_cards/TongueDemon.png", 12, 3, "X"), 
+
         # Undead Horse
         Monster(
             name="Undead Horse",
@@ -196,11 +205,11 @@ MONSTERS = [
         ), # TODO: Ele é undead
         
         # Unspeakably Awful Indescriblabe Horror #TODO
-        Monster("Unspeakably Awful Indescribable Horror", "assets/door_cards/UnspeakablyAwfulIndescribableHorror.png", 14, 4, "X"),
+        #Monster("Unspeakably Awful Indescribable Horror", "assets/door_cards/UnspeakablyAwfulIndescribableHorror.png", 14, 4, "X"),
         # Wannabe Vampire #TODO
-        Monster("Wannabe Vampire", "assets/door_cards/WannabeVampire.png", 12, 3, "X"),
-        # Wight Brothers
+        #Monster("Wannabe Vampire", "assets/door_cards/WannabeVampire.png", 12, 3, "X"),
         
+        # Wight Brothers
         Monster(
             name="Wight Brothers",
             image="assets/door_cards/WightBrothers.png",
