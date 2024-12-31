@@ -29,6 +29,8 @@ class CharityPhase(GamePhases):
             print(f"Player {player.name} receives {len(card_array)} cards")
             player.hand += card_array
 
+        self.renderer.draw_charity_fase_transition(distribution)
+
         return True
 
     def get_lowest_cards_players(self):
