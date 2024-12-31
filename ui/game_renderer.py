@@ -168,6 +168,25 @@ class GameRenderer:
 
         pygame.display.flip()
         time.sleep(2.5)
+
+    def draw_kick_door_transition(self):
+        kick_door_transition = pygame.image.load("assets/game/kick_door_transition.jpg")
+
+        roll_time_seconds = 2  # Tempo total de animação do dado rolando em segundos
+        elapsed_time = 0  # Variável para controlar o tempo de animação
+        
+        kick_door_sound = pygame.mixer.Sound("assets/sounds/kick_door.mp3")
+        kick_door_sound.play()
+        clock = pygame.time.Clock()
+        while elapsed_time < roll_time_seconds:
+            # Calcula o tempo entre quadros
+            delta_time = clock.tick(60) / 1000.0  # 60 FPS
+
+            elapsed_time += delta_time  # Atualiza o tempo decorrido
+            
+
+            self.screen.blit(kick_door_transition, (0, 0))
+            pygame.display.update()
         
     def draw_game_state(self, game_state):
         # Draw current player info

@@ -78,6 +78,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
 
                     if action == "kick_door": # Se aperto para chutar porta # KICK DOOR
                         if game_state.phase == GamePhase.SETUP:
+                            renderer.draw_kick_door_transition()
                             kick_door_phase = KickDoorFase(game_state, renderer)
                             kick_door_phase.run()
 
