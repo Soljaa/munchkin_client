@@ -187,6 +187,25 @@ class GameRenderer:
 
             self.screen.blit(kick_door_transition, (0, 0))
             pygame.display.update()
+
+    def draw_loot_the_room_transition(self):
+        loot_the_room_transition = pygame.image.load("assets/game/loot_the_room_transition.jpg")
+
+        roll_time_seconds = 2.5  # Tempo total de animação do dado rolando em segundos
+        elapsed_time = 0  # Variável para controlar o tempo de animação
+        
+        kick_door_sound = pygame.mixer.Sound("assets/sounds/loot_the_room.mp3")
+        kick_door_sound.play()
+        clock = pygame.time.Clock()
+        while elapsed_time < roll_time_seconds:
+            # Calcula o tempo entre quadros
+            delta_time = clock.tick(60) / 1000.0  # 60 FPS
+
+            elapsed_time += delta_time  # Atualiza o tempo decorrido
+            
+
+            self.screen.blit(loot_the_room_transition, (0, 0))
+            pygame.display.update()
         
     def draw_game_state(self, game_state):
         # Draw current player info

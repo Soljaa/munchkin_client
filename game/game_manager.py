@@ -78,7 +78,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
 
                     if action == "kick_door": # Se aperto para chutar porta # KICK DOOR
                         if game_state.phase == GamePhase.SETUP:
-                            renderer.draw_kick_door_transition()
+                            renderer.draw_loot_the_room_transition()
                             kick_door_phase = KickDoorFase(game_state, renderer)
                             kick_door_phase.run()
 
@@ -106,6 +106,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
 
                     elif action == "loot": # Se aperto por saquear # LOOT
                         if game_state.phase == GamePhase.KICK_DOOR:
+                            renderer.draw_loot_the_room_transition()
                             loot_room_phase = LootRoomPhase(game_state)
                             loot_room_phase.run()
                             charity_phase = CharityPhase(game_state, renderer)
