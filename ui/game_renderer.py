@@ -217,11 +217,11 @@ class GameRenderer:
             card_sprite.draw()
             pygame.display.update()
 
-    def draw_charity_fase_transition(self, distribution): # TODO: Polir
+    def draw_charity_fase_transition(self, players, distribution):  # TODO: Polir
         """
         Exibe a distribuição de cartas para os jogadores na fase de caridade na tela do Pygame, com um botão para continuar.
         """
-        self.screen.fill((0, 0, 0))  # Limpa a tela com fundo preto
+        self.screen.fill((0, 0, 0))  # Limpa a tela com um fundo preto
         font = pygame.font.Font(None, 36)
         y_position = 50  # Posição inicial no eixo Y
 
@@ -230,39 +230,45 @@ class GameRenderer:
         self.screen.blit(title_text, (50, y_position))
         y_position += 50
 
-        # Itera sobre os jogadores e as cartas distribuídas
-        for player, cards in distribution.items():
-            # Renderiza o nome do jogador
+        # Itera sobre todos os jogadores, incluindo os que não receberam cartas
+        for player in players:
+            # Exibe o nome do jogador
             player_text = font.render(f"{player.name}:", True, (255, 255, 255))
             self.screen.blit(player_text, (50, y_position))
             y_position += 30
 
-            x_position = 50  # Posição inicial no eixo X para os sprites das cartas
+            # Verifica se o jogador recebeu cartas
+            cards = distribution.get(player, [])
+            if cards:
+                # Renderiza os sprites das cartas se o jogador recebeu cartas
+                x_position = 50  # Posição inicial no eixo X para os sprites das cartas
+                for card in cards:
+                    try:
+                        card_sprite = pygame.image.load(card.image).convert_alpha()
+                        card_sprite = pygame.transform.scale(card_sprite, (100, 150)) 
+                        self.screen.blit(card_sprite, (x_position, y_position)) 
+                        x_position += 110  # Move a posição X para o próximo sprite de carta
+                    except Exception as e:
+                        print(f"Erro ao carregar sprite da carta: {card.image}. Erro: {e}")
+            else:
+                # Se o jogador não recebeu cartas, exibe uma mensagem simples
+                no_cards_text = font.render("No cards received", True, (255, 255, 255))
+                self.screen.blit(no_cards_text, (50, y_position))
 
-            # Renderiza os sprites das cartas
-            for card in cards:
-                try:
-                    card_sprite = pygame.image.load(card.image).convert_alpha()
-                    card_sprite = pygame.transform.scale(card_sprite, (100, 150)) 
-                    self.screen.blit(card_sprite, (x_position, y_position)) 
-                    x_position += 110  # Move a posição X para o próximo sprite da card
-                except Exception as e:
-                    print(f"Erro ao carregar sprite da carta: {card.image}. Erro: {e}")
+            y_position += 160  # Move a posição Y para o próximo jogador
 
-            y_position += 160  # Desce para a posição Y para o próximo jogador
-
-        # Botão para continuar no canto inferior direito
+        # Botão de continuar no canto inferior direito
         button_font = pygame.font.Font(None, 28)
         button_text = button_font.render("Continue", True, (255, 255, 255))
         button_color = (70, 130, 180)
         button_width, button_height = 150, 50
-        button_x = 1280 - button_width - 20  # 20 pixels de margem da borda direita
-        button_y = 720 - button_height - 20  # 20 pixels de margem da borda inferior
+        button_x = 1280 - button_width - 20  # Margem de 20 pixels da borda direita
+        button_y = 720 - button_height - 20  # Margem de 20 pixels da borda inferior
         button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
         pygame.draw.rect(self.screen, button_color, button_rect)
         self.screen.blit(button_text, (button_rect.x + 20, button_rect.y + 10))
 
-        # Atualiza a tela para exibir os conteúdos
+        # Atualiza a tela para exibir o conteúdo
         pygame.display.flip()
 
         waiting = True
@@ -276,6 +282,7 @@ class GameRenderer:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if button_rect.collidepoint(event.pos):
                         waiting = False
+
   
     def draw_game_state(self, game_state):
         # Draw current player info

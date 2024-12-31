@@ -21,17 +21,23 @@ class CharityPhase(GamePhases):
         if len(donation_cards) == 1:
             print(f"Distributing single card to {lowest_cards_players[0].name}")
             lowest_cards_players[0].hand += donation_cards
-            return True  # Confirmação de execução da fase
+            distribution = {lowest_cards_players[0]: donation_cards}
+        else:
+            print(f"Distributing {len(donation_cards)} cards among {len(lowest_cards_players)} players")
+            distribution = self.distribute_cards(lowest_cards_players, donation_cards)
 
-        print(f"Distributing {len(donation_cards)} cards among {len(lowest_cards_players)} players")
-        distribution = self.distribute_cards(lowest_cards_players, donation_cards)
         for player, card_array in distribution.items():
             print(f"Player {player.name} receives {len(card_array)} cards")
             player.hand += card_array
 
-        self.renderer.draw_charity_fase_transition(distribution)
+        # Exclui o jogador atual da lista de jogadores antes de renderizar
+        other_players = [player for player in self.players if player != current_player]
+        
+        # Chama a renderização para exibir todos os jogadores, exceto o atual
+        self.renderer.draw_charity_fase_transition(other_players, distribution)
 
         return True
+
 
     def get_lowest_cards_players(self):
         print("Identifying players with the fewest cards")
