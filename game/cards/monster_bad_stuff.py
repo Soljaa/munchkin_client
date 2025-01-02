@@ -11,9 +11,9 @@ class CompositeBadStuff(MonsterBadStuff):
     def __init__(self, *bad_stuffs: MonsterBadStuff):
         self.bad_stuffs = bad_stuffs
     
-    def apply(self, monster, player) -> None:
+    def apply(self, player) -> None:
         for bad_stuff in self.bad_stuffs:
-            bad_stuff.apply(monster, player)
+            bad_stuff.apply(player)
 
 class DeathBadStuff(MonsterBadStuff):
     def __init__(self, exclude_race=None):

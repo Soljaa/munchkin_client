@@ -58,6 +58,7 @@ class GameState:
         try:
             success, result = self.current_combat.resolve_combat() # Ve se player ganha ou perde. Retorno: success(True ou False), result(informações do monstro)
             if success: # Se player ganhou o combate
+                # TODO: Pode desenhar o boneco vencendo a luta contra o monstro (não consegui pois a IA tem filtro para não desenhar coisas "sensíveis", nesse caso é a luta, guerra, batalha)
                 self.current_player().level_up()
                 if self.current_player().level >= 10: 
                     raise EndGameException

@@ -169,53 +169,66 @@ class GameRenderer:
         pygame.display.flip()
         time.sleep(2.5)
 
-    def draw_kick_door_transition(self):
-        kick_door_transition = pygame.image.load("assets/game/kick_door_transition.jpg")
+    def draw_transition(self, image_path, sound_path=None, duration=2.0, extra_element=None):
+        """
+        Desenha uma transição genérica na tela.
 
-        roll_time_seconds = 2  # Tempo total de animação do dado rolando em segundos
-        elapsed_time = 0  # Variável para controlar o tempo de animação
-        
-        kick_door_sound = pygame.mixer.Sound("assets/sounds/kick_door.mp3")
-        kick_door_sound.play()
+        Args:
+            image_path (str): Caminho para a imagem a ser exibida.
+            sound_path (str, optional): Caminho para o som a ser tocado. Default é None.
+            duration (float): Duração da transição em segundos. Default é 2.0.
+            extra_element (callable, optional): Função que desenha elementos extras na tela. Default é None.
+        """
+        # Carrega a imagem de transição
+        transition_image = pygame.image.load(image_path)
+
+        # Toca o som, se fornecido
+        if sound_path:
+            sound = pygame.mixer.Sound(sound_path)
+            sound.play()
+
+        # Controle do tempo de animação
+        elapsed_time = 0
         clock = pygame.time.Clock()
-        while elapsed_time < roll_time_seconds:
-            # Calcula o tempo entre quadros
+
+        while elapsed_time < duration:
             delta_time = clock.tick(60) / 1000.0  # 60 FPS
+            elapsed_time += delta_time
 
-            elapsed_time += delta_time  # Atualiza o tempo decorrido
-            
+            # Desenha a imagem de transição
+            self.screen.blit(transition_image, (0, 0))
 
-            self.screen.blit(kick_door_transition, (0, 0))
+            # Desenha o elemento extra, se fornecido
+            if extra_element:
+                extra_element()
+
             pygame.display.update()
 
+    def draw_kick_door_transition(self):
+        self.draw_transition(
+            image_path="assets/game/kick_door_transition.jpg",
+            sound_path="assets/sounds/kick_door.mp3",
+            duration=2.0
+        )
+
     def draw_loot_the_room_transition(self, loot_card):
-        loot_the_room_transition = pygame.image.load("assets/game/loot_the_room_transition.jpg")
-
-        roll_time_seconds = 2.5  # Tempo total de animação do dado rolando em segundos
-        elapsed_time = 0  # Variável para controlar o tempo de animação
-        
-        kick_door_sound = pygame.mixer.Sound("assets/sounds/loot_the_room.mp3")
-        kick_door_sound.play()
-        clock = pygame.time.Clock()
-        while elapsed_time < roll_time_seconds:
-            # Calcula o tempo entre quadros
-            delta_time = clock.tick(60) / 1000.0  # 60 FPS
-
+        def draw_card():
+            # Configuração da carta centralizada
             card_sprite = Sprite(loot_card.image)
-            #card_sprite.image = pygame.transform.scale(card_sprite.image, (HAND_CARD_WIDTH, HAND_CARD_HEIGHT))
-
-            card_x = 40
-            card_y = 40
+            card_x = (self.screen.get_width() - card_sprite.width) // 2
+            card_y = (self.screen.get_height() - card_sprite.height) // 2
             card_sprite.x = card_x
             card_sprite.y = card_y
             card_sprite.draw()
 
-            elapsed_time += delta_time  # Atualiza o tempo decorrido
-            
+        self.draw_transition(
+            image_path="assets/game/loot_the_room_transition.png",
+            sound_path="assets/sounds/loot_the_room.mp3",
+            duration=2.5,
+            extra_element=draw_card
+        )
 
-            self.screen.blit(loot_the_room_transition, (0, 0))
-            card_sprite.draw()
-            pygame.display.update()
+
 
     def draw_charity_fase_transition(self, players, distribution):  # TODO: Polir
         """
@@ -282,6 +295,18 @@ class GameRenderer:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if button_rect.collidepoint(event.pos):
                         waiting = False
+
+    def draw_run_away_success_transition(self):
+        self.draw_transition(
+            image_path="assets/game/run_away_success.jpg",
+            duration=2.0
+        )
+
+    def draw_run_away_failed_transition(self):
+        self.draw_transition(
+            image_path="assets/game/run_away_failed.jpg",
+            duration=2.0
+        )
 
   
     def draw_game_state(self, game_state):
