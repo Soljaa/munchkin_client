@@ -167,7 +167,6 @@ class Player:
 
     def remove_race(self):
         if self.race:
-            self.add_to_discard_pile(self.race[0])
             self.race = None
 
     def replace_race(self, card):

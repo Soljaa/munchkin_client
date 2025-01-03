@@ -53,7 +53,7 @@ class Button:
         if not self.verify_hover():
             self.is_hovered = False
             self.mouse_held = False  # Reset ao sair do hover
-        elif self.verify_hover():
+        elif self.verify_hover() and self.is_active:
             if not self.is_hovered:
                 self.is_hovered = True
                 self.play_sound()
@@ -67,7 +67,6 @@ class Button:
             else:
                 self.mouse_held = False  # Reset quando o botão é solto
 
-        self.is_hovered = False
         return False
 
     def play_sound(self):

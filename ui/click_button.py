@@ -56,7 +56,7 @@ class ClickButton(Button):
         if not self.verify_hover():
             self.is_hovered = False
             self.mouse_held = False  # Reset ao sair do hover
-        elif self.verify_hover():
+        elif self.verify_hover() and self.is_active:
             if not self.is_hovered:
                 self.is_hovered = True
 
