@@ -15,6 +15,8 @@ class PlayerSelection:
         self.running = True
         self.input_text = ""
         self.reload_mouse = 0.2
+        self.cursor_visible = True
+        self.last_blink_time = time.time()
 
         # Initialization
         self.initialize_window()
@@ -101,6 +103,20 @@ class PlayerSelection:
             if new_char.isalnum():  # Verifica se o caractere é alfanumérico
                 self.input_text += new_char  # Adiciona o novo caractere ao texto
 
+    def update_cursor(self):
+        """Alterna a visibilidade do cursor em intervalos regulares."""
+        current_time = time.time()
+        if current_time - self.last_blink_time >= 0.5:  # Alterna a cada 0.5 segundos
+            self.cursor_visible = not self.cursor_visible
+            self.last_blink_time = current_time
+
+    def get_display_text(self):
+        """Retorna o texto formatado com o cursor."""
+        if self.cursor_visible:
+            return self.input_text + "|"
+        else:
+            return self.input_text
+
 
     def is_valid_nickname(self, nickname):
         """Verifica se o nickname é válido: não vazio, sem espaços e alfanumérico."""
@@ -123,7 +139,7 @@ class PlayerSelection:
         if self.is_valid_nickname(nickname):
             # Ao invés de chamar main() diretamente, vamos retornar os dados
             return nickname, avatar_img_dir
-        return None, None  # Caso o nickname não seja válido
+
 
     def quit(self):
         self.running = False
@@ -159,13 +175,15 @@ class PlayerSelection:
 
                 elif event.type == pygame.KEYDOWN:  # Verifica se uma tecla foi pressionada
                     self.handle_text_input(event)
+
+            self.update_cursor()
                     
             # Desenha o campo de entrada (box)
             pygame.draw.rect(self.window.screen, (0,0,0), (input_box_x, input_box_y, input_box_width, input_box_height), 2)
             
             # Textos
             self.draw_text(self.window.screen, "Digite seu nickname:", (input_box_x, input_box_y - 30), 28, (0, 0, 0))  # Texto acima do campo
-            self.draw_text(self.window.screen, self.input_text, (input_box_x + 10, input_box_y + 10), 28, (0, 0, 0))  # Texto digitado
+            self.draw_text(self.window.screen, self.get_display_text(), (input_box_x + 10, input_box_y + 10), 28, (0, 0, 0))  # Texto digitado
 
             # Verifica se é hora de alternar a cor do aviso
             current_time = pygame.time.get_ticks()
