@@ -100,6 +100,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 if game_state.current_player().level <= 0: # Se o jogador estiver morto (logo após a perda do nível)
                                     renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
                                     player_died = True
+                            game_state.door_deck.discard(current_combat.monster)
                             charity_phase = CharityPhase(game_state, renderer)
                             charity_phase.run(player_died)
                             game_state.next_player()
@@ -122,7 +123,9 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                     elif action == "finish_combat": # Se aperto para finalizar o combate...
                         if game_state.phase == GamePhase.COMBAT and game_state.current_combat: #... e estou na fase de combate
                             try:
+                                monster_card = game_state.current_combat.monster
                                 game_state.resolve_combat() # Resolve o combate, aplicando as devidas bonificações ou penalizações
+                                game_state.door_deck.discard(monster_card)
                                 charity_phase = CharityPhase(game_state, renderer)
                                 charity_phase.run()
                                 game_state.next_player()
