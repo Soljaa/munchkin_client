@@ -1,4 +1,4 @@
-from game.card import CardType
+from game.card import CardType, RaceTypes
 from game.death import Death
 import random
 
@@ -11,8 +11,11 @@ class Player:
         self.combat_strength = 0
         self.hand = []
         self.equipped_items = []
-        self.race = None
-        self.class_ = None
+        self.race = RaceTypes.HUMAN
+        self.class_ = []  # esta como array por causa do super munchking
+        # adicionar referencia a efeitos ativos, com referencia aos itens donos do efeito e
+        # ver se vale dividir em etapas de aplicação dos efeitos como efeitos que se aplicam no setup,
+        # ou no combate, ou na fuga e etc
 
     def calculate_combat_strength(self):
         base_strength = self.level
@@ -20,26 +23,99 @@ class Player:
         return base_strength + item_bonus
 
     def equip_item(self, item):
-        from game.card import Item
-        if not isinstance(item, Item):
-            return False
-        if item.equipped or item not in self.hand:
-            return False
-            
-        # Check if player can equip more items
-        if len(self.equipped_items) >= 5:  # Basic limit of items
-            return False
-            
-        self.equipped_items.append(item)
-        item.equipped = True
-        self.hand.remove(item)
+        from game.card import Item, Race, Class
+        if isinstance(item, Item):
+            # 2 hands restriction
+            if item.two_hands:
+                for equipped_item in self.equipped_items:
+                    if equipped_item.slot == "hands":
+                        return False
+
+            # big item restriction
+            if item.big:
+                for equipped_item in self.equipped_items:
+                    if equipped_item.big:
+                        return False
+
+            # type limit
+            if item.slot == "hands":
+                hands_limit = 0
+                for equipped_item in self.equipped_items:
+                    if equipped_item.two_hands:
+                        return False
+                    if equipped_item.slot == "hands":
+                        hands_limit += 1
+                if hands_limit > 1:
+                    return False
+
+            if item.slot == "head":
+                for equipped_item in self.equipped_items:
+                    if equipped_item.slot == "head":
+                        return False
+
+            if item.slot == "armor":
+                for equipped_item in self.equipped_items:
+                    if equipped_item.slot == "armor":
+                        return False
+
+            if item.slot == "feet":
+                for equipped_item in self.equipped_items:
+                    if equipped_item.slot == "feet":
+                        return False
+
+            # race restrictions
+            if item.race_required:
+                if self.race != item.race_required:
+                    return False
+
+            if item.races_prohibited:
+                if self.race in item.races_prohibited:
+                    return False
+
+            # class restrictions
+            if item.class_required:
+                can_use = False
+                for class_card in self.class_:
+                    if class_card.type == item.class_required:
+                        can_use = True
+                if not can_use:
+                    return False
+
+            if item.classes_prohibited:
+                for class_card in self.class_:
+                    if class_card.type in item.classes_prohibited:
+                        return False
+
+            self.equipped_items.append(item)
+            self.hand.remove(item)
+
+        if isinstance(item, Race):
+            # equip race
+            if self.race:
+                return False
+
+            self.race = item.type
+            self.hand.remove(item)
+
+        if isinstance(item, Class):
+            # equip class
+            if self.class_:
+                return False
+
+            self.class_.append(item)
+            self.hand.remove(item)
+
         return True
 
     def unequip_item(self, item):
         if item in self.equipped_items:
             self.equipped_items.remove(item)
-            item.equipped = False
             self.hand.append(item)
+
+        if item in self.class_:
+            self.class_.remove(item)
+            self.hand.append(item)
+
 
     def draw_card(self, deck):
         card = deck.draw()
@@ -81,16 +157,18 @@ class Player:
             Death(self).apply()
 
     def remove_class(self):
-        self.add_to_discard_pile(self.class_)
-        self.class_ = None
+        if self.class_:
+            self.add_to_discard_pile(self.class_[0])
+            self.class_ = None
 
     def replace_class(self, card):
         self.remove_class()
         self.class_ = card
 
     def remove_race(self):
-        self.add_to_discard_pile(self.race)
-        self.race = None
+        if self.race:
+            self.add_to_discard_pile(self.race[0])
+            self.race = None
 
     def replace_race(self, card):
         self.remove_race()

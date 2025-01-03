@@ -1,7 +1,10 @@
+import copy
+
 import pygame
 from PPlay.sprite import *
+from PPlay.window import Window
 from constants import *
-from game.card import Item
+from game.card import Item, CardType
 from ui.hover_button import HoverButton
 from game.dice import Dice
 from game.game_state import GamePhase
@@ -32,6 +35,11 @@ class GameRenderer:
         self.message = ""
         self.message_timer = 0
         self._init_buttons()
+        self.zoomed_card: Sprite | None = None
+        self.mouse = Window.get_mouse()
+        self.equip_holder = pygame.transform.scale(pygame.image.load("assets/game/equip_holder.png"), (100, 150))
+        self.hand_card_sprites = []  # [(card_sprite, card)]
+        self.equipped_card_sprites = []  # [(card_sprite, card)]]
 
     def _init_buttons(self):
         button_y0 = SCREEN_HEIGHT - 270
@@ -55,6 +63,7 @@ class GameRenderer:
 
     def draw_dungeon_background(self):
         self.screen.blit(self.dungeon_background, (402, 0))
+        self.screen.blit(self.equip_holder, (428, 440))
 
     def draw_avatars(self, players):
         # Configuração de posição inicial e incrementos para cada nível dos avatares
@@ -228,8 +237,6 @@ class GameRenderer:
             extra_element=draw_card
         )
 
-
-
     def draw_charity_fase_transition(self, players, distribution):  # TODO: Polir
         """
         Exibe a distribuição de cartas para os jogadores na fase de caridade na tela do Pygame, com um botão para continuar.
@@ -308,21 +315,22 @@ class GameRenderer:
             duration=2.0
         )
 
-  
     def draw_game_state(self, game_state):
+        # cuidado, a ordem dos draws importa
+
         # Draw current player info
         player = game_state.current_player()
         players = game_state.players
         self._draw_player_info(player, 430, 10)
 
+        # Draw equipped items
+        self._draw_player_equips(player)
+
         # Draw avatars
         self.draw_avatars(players)
 
-        # Draw phase indicator at the top
-        self._draw_phase_indicator(game_state.phase, 570, 105)
-        
-        # Draw hand
-        self._draw_hand(player, 430, 190)
+        # deck info
+        self._draw_decks_info(game_state)
         
         # Draw current combat if any
         if game_state.current_combat:
@@ -330,9 +338,15 @@ class GameRenderer:
         
         # Draw buttons based on game phase
         self._draw_buttons(game_state)
+
+        # Draw hand
+        self._draw_hand(player, 430, 190)
         
         # Draw message if any
         self._draw_message()
+
+        # Draw phase indicator at the top
+        self._draw_phase_indicator(game_state.phase, 570, 105)
 
     def _draw_phase_indicator(self, phase, x, y):
         font = pygame.font.Font(None, 32)
@@ -366,78 +380,91 @@ class GameRenderer:
             surface = font.render(text, True, WHITE)
             self.screen.blit(surface, (text_x, y + i * 30))
 
-    def _draw_hand(self, player, x, y):
-        font = pygame.font.Font(None, 24)
+    def _draw_player_equips(self, player):
+        equipped_card_positions = {
+            'head': (465, 440),
+            'armor': (465, 490),
+            'l_hand': (500, 490),
+            'r_hand': (430, 490),
+            'feet': (465, 540),
+            'race': (440, 420),
+            'class': (500, 420)
+        }
+        r_hand_used = False
 
+        self.equipped_card_sprites = []
+
+        # revisar display para usar o super munchkin
+        if player.class_:
+            item_sprite = Sprite(player.class_[0].image)  # aqui
+            item_sprite.resize(30, 45)
+            item_sprite.draw()
+
+            self.handle_card_hover(player.class_, item_sprite)
+
+            self.equipped_card_sprites.append((item_sprite, player.class_))
+
+        # revisar display de raça e gender para player info
+        # if player.race:
+        #     item_sprite = Sprite(player.race.image)
+        #     item_sprite.resize(30, 45)
+        #     item_sprite.draw()
+        #
+        #     self.handle_card_hover(player.race, item_sprite)
+        #
+        #     self.equipped_card_sprites.append((item_sprite, player.race))
+
+        for item in player.equipped_items:
+            item_sprite = Sprite(item.image)
+            item_sprite.resize(30, 45)
+
+            # Usar Enum
+            pos_x = 0
+            pos_y = 0
+
+            if item.slot == 'head':
+                pos_x = equipped_card_positions['head'][0]
+                pos_y = equipped_card_positions['head'][1]
+
+            if item.slot == 'feet':
+                pos_x = equipped_card_positions['feet'][0]
+                pos_y = equipped_card_positions['feet'][1]
+
+            if item.slot == 'armor':
+                pos_x = equipped_card_positions['armor'][0]
+                pos_y = equipped_card_positions['armor'][1]
+
+            if item.slot == 'hands':
+                if not r_hand_used:
+                    pos_x = equipped_card_positions['r_hand'][0]
+                    pos_y = equipped_card_positions['r_hand'][1]
+                    r_hand_used = True
+                else:
+                    pos_x = equipped_card_positions['l_hand'][0]
+                    pos_y = equipped_card_positions['l_hand'][1]
+
+            item_sprite.x = pos_x
+            item_sprite.y = pos_y
+            item_sprite.draw()
+
+            self.handle_card_hover(item, item_sprite)
+
+            self.equipped_card_sprites.append((item_sprite, item))
+
+    def _draw_hand(self, player, x, y):
         # Dimensões para cartas na mão do jogador atual
         HAND_CARD_WIDTH = 90
         HAND_CARD_HEIGHT = 135
 
-        # Dimensões para cartas equipadas (1/3 do tamanho)
-        EQUIPPED_CARD_WIDTH = HAND_CARD_WIDTH // 3
-        EQUIPPED_CARD_HEIGHT = HAND_CARD_HEIGHT // 3
+        HAND_CARD_SPACING = HAND_CARD_WIDTH - 20
 
-        # Ajuste do espaçamento baseado no novo tamanho
-        HAND_CARD_SPACING = HAND_CARD_WIDTH + 20  # 20px de margem entre cartas
-        EQUIPPED_CARD_SPACING = EQUIPPED_CARD_WIDTH + 10  # 10px de margem entre cartas equipadas
+        self.hand_card_sprites = []
 
-        self.card_positions = []
-
-        # Equipped Items Section
-        slots = {
-            "head": {"title": "Head:", "items": [], "y_offset": 0},
-            "armor": {"title": "Armor:", "items": [], "y_offset": EQUIPPED_CARD_HEIGHT + 40},
-            "hands": {"title": "Hands:", "items": [], "y_offset": 2 * (EQUIPPED_CARD_HEIGHT + 40)},
-            "feet": {"title": "Feet:", "items": [], "y_offset": 3 * (EQUIPPED_CARD_HEIGHT + 40)},
-        }
-
-        # Organize items by slots
-        for item in player.equipped_items:
-            if item.slot in slots:
-                slots[item.slot]["items"].append(item)
-
-        # Draw items by slot
-        for slot_info in slots.values():
-            slot_title = font.render(slot_info["title"], True, WHITE)
-            slot_y = y + slot_info["y_offset"]
-            self.screen.blit(slot_title, (x, slot_y - 25))
-
-            for i, item in enumerate(slot_info["items"]):
-                try:
-                    item_sprite = Sprite(item.image)
-                    item_sprite.image = pygame.transform.scale(item_sprite.image,
-                                                               (EQUIPPED_CARD_WIDTH, EQUIPPED_CARD_HEIGHT))
-
-                    item_x = x + (i * EQUIPPED_CARD_SPACING)
-                    item_y = slot_y
-                    item_sprite.x = item_x
-                    item_sprite.y = item_y
-                    item_sprite.draw()
-
-                    self.card_positions.append({
-                        'rect': pygame.Rect(item_x, item_y, EQUIPPED_CARD_WIDTH, EQUIPPED_CARD_HEIGHT),
-                        'type': 'equipped',
-                        'index': len(self.card_positions),
-                        'item': item
-                    })
-
-                    # Draw bonus text if item has bonus
-                    if hasattr(item, 'bonus'):
-                        bonus_text = font.render(f"+{item.bonus}", True, WHITE)
-                        self.screen.blit(bonus_text, (item_x + 5, item_y + EQUIPPED_CARD_HEIGHT + 5))
-                except Exception as e:
-                    print(f"Error drawing equipped item: {e}")
-
-        # Draw hand cards
-        hand_y = y + 4 * (EQUIPPED_CARD_HEIGHT + 40)
-        hand_title = font.render("Your Hand:", True, WHITE)
-        self.screen.blit(hand_title, (x, hand_y))
-
-        hand_cards_y = hand_y + 30
+        hand_cards_y = 610
         for i, card in enumerate(player.hand):
             try:
                 card_sprite = Sprite(card.image)
-                card_sprite.image = pygame.transform.scale(card_sprite.image, (HAND_CARD_WIDTH, HAND_CARD_HEIGHT))
+                card_sprite.resize(HAND_CARD_WIDTH, HAND_CARD_HEIGHT)
 
                 card_x = x + (i * HAND_CARD_SPACING)
                 card_y = hand_cards_y
@@ -445,20 +472,13 @@ class GameRenderer:
                 card_sprite.y = card_y
                 card_sprite.draw()
 
-                if isinstance(card, Item):
-                    self.card_positions.append({
-                        'rect': pygame.Rect(card_x, card_y, HAND_CARD_WIDTH, HAND_CARD_HEIGHT),
-                        'type': 'hand',
-                        'index': i,
-                        'item': card
-                    })
+                self.handle_card_hover(card, card_sprite)
 
-                if hasattr(card, 'bonus') and card.bonus:
-                    bonus_text = font.render(f"+{card.bonus}", True,
-                                             GREEN if isinstance(card, Item) and not card.equipped else WHITE)
-                    self.screen.blit(bonus_text, (card_x + 5, card_y + HAND_CARD_HEIGHT + 5))
+                self.hand_card_sprites.append((card_sprite, card))
+
             except Exception as e:
                 print(f"Error drawing hand card: {e}")
+                raise e
 
     def _draw_combat(self, combat, x, y):
         font = pygame.font.Font(None, 36)
@@ -538,12 +558,13 @@ class GameRenderer:
         if self.message and self.message_timer > 0:
             font = pygame.font.Font(None, 32)
             text = font.render(self.message, True, BLACK)
-            text_rect = text.get_rect(center=(850, 520))
+            text_rect = text.get_rect(center=(850, 585))
             pygame.draw.rect(self.screen, WHITE, (text_rect.x - 10, text_rect.y - 5, text_rect.width + 20, text_rect.height + 10))
             self.screen.blit(text, text_rect)
             self.message_timer -= 1
 
     def handle_event(self, event, game_state=None):
+        equipable_card_types = [CardType.CLASS, CardType.ITEM, CardType.RACE]
         # Handle button clicks
         for button_name, button in self.buttons.items():
             if button.handle_event():
@@ -551,14 +572,74 @@ class GameRenderer:
 
         # Handle card clicks
         if game_state and event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = event.pos
+            # Check for clicks on any cards
+            for card_sprite, card in self.hand_card_sprites:
+                if self.mouse.is_over_object(card_sprite) and card.card_type in equipable_card_types:
+                    self._remove_item_sprite(self.hand_card_sprites, card_sprite)
+                    return 'equip_item', card
 
-            # Check for clicks on any stored card positions
-            for card_data in self.card_positions:
-                if card_data['rect'].collidepoint(mouse_pos):
-                    if card_data['type'] == 'hand' and isinstance(card_data['item'], Item):
-                        return ('equip_item', card_data['index'])
-                    elif card_data['type'] == 'equipped':
-                        return ('unequip_item', card_data['index'])
-
+            for card_sprite, card in self.equipped_card_sprites:
+                if self.mouse.is_over_object(card_sprite):
+                    self._remove_item_sprite(self.equipped_card_sprites, card_sprite)
+                    return 'unequip_item', card
         return None
+
+    def _draw_zoomed_card(self):
+        zoomed_card_width = 270
+        zoomed_card_height = 395
+        zoomed_card_x = (SCREEN_WIDTH + 402)/2 - zoomed_card_width/2
+        zoomed_card_y = SCREEN_HEIGHT/2 - zoomed_card_height/2
+        if self.zoomed_card:
+            zoomed_sprite = Sprite(self.zoomed_card)
+            zoomed_sprite.resize(zoomed_card_width, zoomed_card_height)
+            zoomed_sprite.set_position(zoomed_card_x, zoomed_card_y)
+            zoomed_sprite.draw()
+
+    def _set_zoomed_card(self, card_sprite):
+        self.zoomed_card = card_sprite
+
+    def _hide_zoomed_card(self):
+        self.zoomed_card = None
+
+    def _draw_decks_info(self, game_state):
+        font = pygame.font.Font(None, 50)
+
+        # quantidades de cartas
+        treasure_deck_amount = len(game_state.treasure_deck.cards)
+        discard_treasure_deck_amount = len(game_state.treasure_deck.discard_pile)
+        door_deck_amount = len(game_state.door_deck.cards)
+        discard_door_deck_amount = len(game_state.door_deck.discard_pile)
+
+        # posições
+        treasure_deck_x = 50
+        treasure_deck_y = 25
+        treasure_discard_x = treasure_deck_x
+        treasure_discard_y = treasure_deck_y + 120
+        door_deck_x = 305
+        door_deck_y = 240
+        door_discard_x = door_deck_x
+        door_discard_y = door_deck_y + 120
+
+        # texto
+        treasure_text = font.render(str(treasure_deck_amount), True, WHITE)
+        treasure_discard_text = font.render(str(discard_treasure_deck_amount), True, WHITE)
+        door_text = font.render(str(door_deck_amount), True, WHITE)
+        door_discard_text = font.render(str(discard_door_deck_amount), True, WHITE)
+
+        # draw text
+        self.screen.blit(treasure_text, (treasure_deck_x, treasure_deck_y))
+        self.screen.blit(treasure_discard_text, (treasure_discard_x, treasure_discard_y))
+        self.screen.blit(door_text, (door_deck_x, door_deck_y))
+        self.screen.blit(door_discard_text, (door_discard_x, door_discard_y))
+
+    def handle_card_hover(self, card, card_sprite):
+        if self.mouse.is_over_object(card_sprite):
+            self._set_zoomed_card(card.image)
+            self._draw_zoomed_card()
+        elif self.zoomed_card == card_sprite:
+            self._hide_zoomed_card()
+
+    def _remove_item_sprite(self, origin, sprite):
+        for idx, sprite_tuple in enumerate(origin):
+            if sprite_tuple[0] == sprite:
+                origin.remove(sprite_tuple)
