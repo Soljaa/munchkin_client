@@ -2,7 +2,6 @@ from enum import Enum, auto
 from game.cards.monster_effect import MonsterEffect
 from game.cards.monster_bad_stuff import MonsterBadStuff
 
-
 class CardType(Enum):
     MONSTER = auto()
     CURSE = auto()
@@ -12,37 +11,15 @@ class CardType(Enum):
     DOOR_BUFF = auto()
     TREASURE_BUFF = auto()
 
-
-class RaceTypes(Enum):
-    DWARF = auto()
-    ELF = auto()
-    HALFlING = auto()
-    HUMAN = auto()
-
-
-class ClassTypes(Enum):
-    WARRIOR = auto()
-    CLERIC = auto()
-    THIEF = auto()
-    WIZARD = auto()
-
-
-class ItemSlotTypes(Enum):
-    HANDS = auto()
-    HEAD = auto()
-    ARMOR = auto()
-    FEET = auto()
-
-
 class Card:
     def __init__(self, name, image, card_type):
         self.name = name
         self.image = image
         self.card_type = card_type
+        self.equipped = False #TODO: Ver se o "equipado" entra na classe pai ou se entra nas classes filhas apropriadas. Pois, por exemplo, a classe Monstro não se equipa (eu acho), já a classe Item sim.
 
     def __str__(self):
-        return f"{self.name}"
-
+        return f"{self.name} (Level: {self.level}, Bonus: {self.bonus})"
 
 class Monster(Card):
     def __init__(self, name: str, image: str, level: int, treasure: int, 
@@ -71,37 +48,25 @@ class Monster(Card):
         if self.bad_stuff:
             self.bad_stuff.apply(player)
 
-
 class Item(Card):
-    def __init__(self, name, image, bonus, value, slot=None, big=False, two_hands=False, class_required=None,
-                 classes_prohibited=None, race_required=None, races_prohibited=None, effect=None):
+    def __init__(self, name, image, bonus, value, slot=None, size="Small"):
         super().__init__(name, image, CardType.ITEM)
         self.bonus = bonus  # Bônus concedido pelo item
         self.value = value  # Valor do item em ouro
         self.slot = slot    # Slot onde o item é usado (cabeça, pé, etc)
-        self.big = big    # Size é o tamanho (grande, etc) Default é false
-        self.class_required = class_required
-        self.classes_prohibited = classes_prohibited
-        self.race_required = race_required
-        self.races_prohibited = races_prohibited
-        # add gender
-        self.two_hands = two_hands  # armas de duas mão, default False
-        self.effect = effect  # tupla com tipo e valor
-
+        self.size = size    # Size é o tamanho (grande, etc) Default é small porque o jogo diz que todo item que não é grande é pequeno
+        self.class_required = None
+        self.class_prohibited = None
 
 class Race(Card):
-    def __init__(self, name, image, special_ability, race_type):
+    def __init__(self, name, image, special_ability):
         super().__init__(name, image, CardType.RACE)
         self.special_ability = special_ability
-        self.type = race_type
-
 
 class Class(Card):
-    def __init__(self, name, image, special_ability, class_type):
+    def __init__(self, name, image, special_ability):
         super().__init__(name, image, CardType.CLASS)
         self.special_ability = special_ability
-        self.type = class_type
-
 
 # Classe para cartas de maldição
 class Curse(Card):
@@ -112,7 +77,6 @@ class Curse(Card):
     def apply_effect(self, player):
         if self.effect:
             self.effect.apply(self, player)
-
 
 # Classe para cartas de buff
 class Buff(Card):
