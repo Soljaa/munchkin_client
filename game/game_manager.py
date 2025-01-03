@@ -136,14 +136,13 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 print("Fim de jogo! Vencedor:", game_state.current_player().name)
                                 raise
 
-                    elif action == "look_for_trouble": #LOOK FOR TROUBLE
-                        # abre modal pro player escolher um monstro da mão, vou mocar com um monstro aleatorio mas
-                        # tem q fazer a lógica para ver se o cara tem monstro na mão e escolher o monstro mas precisa
-                        # melhorar o display de cartas primeiro, se nao tiver monstro, mostrar aviso e nao fazer
-                        # nada, so restando pra ele saquear
+
+                    elif action == "look_for_trouble":
                         if game_state.phase == GamePhase.KICK_DOOR:
-                            look_for_trouble_phase = LookForTroublePhase(game_state)
-                            look_for_trouble_phase.run()
+                            look_for_trouble_phase = LookForTroublePhase(game_state, renderer)  # Adicionando renderer
+                            if not look_for_trouble_phase.run():
+                                renderer.set_message("No monsters available or selection cancelled")
+                                game_state.set_game_phase(GamePhase.KICK_DOOR)
 
         # Draw current game state
         try:
