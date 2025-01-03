@@ -350,7 +350,7 @@ class GameRenderer:
 
     def _draw_phase_indicator(self, phase, x, y):
         font = pygame.font.Font(None, 32)
-        phase_text = f"Phase: {phase.name.replace('_', ' ')}"
+        phase_text = f"Fase: {phase.value}"
         surface = font.render(phase_text, True, WHITE)
         self.screen.blit(surface, (x, y))
 
@@ -368,17 +368,18 @@ class GameRenderer:
         player_sprite.draw()
 
         # Desenhar informações
-        font = pygame.font.Font(None, 36)
+        font = pygame.font.Font(None, 26)
         texts = [
-            f"Player: {player.name}",
-            f"Level: {player.level}",
-            f"Strength: {player.calculate_combat_strength()}"
+            f"Jogador: {player.name}",
+            f"Nível: {player.level}",
+            f"Força: {player.calculate_combat_strength()}",
+            f"Raça: {player.race.value}"
         ]
 
         text_x = x + new_width + 20
         for i, text in enumerate(texts):
             surface = font.render(text, True, WHITE)
-            self.screen.blit(surface, (text_x, y + i * 30))
+            self.screen.blit(surface, (text_x, y + 10 + i * 20))
 
     def _draw_player_equips(self, player):
         equipped_card_positions = {

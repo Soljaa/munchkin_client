@@ -14,10 +14,10 @@ class CardType(Enum):
 
 
 class RaceTypes(Enum):
-    DWARF = auto()
-    ELF = auto()
-    HALFlING = auto()
-    HUMAN = auto()
+    DWARF = "Anão"
+    ELF = "Elfo"
+    HALFlING = "Hobbit"
+    HUMAN = "Humano"
 
 
 class ClassTypes(Enum):

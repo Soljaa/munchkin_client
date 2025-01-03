@@ -7,12 +7,12 @@ from game.combat import Combat
 
 
 class GamePhase(Enum):
-    SETUP = auto()
-    KICK_DOOR = auto()
-    LOOK_FOR_TROUBLE = auto()
-    LOOT_ROOM = auto()
-    COMBAT = auto()
-    CHARITY = auto()
+    SETUP = "Preparação"
+    KICK_DOOR = "Chutar porta"
+    LOOK_FOR_TROUBLE = "Buscar encrenca"
+    LOOT_ROOM = "Saquear masmorra"
+    COMBAT = "Combate"
+    CHARITY = "Caridade"
 
 
 class EndGameException(Exception):
