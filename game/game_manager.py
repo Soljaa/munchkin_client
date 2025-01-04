@@ -136,13 +136,17 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 print("Fim de jogo! Vencedor:", game_state.current_player().name)
                                 raise
 
-
                     elif action == "look_for_trouble":
                         if game_state.phase == GamePhase.KICK_DOOR:
                             look_for_trouble_phase = LookForTroublePhase(game_state, renderer)  # Adicionando renderer
                             if not look_for_trouble_phase.run():
                                 renderer.set_message("No monsters available or selection cancelled")
                                 game_state.set_game_phase(GamePhase.KICK_DOOR)
+
+                    elif action == "sell_items":
+                        if game_state.phase == GamePhase.SETUP:
+                            setup_phase = SetupPhase(game_state, ("sell_items", None), renderer)
+                            setup_phase.run()
 
         # Draw current game state
         try:

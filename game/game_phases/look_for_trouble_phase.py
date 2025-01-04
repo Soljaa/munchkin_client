@@ -85,11 +85,11 @@ class LookForTroublePhase(GamePhases):
                 monster_sprite = pygame.transform.scale(monster_sprite, (CARD_WIDTH, CARD_HEIGHT))
                 screen.blit(monster_sprite, card_rect)
 
-                # Nome do monstro
-                monster_name = font.render(monster.name, True, (0, 0, 0))
-                name_rect = monster_name.get_rect(centerx=card_rect.centerx,
+                # Level do monstro
+                monster_level = font.render(f"Level: {str(monster.level)}", True, (0, 0, 0))
+                name_rect = monster_level.get_rect(centerx=card_rect.centerx,
                                                   top=card_rect.bottom + 10)
-                screen.blit(monster_name, name_rect)
+                screen.blit(monster_level, name_rect)
 
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:

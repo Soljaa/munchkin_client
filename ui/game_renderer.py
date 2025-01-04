@@ -12,7 +12,7 @@ from game.combat import CombatStates
 
 
 BUTTONS_BY_GAME_PHASE = {
-    GamePhase.SETUP: ["kick_door"],
+    GamePhase.SETUP: ["kick_door", "sell_items"],  # Adiciona sell_items,
     GamePhase.KICK_DOOR: ["look_for_trouble", "loot"],
     GamePhase.LOOK_FOR_TROUBLE: [],
     GamePhase.LOOT_ROOM: [],
@@ -46,7 +46,10 @@ class GameRenderer:
         button_y1 = SCREEN_HEIGHT - 410
         button_y2 = SCREEN_HEIGHT - 490
         button_y3 = SCREEN_HEIGHT - 570
+        button_y4 = SCREEN_HEIGHT - 330  # Nova posição para o botão vender
         buttons_x = SCREEN_WIDTH - 100
+        buttons_x2 = SCREEN_WIDTH - 780
+
         self.buttons = {
             "kick_door": HoverButton("assets/game/kick_door_new.png", buttons_x, button_y0, 147, 142),
             "use_card": HoverButton("assets/game/use_card.png", buttons_x, button_y2, 160, 66),
@@ -55,6 +58,7 @@ class GameRenderer:
             "ask_for_help": HoverButton("assets/game/ask_for_help.png", buttons_x, button_y3, 160, 66),
             "loot": HoverButton("assets/game/loot.png", buttons_x, button_y2, 160, 66),
             "finish_combat": HoverButton("assets/game/finish_combat.png", buttons_x, button_y1, 160, 66),
+            "sell_items": HoverButton("assets/game/sell_items.png", buttons_x2, button_y4, 160, 66)
         }
 
     def draw_gameboard(self):
@@ -346,7 +350,7 @@ class GameRenderer:
         self._draw_message()
 
         # Draw phase indicator at the top
-        self._draw_phase_indicator(game_state.phase, 570, 105)
+        self._draw_phase_indicator(game_state.phase, 570, 120)
 
     def _draw_phase_indicator(self, phase, x, y):
         font = pygame.font.Font(None, 32)
@@ -373,7 +377,8 @@ class GameRenderer:
             f"Jogador: {player.name}",
             f"Nível: {player.level}",
             f"Força: {player.calculate_combat_strength()}",
-            f"Raça: {player.race.value}"
+            f"Raça: {player.race.value}",
+            f"Ouro: {player.gold}"  # Nova linha adicionada para mostrar o gold
         ]
 
         text_x = x + new_width + 20
