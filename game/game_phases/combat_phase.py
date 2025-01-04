@@ -16,6 +16,6 @@ class CombatPhase(GamePhases):
 
         self.game_state.set_combat(Combat(self.player, self.card))
         print(f"Combat initialized with monster: {self.card.name}")
-        self.renderer.set_message(f"Combat initialized with monster: {self.card.name}")
+        self.renderer.set_message(f"Combate iniciado com: {self.card.name}")
 
         return True

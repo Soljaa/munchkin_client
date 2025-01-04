@@ -91,11 +91,11 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
                             if current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
                                 renderer.draw_run_away_success_transition() #Imagem referente ao sucesso na fuga
-                                renderer.set_message("Successfully ran away!")
+                                renderer.set_message("Fugiu com sucesso!")
                                 game_state.set_combat(None)
                             else: # Se não consigo fugir (value<5)
                                 renderer.draw_run_away_failed_transition() # Imagem referente a falha na fuga
-                                renderer.set_message(f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
+                                renderer.set_message(f"Fuga falhou! {game_state.current_combat.monster.bad_stuff}")
                                 current_combat.monster.apply_bad_stuff(game_state.current_player())
 
                                 if game_state.current_player().level <= 0: # Se o jogador estiver morto (logo após a perda do nível)
@@ -142,7 +142,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                         if game_state.phase == GamePhase.KICK_DOOR:
                             look_for_trouble_phase = LookForTroublePhase(game_state, renderer)  # Adicionando renderer
                             if not look_for_trouble_phase.run():
-                                renderer.set_message("No monsters available or selection cancelled")
+                                renderer.set_message("Sem monstros ou fase cancelada!")
                                 game_state.set_game_phase(GamePhase.KICK_DOOR)
 
         # Draw current game state
