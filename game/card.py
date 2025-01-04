@@ -18,6 +18,7 @@ class RaceTypes(Enum):
     ELF = "Elfo"
     HALFlING = "Hobbit"
     HUMAN = "Humano"
+    ORC = "Orc"
 
 
 class ClassTypes(Enum):
@@ -25,7 +26,7 @@ class ClassTypes(Enum):
     CLERIC = auto()
     THIEF = auto()
     WIZARD = auto()
-
+    BARD = auto()
 
 class ItemSlotTypes(Enum):
     HANDS = auto()

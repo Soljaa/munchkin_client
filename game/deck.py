@@ -1,9 +1,11 @@
 import random
 from game.card import Item, RaceTypes, ClassTypes, ItemSlotTypes, Gender
+from game.cards.classes import CLASSES
 from game.cards.curses import CURSES
 from game.cards.items import ITEMS
 from game.cards.monsters import MONSTERS
 from game.cards.item_effect import IncreaseDiceRollEffect, BonusByRace, EscapeCombat, BlockCurses
+from game.cards.races import RACES
 from game.cards.treasure_buffs import TREASURE_BUFFS
 
 class Deck:
@@ -47,24 +49,12 @@ class DoorDeck(Deck):
         for curse in CURSES:
             self.add_card(curse)
 
-        races = [
-            # TODO: Faltam cartas de raça (com imagem das raças)
-            #Race("Elf", "image", "Can sell items for levels"),
-            #Race("Dwarf", "image", "Can carry extra items"),
-            #Race("Halfling", "image", "Can sell one item per turn"),
-            #Race("Human", "image", "Get bonus on running away"),
-        ]
-
-        print(f"Adding {len(races)} races to deck")
-        for race in races:
+        print(f"Adding {len(RACES)} races to deck")
+        for race in RACES:
             self.add_card(race)
 
-        classes = [
-            # TODO: Faltam cartas de classe (com imagem das classes)
-        ]
-
-        print(f"Adding {len(classes)} classes to deck")
-        for class_ in classes:
+        print(f"Adding {len(CLASSES)} classes to deck")
+        for class_ in CLASSES:
             self.add_card(class_)
 
         door_buffs = [
