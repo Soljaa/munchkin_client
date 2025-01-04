@@ -52,7 +52,7 @@ enum GamePhase {
     FINAL_SETUP = "Preparo Final"
 }
 
-' Classes principais
+' Classes principais do jogo
 class Player {
     - name: str
     - avatar_img_dir: str
