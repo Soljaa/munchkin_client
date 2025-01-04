@@ -102,7 +102,9 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 current_combat.monster.apply_bad_stuff(game_state.current_player())
 
                                 if game_state.current_player().level <= 0: # Se o jogador estiver morto por causa do bad stuff do monstro (class Death())
-                                    renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
+                                    renderer.draw_transition("assets/death_background.jpg", duration=2,
+                                                             extra_element=lambda: renderer.alert_player_die(
+                                                                 game_state.current_player()))
                                     player_died = True
 
                                 if player_died:

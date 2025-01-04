@@ -139,6 +139,7 @@ class GameRenderer:
 
     def draw_dice_animation(self, dice):
         roll_time_seconds = 1.5  # Tempo total de animação do dado rolando em segundos
+        display_time_seconds = 1.5  # Tempo total para mostrar o resultado
         elapsed_time = 0  # Variável para controlar o tempo de animação
         
         clock = pygame.time.Clock()
@@ -150,18 +151,25 @@ class GameRenderer:
             delta_time = clock.tick(60) / 1000.0  # 60 FPS
 
             elapsed_time += delta_time  # Atualiza o tempo decorrido
-            dice.draw_rolling_dice(SCREEN_WIDTH/2-dice.sprite_rolling_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_rolling_dice.height/2) # Animação do rolamento do dado
+            dice.draw_rolling_dice(SCREEN_WIDTH/2-dice.sprite_rolling_dice.width/2,
+                                   SCREEN_HEIGHT/2-dice.sprite_rolling_dice.height/2) # Animação do rolamento do dado
 
             self.draw_dungeon_background()
             self.draw_gameboard()
 
-        dice.draw_value_dice(SCREEN_WIDTH/2-dice.sprite_value_dice.width/2, SCREEN_HEIGHT/2-dice.sprite_value_dice.height/2)
-        time.sleep(1)
+        elapsed_time = 0
+        while elapsed_time < display_time_seconds:
+            # Calcula o tempo entre quadros
+            delta_time = clock.tick(60) / 1000.0  # 60 FPS
 
-    def draw_alert_player_die(self, player): #TODO Talvez colocar algo dentro de Death.draw()
-        # Background
-        self.screen.blit(pygame.image.load("assets/death_background.jpg"), (0, 0))
+            elapsed_time += delta_time  # Atualiza o tempo decorrido
 
+            self.draw_dungeon_background()
+            self.draw_gameboard()
+            dice.draw_value_dice(SCREEN_WIDTH/2-dice.sprite_value_dice.width/2,
+                                 SCREEN_HEIGHT/2-dice.sprite_value_dice.height/2)
+
+    def alert_player_die(self, player): #TODO Talvez colocar algo dentro de Death.draw()
         # Cria o objeto de fonte para o texto
         font = pygame.font.SysFont("Comic Sans MS", 40, bold=True)
 
@@ -177,7 +185,7 @@ class GameRenderer:
 
         # Avatar do referido jogador
         avatar_img = pygame.image.load(player.avatar_img_dir)
-        self.screen.blit(avatar_img, (center_x - avatar_img.get_width()/2,60))
+        self.screen.blit(avatar_img, (center_x - avatar_img.get_width()/2, 60))
 
         # Desenha o texto, linha por linha
         pos_y = center_y-40
@@ -185,9 +193,6 @@ class GameRenderer:
             text_rect = line.get_rect(center=(center_x + 5, pos_y))
             self.screen.blit(line, text_rect)
             pos_y += 70
-
-        pygame.display.flip()
-        time.sleep(2.5)
 
     def draw_transition(self, image_path, sound_path=None, duration=2.0, extra_element=None):
         """
@@ -222,7 +227,11 @@ class GameRenderer:
             if extra_element:
                 extra_element()
 
-            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pass
+
+            pygame.display.flip()
 
     def draw_kick_door_transition(self):
         self.draw_transition(
