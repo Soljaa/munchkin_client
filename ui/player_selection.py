@@ -135,7 +135,8 @@ class PlayerSelection:
 
     def is_valid_nickname(self, nickname):
         """Verifica se o nickname é válido: não vazio, sem espaços e alfanumérico."""
-        return len(nickname) > 0 and " " not in nickname and nickname.isalnum()
+        nick_len = len(nickname)
+        return 0 < nick_len <= 16 and " " not in nickname and nickname.isalnum()
     
     def update_avatar(self, incremento):
         """Atualiza a navegação dos avatares."""
@@ -225,9 +226,14 @@ class PlayerSelection:
                 self.last_color_change_time = current_time
                 self.color_index = (self.color_index + 1) % len(self.colors)
 
+            erro_msg = ""
             # Exibe mensagens de aviso, se necessário
             if len(self.input_text) == 0:
-                self.draw_text(self.window.screen, "AVISO: Insira um nome.", (input_box_x, input_box_y + input_box_height + 10), 20, self.colors[self.color_index])
+                erro_msg = "AVISO: Insira um nome."
+            elif len(self.input_text) > 16:
+                erro_msg = "AVISO: Máximo de 16 caracteres."
+            self.draw_text(self.window.screen, erro_msg, (input_box_x, input_box_y + input_box_height + 10),
+                           20, self.colors[self.color_index])
 
             if self.reload_mouse > 0:
                 self.reload_mouse -= 0.02
