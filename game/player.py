@@ -4,7 +4,7 @@ import random
 
 
 class Player:
-    def __init__(self, name, avatar_img_dir):
+    def __init__(self, name, avatar_img_dir, gender):
         self.name = name
         self.avatar_img_dir = avatar_img_dir
         self.level = 1
@@ -13,6 +13,7 @@ class Player:
         self.equipped_items = []
         self.race = RaceTypes.HUMAN
         self.class_ = []  # esta como array por causa do super munchking
+        self.gender = gender
         # adicionar referencia a efeitos ativos, com referencia aos itens donos do efeito e
         # ver se vale dividir em etapas de aplicação dos efeitos como efeitos que se aplicam no setup,
         # ou no combate, ou na fuga e etc
@@ -86,6 +87,15 @@ class Player:
                     if class_card.type in item.classes_prohibited:
                         return False
 
+            # gender restrictions
+            if item.gender_required:
+                if self.gender != item.gender_required:
+                    return False
+
+            if item.genders_prohibited:
+                if self.gender in item.genders_prohibited:
+                    return False
+
             self.equipped_items.append(item)
             self.hand.remove(item)
 
@@ -115,7 +125,6 @@ class Player:
         if item in self.class_:
             self.class_.remove(item)
             self.hand.append(item)
-
 
     def draw_card(self, deck):
         card = deck.draw()

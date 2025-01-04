@@ -7,6 +7,7 @@ import pygame
 from ui.hover_button import HoverButton
 from ui.click_button import ClickButton
 from game.game_manager import main
+from game.card import Gender
 
 
 class PlayerSelection:
@@ -17,6 +18,7 @@ class PlayerSelection:
         self.reload_mouse = 0.2
         self.cursor_visible = True
         self.last_blink_time = time.time()
+        self.gender = None
 
         # Initialization
         self.initialize_window()
@@ -46,25 +48,37 @@ class PlayerSelection:
                 "assets/menu/back_button.png",
                 0.05 * self.window.width,
                 0.08 * self.window.height,
-                acao = self.back
+                acao=self.back
             ),
             "continue": HoverButton(
                 "assets/selecao_player/continue_button.png",
                 self.window.width / 2,
-                500,
-                acao = self.game
+                580,
+                acao=self.game
             ),
             "left_arrow": ClickButton(
                 "assets/selecao_player/seta_esq.png",
                 self.window.width / 2 - 135,
                 270,
-                acao = lambda: self.update_avatar(1)
+                acao=lambda: self.update_avatar(1)
             ),
             "right_arrow": ClickButton(
                 "assets/selecao_player/seta_dir.png",
                 self.window.width / 2 + 135,
                 270,
-                acao = lambda: self.update_avatar(-1)
+                acao=lambda: self.update_avatar(-1)
+            ),
+            "male": ClickButton(
+                "assets/selecao_player/male.png",
+                self.window.width / 2 + 20,
+                510,
+                acao= lambda: self.set_player_gender(Gender.MALE)
+            ),
+            "female": ClickButton(
+                "assets/selecao_player/female.png",
+                self.window.width / 2 + 70,
+                510,
+                acao=lambda: self.set_player_gender(Gender.FEMALE)
             ),
         }
 
@@ -117,6 +131,8 @@ class PlayerSelection:
         else:
             return self.input_text
 
+    def set_player_gender(self, gender):
+        self.gender = gender
 
     def is_valid_nickname(self, nickname):
         """Verifica se o nickname é válido: não vazio, sem espaços e alfanumérico."""
@@ -136,9 +152,10 @@ class PlayerSelection:
         """Função chamada ao pressionar o botão de continuar."""
         nickname = self.input_text.strip()
         avatar_img_dir = self.avatars[self.avatar_index]
-        if self.is_valid_nickname(nickname):
+        player_gender = self.gender
+        if self.is_valid_nickname(nickname) and player_gender:
             # Ao invés de chamar main() diretamente, vamos retornar os dados
-            return nickname, avatar_img_dir
+            return nickname, avatar_img_dir, player_gender
 
 
     def quit(self):
@@ -158,8 +175,24 @@ class PlayerSelection:
             self.bg.draw()
 
             # Botões 
-            for button in self.buttons.values():
+            for name, button in self.buttons.items():
                 button.draw()
+                if name == "male" and self.gender == Gender.MALE:
+                    pygame.draw.circle(
+                        self.window.screen,
+                        (0, 255, 0),
+                        (button.original_x, button.original_y),
+                        max(button.original_width, button.original_height) // 2 + 5,
+                        3
+                    )
+                if name == "female" and self.gender == Gender.FEMALE:
+                    pygame.draw.circle(
+                        self.window.screen,
+                        (0, 255, 0),
+                        (button.original_x, button.original_y),
+                        max(button.original_width, button.original_height) // 2 + 5,
+                        3
+                    )
                 if button.handle():
                     return button.handle()
                 else:
@@ -179,11 +212,13 @@ class PlayerSelection:
             self.update_cursor()
                     
             # Desenha o campo de entrada (box)
-            pygame.draw.rect(self.window.screen, (0,0,0), (input_box_x, input_box_y, input_box_width, input_box_height), 2)
+            pygame.draw.rect(self.window.screen, (0,0,0), (input_box_x, input_box_y, input_box_width,
+                                                           input_box_height), 2)
             
             # Textos
             self.draw_text(self.window.screen, "Digite seu nickname:", (input_box_x, input_box_y - 30), 28, (0, 0, 0))  # Texto acima do campo
             self.draw_text(self.window.screen, self.get_display_text(), (input_box_x + 10, input_box_y + 10), 28, (0, 0, 0))  # Texto digitado
+            self.draw_text(self.window.screen, "Escolha um gênero:", (input_box_x, input_box_y + 110), 28, (0, 0, 0))  # Texto digitado
 
             # Verifica se é hora de alternar a cor do aviso
             current_time = pygame.time.get_ticks()

@@ -34,6 +34,11 @@ class ItemSlotTypes(Enum):
     FEET = auto()
 
 
+class Gender(Enum):
+    MALE = "Masculino"
+    FEMALE = "Feminino"
+
+
 class Card:
     def __init__(self, name, image, card_type):
         self.name = name
@@ -74,7 +79,8 @@ class Monster(Card):
 
 class Item(Card):
     def __init__(self, name, image, bonus, value, slot=None, big=False, two_hands=False, class_required=None,
-                 classes_prohibited=None, race_required=None, races_prohibited=None, effect=None):
+                 classes_prohibited=None, race_required=None, races_prohibited=None, gender_required=None,
+                 genders_prohibited=None, effect=None):
         super().__init__(name, image, CardType.ITEM)
         self.bonus = bonus  # Bônus concedido pelo item
         self.value = value  # Valor do item em ouro
@@ -84,6 +90,8 @@ class Item(Card):
         self.classes_prohibited = classes_prohibited
         self.race_required = race_required
         self.races_prohibited = races_prohibited
+        self.gender_required = gender_required
+        self.genders_prohibited = genders_prohibited
         # add gender
         self.two_hands = two_hands  # armas de duas mão, default False
         self.effect = effect  # tupla com tipo e valor

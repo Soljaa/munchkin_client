@@ -2,7 +2,7 @@ from enum import Enum, auto
 from game.dice import Dice
 from game.deck import DoorDeck, TreasureDeck
 from game.player import Player
-from game.card import CardType
+from game.card import CardType, Gender
 from game.combat import Combat
 
 
@@ -36,8 +36,8 @@ class GameState:
     def get_instance():
         return GameState._instance
 
-    def add_player(self, name, img_dir):
-        player = Player(name, img_dir)
+    def add_player(self, name, img_dir, gender=Gender.MALE):
+        player = Player(name, img_dir, gender)
         self.players.append(player)
         # Draw initial hand
         for _ in range(4):

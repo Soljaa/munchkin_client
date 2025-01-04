@@ -68,10 +68,10 @@ class Menu:
         selecao_player = PlayerSelection(self.window)
         result = selecao_player.run()  # Retorna o nickname e avatar_img_dir
         if result:
-            nickname, avatar_img_dir = result
+            nickname, avatar_img_dir, gender = result
             self.stop_music()
             self.play_transition_fade_sound()
-            main(nickname, avatar_img_dir)  # Passa os valores para o main()
+            main(nickname, avatar_img_dir, gender)  # Passa os valores para o main()
             self.quit()
         
     def quit(self):

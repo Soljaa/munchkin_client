@@ -1,5 +1,5 @@
 import random
-from game.card import Item, RaceTypes, ClassTypes, ItemSlotTypes
+from game.card import Item, RaceTypes, ClassTypes, ItemSlotTypes, Gender
 from game.cards.curses import CURSES
 from game.cards.monsters import MONSTERS
 from game.cards.item_effect import IncreaseDiceRollEffect, BonusByRace, EscapeCombat, BlockCurses
@@ -100,7 +100,7 @@ class TreasureDeck(Deck):
                  400, "feet", effect=IncreaseDiceRollEffect(value=2)),
             Item("Bow with Ribbons", "assets/treasure_cards/BowWithRibbons.png", 4, 800,
                  "hands", two_hands=True, race_required=RaceTypes.ELF),
-            Item("Broad Sword", "assets/treasure_cards/BroadSword.png", 3, 400, "hands"),
+            Item("Broad Sword", "assets/treasure_cards/BroadSword.png", 3, 400, "hands", gender_required=Gender.FEMALE),
             Item("Buckler of Swashing", "assets/treasure_cards/BucklerOfSwashing.png", 2, 400,
                  "hands"),
             Item("Chainsaw of Bloody Dismemberment",
@@ -117,7 +117,7 @@ class TreasureDeck(Deck):
             Item("Flaming Armor", "assets/treasure_cards/FlamingArmor.png", 2, 400,
                  "armor"),
             Item("Gentlemen´s Club", "assets/treasure_cards/GentlemensClub.png", 3, 400,
-                 "hands"),
+                 "hands", gender_required=Gender.MALE),
             Item("Hammer of Kneecapping", "assets/treasure_cards/HammerOfKneecapping.png", 4,
                  600, "hands", race_required=RaceTypes.DWARF),
             Item("Helm of Courage", "assets/treasure_cards/HelmOfCourage.png", 1, 200,

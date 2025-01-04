@@ -7,9 +7,10 @@ from game.game_phases.loot_room_phase import LootRoomPhase
 from game.game_phases.setup_phase import SetupPhase
 from game.game_state import GameState, GamePhase, EndGameException
 from ui.game_renderer import GameRenderer
+from game.card import Gender
 
 
-def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/avatar1.png"):
+def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/avatar1.png", gender=Gender.MALE):
 
     """
     MAIN GAME LOOP: GERENCIA O GAMESTATE E POSSIBILITA FUTURA IMPLEMENTAÇÃO DE MULTIPLAYER
@@ -37,7 +38,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
     # TODO: entry point for multiplayer
     # Initialize game state, default 1P Vs Com
     game_state = GameState()
-    game_state.add_player(name, avatar_img_dir)
+    game_state.add_player(name, avatar_img_dir, gender)
     game_state.add_player("Player 2", "assets/selecao_player/avatares/avatar2.png")
     game_state.add_player("Player 3", "assets/selecao_player/avatares/avatar3.png")
     game_state.add_player("Player 4", "assets/selecao_player/avatares/avatar4.png")
