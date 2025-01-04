@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from game.death import Death
 from game.dice import Dice
 
+
 class MonsterBadStuff(ABC):
     @abstractmethod
     def apply(self, player) -> None:
@@ -37,8 +38,8 @@ class OrcsBadStuff(MonsterBadStuff):
  
     def apply(self, player) -> None:
         from ui.game_renderer import GameRenderer        
-        dice = Dice()
         game_renderer = GameRenderer.get_instance()
+        dice = Dice()
         dice.roll()
         game_renderer.draw_dice_animation(dice)
         if dice.last_roll <= 2:
@@ -98,6 +99,6 @@ class LoseAllClassItemsBadStuff(MonsterBadStuff):
         return "Você perde todos os itens da sua classe."
 
     def apply(self, player) -> None:
-        player.lose_all_equipped_class_items()
+        player.lose_all_class_cards()
 
 # TODO: Continuar com os outros bad stuffs

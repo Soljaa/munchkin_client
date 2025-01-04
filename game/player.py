@@ -232,9 +232,16 @@ class Player:
             self.add_to_discard_pile(item)
             self.equipped_items.remove(item)
 
-    #TODO
+    def remove_all_hand_class_cards(self):
+        items_to_remove = [item for item in self.hand if item.class_required == self.class_]
+        
+        for item in items_to_remove:
+            self.add_to_discard_pile(item)
+            self.hand.remove(item)
+
     def lose_all_class_cards(self):
-        pass
+        self.lose_all_equipped_class_items()
+        self.remove_all_hand_class_cards()
 
     #TODO
     def lose_all_race_cards(self):

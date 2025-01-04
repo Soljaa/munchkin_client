@@ -2,6 +2,7 @@ from game.card import Curse
 from game.cards.curse_effect import *
 from game.cards.monster_bad_stuff import *
 
+
 CURSES = [       
     Curse(
         name="Curse! Lose 1 Level",
@@ -33,11 +34,11 @@ CURSES = [
         image="assets/door_cards/Curse!LoseYourClass.png",
         effect=LoseClassCurseEffect()
     ),
-    #Curse(
-        #name="Curse! Dying Curse",
-        #image="assets/door_cards/Curse!DyingCurse.png", # TODO: Falta png
-        #effect=ApplyDiscardCardBadStuffCurseEffect()
-    #),
+    Curse(
+        name="Curse! Dying Curse",
+        image="assets/door_cards/Curse!DyingCurse.png",
+        effect=ApplyDiscardCardBadStuffCurseEffect()
+    ),
     Curse(
         name="Curse! Lose The Footgear You Are Wearing",
         image="assets/door_cards/Curse!LoseTheFootgearYouAreWearing.png",
