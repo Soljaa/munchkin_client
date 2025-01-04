@@ -18,6 +18,7 @@ BUTTONS_BY_GAME_PHASE = {
     GamePhase.LOOT_ROOM: [],
     GamePhase.COMBAT: ["run_away", "use_card", "ask_for_help", "finish_combat"],
     GamePhase.CHARITY: [],
+    GamePhase.FINAL_SETUP: ["end_turn"]
 }
 
 COMBAT_CONDITIONS = {
@@ -55,6 +56,7 @@ class GameRenderer:
             "ask_for_help": HoverButton("assets/game/ask_for_help.png", buttons_x, button_y3, 160, 66),
             "loot": HoverButton("assets/game/loot.png", buttons_x, button_y2, 160, 66),
             "finish_combat": HoverButton("assets/game/finish_combat.png", buttons_x, button_y1, 160, 66),
+            "end_turn": HoverButton("assets/game/end_turn.png", buttons_x, button_y1, 160, 66),
         }
 
     def draw_gameboard(self):
@@ -576,7 +578,7 @@ class GameRenderer:
             self.message_timer -= 1
 
     def handle_event(self, event, game_state=None):
-        equipable_card_types = [CardType.CLASS, CardType.ITEM, CardType.RACE]
+        equipable_card_types = [CardType.CLASS, CardType.ITEM]
         # Handle button clicks
         for button_name, button in self.buttons.items():
             if button.handle_event():
