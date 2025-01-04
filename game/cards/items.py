@@ -57,7 +57,6 @@ ITEMS = [
         value=600,
         slot="hands",
         two_hands=True,
-        class_required=True
     ),
     Item(
         name="Cheese Grater of Peace",
@@ -136,7 +135,6 @@ ITEMS = [
         value=None,
         slot="hands",
         two_hands=True,
-        class_required=True
     ),
     Item(
         name="Leather Armor",
@@ -259,7 +257,6 @@ ITEMS = [
         value=600,
         slot="hands",
         two_hands=True,
-        class_required=True,
         race_required=RaceTypes.HUMAN
     ),
 
