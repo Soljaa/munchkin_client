@@ -536,13 +536,13 @@ class GameRenderer:
 
         # Informações adicionais
         details = [
-            f"Treasure: {monster.treasure}",
-            f"Helpers: {len(combat.helpers)}",
+            f"Tesouro: {monster.treasure}",
+            f"Ajudantes: {len(combat.helpers)}",
         ]
 
         bad_stuff_lines = str(monster.bad_stuff).split('\n')
         if bad_stuff_lines:
-            details.append(f"Bad Stuff: {bad_stuff_lines[0]}")
+            details.append(f"Coisa Ruim: {bad_stuff_lines[0]}")
         for line in bad_stuff_lines[1:]:
             details.append(f"                  {line}")
 
