@@ -1,0 +1,356 @@
+@startuml
+
+' Enums
+enum CardType {
+    MONSTER
+    CURSE
+    RACE
+    CLASS
+    ITEM
+    DOOR_BUFF
+    TREASURE_BUFF
+}
+
+enum RaceTypes {
+    DWARF = "Anão"
+    ELF = "Elfo"
+    HALFLING = "Hobbit"
+    HUMAN = "Humano"
+}
+
+enum ClassTypes {
+    WARRIOR
+    CLERIC
+    THIEF
+    WIZARD
+}
+
+enum ItemSlotTypes {
+    HANDS
+    HEAD
+    ARMOR
+    FEET
+}
+
+enum Gender {
+    MALE = "Masculino"
+    FEMALE = "Feminino"
+}
+
+enum CombatStates {
+    WINNING
+    LOSING
+}
+
+enum GamePhase {
+    SETUP = "Preparação"
+    KICK_DOOR = "Chutar Porta"
+    LOOK_FOR_TROUBLE = "Buscar Encrenca"
+    LOOT_ROOM = "Saquear Masmorra"
+    COMBAT = "Combate"
+    CHARITY = "Caridade"
+    FINAL_SETUP = "Preparo Final"
+}
+
+' Classes principais do jogo
+class Player {
+    - name: str
+    - avatar_img_dir: str
+    - level: int
+    - combat_strength: int
+    - hand: list
+    - equipped_items: list
+    - race: RaceTypes
+    - class_: list
+    - gender: str
+
+    + __init__(name: str, avatar_img_dir: str, gender: str)
+    + calculate_combat_strength(): int
+    + equip_item(item: Item): bool
+}
+
+class Combat {
+    - player: Player
+    - monster: Monster
+    - player_modifiers: int
+    - monster_modifiers: int
+    - can_run_away: bool
+    - helpers: list
+
+    + __init__(player: Player, monster: Monster)
+    + get_player_strength(): int
+    + apply_monster_effect(): void
+    + get_monster_strength(): int
+    + add_helper(player: Player): bool
+    + remove_helper(player: Player): bool
+    + add_player_modifier(value: int): int
+    + add_monster_modifier(value: int): int
+    + try_to_run(value: int): bool
+    + resolve_combat(): (bool, dict)
+}
+
+class Death {
+    - player: Player
+
+    + __init__(player: Player)
+    + apply(): void
+    + draw(): void
+}
+
+class Deck {
+    - cards: list
+    - discard_pile: list
+
+    + __init__()
+    + add_card(card: Card): void
+    + shuffle(): void
+    + draw(): Card
+    + discard(card: Card): void
+}
+
+class DoorDeck {
+    + __init__()
+    - _initialize_deck(): void
+}
+
+class TreasureDeck {
+    + __init__()
+    - _initialize_deck(): void
+}
+
+class Dice {
+    - img_dir: str
+    - sides: int
+    - last_roll: int
+    - sprite_rolling_dice: Sprite
+    - sprite_value_dice: Sprite
+
+    + __init__()
+    + roll(): int
+    + draw_rolling_dice(x: int = 0, y: int = 0): void
+    + draw_value_dice(x: int = 0, y: int = 0): void
+}
+
+class GameManager {
+    + main(name: str = "Player", avatar_img_dir: str = "assets/selecao_player/avatares/avatar1.png", gender: Gender = Gender.MALE): void
+}
+
+class EndGameException {
+}
+
+class GameState {
+    - door_deck: DoorDeck
+    - treasure_deck: TreasureDeck
+    - players: list[Player]
+    - dice: Dice
+    - current_player_index: int
+    - phase: GamePhase
+    - current_combat: Combat
+
+    + __init__()
+    + get_instance(): GameState
+    + add_player(name: str, img_dir: str, gender: Gender = Gender.MALE): void
+    + next_player(): void
+    + current_player(): Player
+    + resolve_combat(): bool
+}
+
+' Classes de efeitos e restrições
+abstract class BuffsRestriction {
+    {abstract} + check(): bool
+}
+
+class OnlyInCombatRestriction {
+    + check(): bool
+}
+
+abstract class CurseEffect {
+    {abstract} + apply(player: Player): void
+}
+
+class ApplyDiscardCardBadStuffCurseEffect {
+    + apply(player: Player): void
+}
+
+class ChangeClassCurseEffect {
+    + apply(player: Player): void
+}
+
+class ChangeRaceCurseEffect {
+    + apply(player: Player): void
+}
+
+class LoseRaceCurseEffect {
+    + apply(player: Player): void
+}
+
+class LoseClassCurseEffect {
+    + apply(player: Player): void
+}
+
+class Curse {
+    - name: str
+    - image: str
+    - effect: CurseEffect
+
+    + __init__(name: str, image: str, effect: CurseEffect)
+}
+
+' Classes de item e efeitos
+abstract class ItemEffect {
+    {abstract} + apply(player: Player): void
+}
+
+class IncreaseDiceRollEffect {
+    - increase_by: int
+    + __init__(value: int = 1)
+    + apply(player: Player): void
+}
+
+class BonusByRace {
+    - increase_by: int
+    - race_required: Race
+    + __init__(race: Race, value: int = 2)
+    + apply(player: Player): void
+}
+
+class EscapeCombat {
+    - monster_level_limit: int
+    + __init__(monster_level: int = None)
+    + apply(player: Player): void
+}
+
+class BlockCurses {
+    + apply(player: Player): void
+}
+
+class Item {
+    - name: str
+    - image: str
+    - bonus: int
+    - value: int
+    - slot: str
+    - race_required: RaceTypes
+    - gender_required: Gender
+    - two_hands: bool
+    - effect: ItemEffect
+
+    + __init__(name: str, image: str, bonus: int, value: int, slot: str, race_required: RaceTypes = None, gender_required: Gender = None, two_hands: bool = False, effect: ItemEffect = None)
+}
+
+' Classes de monstro e efeitos
+abstract class MonsterBadStuff {
+    {abstract} + apply(player: Player): void
+}
+
+class CompositeBadStuff {
+    - bad_stuffs: list[MonsterBadStuff]
+    + __init__(*bad_stuffs: MonsterBadStuff)
+    + apply(player: Player): void
+}
+
+class Monster {
+    - name: str
+    - image: str
+    - level: int
+    - treasure: int
+    - effect: MonsterEffect
+    - bad_stuff: MonsterBadStuff
+    - reward_two_levels: bool
+
+    + __init__(name: str, image: str, level: int, treasure: int, effect: MonsterEffect = None, bad_stuff: MonsterBadStuff = None, reward_two_levels: bool = False)
+}
+
+abstract class MonsterEffect {
+    {abstract} + apply(monster: Monster, player: Player): void
+}
+
+' Classes de UI
+class Button {
+    - sprite: Sprite
+    - acao: function
+    - is_hovered: bool
+    - is_active: bool
+    - mouse: Mouse
+    - mouse_held: bool
+
+    + __init__(image_path: str, x: int, y: int, width: int = None, height: int = None, acao: function = None)
+    + draw(): void
+    + verify_hover(): bool
+    + handle(): void
+    + handle_event(): void
+    + play_sound(): void
+}
+
+class HoverButton {
+    - scale_factor: float
+    - original_x: int
+    - original_y: int
+    - original_width: float
+    - original_height: float
+    - hovered_width: float
+    - hovered_height: float
+
+    + __init__(image_path: str, x: int, y: int, width: int = None, height: int = None, scale_factor: float = 1.1, acao: function = None)
+    + update(): void
+    + draw(): void
+    + play_sound(): void
+}
+
+class ClickButton {
+    - original_x: int
+    - original_y: int
+    - original_width: float
+    - original_height: float
+    - hovered_width: float
+    - hovered_height: float
+    - mouse_held: bool
+
+    + __init__(image_path: str, x: int, y: int, width: int = None, height: int = None, acao: function = None)
+    + update(): void
+    + draw(): void
+    + handle(): void
+    + handle_event(): void
+}
+
+' Relacionamentos
+Combat --> "1" Player
+Combat --> "1" Monster
+Combat --> "0..*" Player : helpers
+Death --> Player
+Deck <|-- DoorDeck
+Deck <|-- TreasureDeck
+GameManager --> GameState
+GameManager --> Gender
+GameState --> DoorDeck
+GameState --> TreasureDeck
+GameState --> Player
+GameState --> Dice
+GameState --> GamePhase
+GameState --> Combat
+GameState --> Gender
+
+BuffsRestriction <|-- OnlyInCombatRestriction
+CurseEffect <|-- ApplyDiscardCardBadStuffCurseEffect
+CurseEffect <|-- ChangeClassCurseEffect
+CurseEffect <|-- ChangeRaceCurseEffect
+CurseEffect <|-- LoseRaceCurseEffect
+CurseEffect <|-- LoseClassCurseEffect
+Curse --> CurseEffect
+
+ItemEffect <|-- IncreaseDiceRollEffect
+ItemEffect <|-- BonusByRace
+ItemEffect <|-- EscapeCombat
+ItemEffect <|-- BlockCurses
+Item --> ItemEffect
+Item --> RaceTypes
+Item --> Gender
+
+MonsterBadStuff <|-- CompositeBadStuff
+Monster --> MonsterEffect
+Monster --> MonsterBadStuff
+
+Button <|-- HoverButton
+HoverButton <|-- ClickButton
+
+@enduml
