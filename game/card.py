@@ -62,11 +62,13 @@ class Monster(Card):
         self.bad_stuff = bad_stuff
         self.reward_two_levels = reward_two_levels
         self.pursue = True
+        self.after_death_effect = None
 
     def reset_stats(self):
         self.level = self.base_level
         self.treasure = self.base_treasure
         self.pursue = True
+        self.after_death_effect = None
 
     def apply_effect(self, player):
         self.reset_stats()
@@ -76,6 +78,10 @@ class Monster(Card):
     def apply_bad_stuff(self, player):
         if self.bad_stuff:
             self.bad_stuff.apply(player)
+
+    def apply_after_death_effect(self, player):
+        if self.after_death_effect:
+            self.after_death_effect.apply(self, player)
 
 
 class Item(Card):
@@ -119,15 +125,26 @@ class Curse(Card):
             self.effect.apply(self, player)
 
 class DoorBuff(Card):
-    def __init__(self, name, image, effect):
+    def __init__(self, name, image, effect, restriction=None, after_death_effect=None):
         super().__init__(name, image, CardType.DOOR_BUFF)
         self.effect = effect
+        self.restriction = restriction
+        self.after_death_effect = after_death_effect
+    
+    def can_use(self, player) -> bool:
+        if self.restriction:
+            return self.restriction.check(player)
+        return True
+
+    def apply_effect(self, target):  # TODO: quando for usar esse método, a princípio o target é monster, pelo menos pras cartas com IncreaseMonsterLevelBuff.
+        self.effect.apply(self, target)
 
 class TreasureBuff(Card):
     def __init__(self, name, image, effect, restriction=None):
         super().__init__(name, image, CardType.TREASURE_BUFF)
         self.effect = effect
-    
+        self.restriction = restriction
+
     def can_use(self, player) -> bool:
         if self.restriction:
             return self.restriction.check(player)

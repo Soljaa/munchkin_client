@@ -43,5 +43,5 @@ CURSES = [
         name="Curse! Lose The Footgear You Are Wearing",
         image="assets/door_cards/Curse!LoseTheFootgearYouAreWearing.png",
         effect=LoseEquippedItemBadStuff('footgear')
-    ),
+    )
 ]
