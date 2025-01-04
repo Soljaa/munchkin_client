@@ -60,7 +60,7 @@ class SetupPhase(GamePhases):
             remaining_gold = total_value % 1000
 
             for _ in range(levels_to_gain):
-                if self.player.level < 9: self.player.level_up()
+                if self.player.level < 9: self.player.level_up() #limita o up até o level 9
 
             self.player.gold = remaining_gold  # Adiciona o ouro restante
 
