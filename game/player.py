@@ -12,6 +12,7 @@ class Player:
         self.hand = []
         self.equipped_items = []
         self.race = RaceTypes.HUMAN
+        self.gold = 0  # Adicionando o atributo gold inicializado em 0
         self.class_ = []  # esta como array por causa do super munchking
         self.gender = gender
         # adicionar referencia a efeitos ativos, com referencia aos itens donos do efeito e
