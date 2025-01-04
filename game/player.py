@@ -241,3 +241,7 @@ class Player:
             return donation_cards
         return []
 
+    def get_player_race(self):
+        if self.race:
+            return self.race.value
+        return "Sem raça"
