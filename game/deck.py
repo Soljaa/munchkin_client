@@ -1,9 +1,10 @@
 import random
-from game.card import Item, RaceTypes, ClassTypes, ItemSlotTypes, Gender
+from game.cards.classes import CLASSES
 from game.cards.curses import CURSES
+from game.cards.door_buffs import DOOR_BUFFS
 from game.cards.items import ITEMS
 from game.cards.monsters import MONSTERS
-from game.cards.item_effect import IncreaseDiceRollEffect, BonusByRace, EscapeCombat, BlockCurses
+from game.cards.races import RACES
 from game.cards.treasure_buffs import TREASURE_BUFFS
 
 class Deck:
@@ -30,7 +31,6 @@ class Deck:
     def discard(self, card):
         self.discard_pile.append(card)
 
-
 class DoorDeck(Deck):
     def __init__(self):
         super().__init__()
@@ -47,38 +47,21 @@ class DoorDeck(Deck):
         for curse in CURSES:
             self.add_card(curse)
 
-        races = [
-            # TODO: Faltam cartas de raça (com imagem das raças)
-            #Race("Elf", "image", "Can sell items for levels"),
-            #Race("Dwarf", "image", "Can carry extra items"),
-            #Race("Halfling", "image", "Can sell one item per turn"),
-            #Race("Human", "image", "Get bonus on running away"),
-        ]
-
-        print(f"Adding {len(races)} races to deck")
-        for race in races:
+        print(f"Adding {len(RACES)} races to deck")
+        for race in RACES:
             self.add_card(race)
 
-        classes = [
-            # TODO: Faltam cartas de classe (com imagem das classes)
-        ]
+        # print(f"Adding {len(CLASSES)} classes to deck")
+        # for class_ in CLASSES:
+        #     self.add_card(class_)
 
-        print(f"Adding {len(classes)} classes to deck")
-        for class_ in classes:
-            self.add_card(class_)
-
-        door_buffs = [
-            # TODO: Buffs
-        ]
-
-        print(f"Adding {len(door_buffs)} door buffs to deck")
-        for buff in door_buffs:
+        print(f"Adding {len(DOOR_BUFFS)} door buffs to deck")
+        for buff in DOOR_BUFFS:
             self.add_card(buff)
 
         print(f"Door deck initialized with {len(self.cards)} cards")
         self.shuffle()
         print("Door deck shuffled")
-
 
 class TreasureDeck(Deck):
     def __init__(self):

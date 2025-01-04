@@ -22,6 +22,8 @@ class IncreaseMonsterLevelEffect(MonsterEffect):
     def apply(self, monster, player) -> None:
         if player.race == self.raceClass or player.class_ == self.raceClass:
             monster.level += self.bonus
+            if monster.level < 1:
+                monster.level = 1
 
 class NotPursueLevelEffect(MonsterEffect):
     def __init__(self, level_limit, exclude_race=None):

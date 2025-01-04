@@ -56,6 +56,8 @@ class Combat:
         self.apply_monster_effect()
 
         if player_strength > monster_strength:
+            self.monster.apply_after_death_effect(self.player) # Pode aumentar os tesouros, por exemplo
+
             return True, {
                 'treasure': self.monster.treasure,
                 'level_gain': 2 if self.monster.reward_two_levels else 1,
