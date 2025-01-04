@@ -161,9 +161,10 @@ class Player:
             self.level += 1
 
     def level_down(self, value=1):
-        self.level -= value
+        if self.level > 1:
+            self.level -= value
         if self.level < 1:
-            Death(self).apply()
+            self.level = 1
 
     def remove_class(self):
         if self.class_:

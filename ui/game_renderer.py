@@ -1,12 +1,9 @@
-import copy
-
 import pygame
 from PPlay.sprite import *
 from PPlay.window import Window
 from constants import *
 from game.card import Item, CardType
 from ui.hover_button import HoverButton
-from game.dice import Dice
 from game.game_state import GamePhase
 from game.combat import CombatStates
 
@@ -27,7 +24,11 @@ COMBAT_CONDITIONS = {
 
 
 class GameRenderer:
+    _instance = None
+
     def __init__(self, screen):
+        if GameRenderer._instance is None:
+            GameRenderer._instance = self
         self.screen = screen
         self.gameboard = pygame.image.load("assets/gameboard.png")
         self.dungeon_background = pygame.image.load("assets/dungeon_background.png")
@@ -40,6 +41,10 @@ class GameRenderer:
         self.equip_holder = pygame.transform.scale(pygame.image.load("assets/game/equip_holder.png"), (100, 150))
         self.hand_card_sprites = []  # [(card_sprite, card)]
         self.equipped_card_sprites = []  # [(card_sprite, card)]]
+
+    @classmethod
+    def get_instance(cls):
+        return cls._instance
 
     def _init_buttons(self):
         button_y0 = SCREEN_HEIGHT - 270
