@@ -370,7 +370,7 @@ class GameRenderer:
         # Desenhar informações
         font = pygame.font.Font(None, 26)
         texts = [
-            f"Jogador: {player.name}",
+            f"Jogador: {player.name} | {player.gender.value}",
             f"Nível: {player.level}",
             f"Força: {player.calculate_combat_strength()}",
             f"Raça: {player.get_player_race()}"
