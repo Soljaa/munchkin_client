@@ -682,7 +682,7 @@ class GameRenderer:
         cards_start_x = (MODAL_WIDTH - (len(cards) * (CARD_WIDTH + SPACING))) // 2
         cards_y = 510
 
-        monster_sprites = []
+        card_sprites = []
 
         running = True
         while running:
@@ -692,8 +692,8 @@ class GameRenderer:
             screen.blit(close, (modal_x + close_rect.x, modal_y + close_rect.y))
 
             # Desenha os cards dos monstros
-            for i, monster in enumerate(cards):
-                card_sprite = Sprite(monster.image)
+            for i, card in enumerate(cards):
+                card_sprite = Sprite(card.image)
                 card_sprite.resize(CARD_WIDTH, CARD_HEIGHT)
 
                 card_x = modal_x + cards_start_x + (i * (CARD_WIDTH + SPACING))
@@ -702,14 +702,14 @@ class GameRenderer:
                 card_sprite.y = card_y
                 card_sprite.draw()
 
-                self.handle_card_hover(monster, card_sprite, card_size=ZOOMED_CARD_SIZE,
+                self.handle_card_hover(card, card_sprite, card_size=ZOOMED_CARD_SIZE,
                                        zoomed_position=ZOOMED_CARD_POS)
 
-                monster_sprites.append((card_sprite, monster))
+                card_sprites.append((card_sprite, card))
 
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    for card_sprite, monster in monster_sprites:
+                    for card_sprite, monster in card_sprites:
                         if self.mouse.is_over_object(card_sprite):
                             return monster
 
