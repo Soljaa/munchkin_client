@@ -26,12 +26,19 @@ class DeathBadStuff(MonsterBadStuff):
         Death(player).apply()
 
 class OrcsBadStuff(MonsterBadStuff):
+    def __str__(self):
+        return "Role um dado. 2 ou menos, você morre. Se não, perca o nível do dado."
+ 
     def apply(self, player) -> None:
-        roll = Dice.roll() # TODO: Dá erro -> TypeError: Dice.roll() missing 1 required positional argument: 'self' (Estranho pq era para funcionar)
-        if roll <= 2:
+        from ui.game_renderer import GameRenderer        
+        dice = Dice()
+        game_renderer = GameRenderer.get_instance()
+        dice.roll()
+        game_renderer.draw_dice_animation(dice)
+        if dice.last_roll <= 2:
             Death(player).apply()
         else:
-            player.level_down(roll)
+            player.level_down(dice.last_roll)
 
 class LoseItemsBadStuff(MonsterBadStuff):
     def __init__(self, qty=None): # Se qty = None, remove todos

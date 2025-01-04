@@ -26,15 +26,15 @@ class KickDoorFase(GamePhases):
                 print("Still no card after shuffle")
                 return False
 
-        print(f"Drew card: {card.name} of type {card.card_type}")
+        print(f"Drew card: {card.name} of type {card.type}")
         
         # Se for monstro, inicia combate
-        if card.card_type == CardType.MONSTER:
+        if card.type == CardType.MONSTER:
             combat_phase = CombatPhase(self.game_state, card, self.renderer)
             combat_phase.run()
         
         # Se for maldição, aplica o efeito
-        elif card.card_type == CardType.CURSE:
+        elif card.type == CardType.CURSE:
             print(f"Cursed! {card.name}")
             card.effect.apply(self.current_player)
 

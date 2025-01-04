@@ -40,10 +40,10 @@ class Gender(Enum):
 
 
 class Card:
-    def __init__(self, name, image, card_type):
+    def __init__(self, name, image, type):
         self.name = name
         self.image = image
-        self.card_type = card_type
+        self.type = type
 
     def __str__(self):
         return f"{self.name}"
@@ -125,6 +125,6 @@ class Curse(Card):
 # Classe para cartas de buff
 class Buff(Card):
     def __init__(self, name, image, effect, target):
-        super().__init__(name, image, card_type="Buff")
+        super().__init__(name, image, type="Buff")
         self.effect = effect  # Efeito do buff
         self.target = target  # Alvo do buff (jogador, monstro, etc.)

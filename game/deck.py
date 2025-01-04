@@ -4,14 +4,6 @@ from game.cards.curses import CURSES
 from game.cards.monsters import MONSTERS
 from game.cards.item_effect import IncreaseDiceRollEffect, BonusByRace, EscapeCombat, BlockCurses
 
-
-class Dice:
-    @staticmethod
-    def roll():
-        value = random.randint(1, 6)
-        return value
-
-
 class Deck:
     def __init__(self):
         self.cards = []
@@ -134,7 +126,7 @@ class TreasureDeck(Deck):
                  "hands", class_required=ClassTypes.CLERIC),
             Item("Mithril Armor", "assets/treasure_cards/MithrilArmor.png", 3, 600,
                  "armor", True, classes_prohibited=[ClassTypes.WIZARD]),
-            Item("Pantyhose of Giant Strength", "assets/treasure_cards/PantyhoseOfGiantStrength.png",
+            Item("Pantyhose of Giant Strength", "assets/treasure_cards/PantyHoseOfGiantStrength.png",
                  3, 600, "feet", classes_prohibited=[ClassTypes.WARRIOR]),
             Item("Pointy Hat of Power", "assets/treasure_cards/PointyHatofPower.png", 3, 400,
                  "head", class_required=ClassTypes.WIZARD),
