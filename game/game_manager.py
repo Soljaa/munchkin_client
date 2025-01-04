@@ -100,7 +100,8 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 renderer.draw_run_away_failed_transition() # Imagem referente a falha na fuga
                                 renderer.set_message(f"Fuga falhou! {game_state.current_combat.monster.bad_stuff}")
                                 current_combat.monster.apply_bad_stuff(game_state.current_player())
-                                if game_state.current_player().level <= 0: # Se o jogador estiver morto (logo após a perda do nível)
+
+                                if game_state.current_player().level <= 0: # Se o jogador estiver morto por causa do bad stuff do monstro (class Death())
                                     renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
                                     player_died = True
 

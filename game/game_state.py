@@ -2,8 +2,7 @@ from enum import Enum, auto
 from game.dice import Dice
 from game.deck import DoorDeck, TreasureDeck
 from game.player import Player
-from game.card import CardType, Gender
-from game.combat import Combat
+from game.card import Gender
 
 
 class GamePhase(Enum):

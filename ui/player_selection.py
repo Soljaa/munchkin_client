@@ -6,7 +6,6 @@ from PPlay.gameimage import *
 import pygame
 from ui.hover_button import HoverButton
 from ui.click_button import ClickButton
-from game.game_manager import main
 from game.card import Gender
 
 

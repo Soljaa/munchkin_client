@@ -1,12 +1,9 @@
-import copy
-
 import pygame
 from PPlay.sprite import *
 from PPlay.window import Window
 from constants import *
 from game.card import Item, CardType
 from ui.hover_button import HoverButton
-from game.dice import Dice
 from game.game_state import GamePhase
 from game.combat import CombatStates
 
@@ -28,7 +25,11 @@ COMBAT_CONDITIONS = {
 
 
 class GameRenderer:
+    _instance = None
+
     def __init__(self, screen):
+        if GameRenderer._instance is None:
+            GameRenderer._instance = self
         self.screen = screen
         self.gameboard = pygame.image.load("assets/gameboard.png")
         self.dungeon_background = pygame.image.load("assets/dungeon_background.png")
@@ -41,6 +42,10 @@ class GameRenderer:
         self.equip_holder = pygame.transform.scale(pygame.image.load("assets/game/equip_holder.png"), (100, 150))
         self.hand_card_sprites = []  # [(card_sprite, card)]
         self.equipped_card_sprites = []  # [(card_sprite, card)]]
+
+    @classmethod
+    def get_instance(cls):
+        return cls._instance
 
     def _init_buttons(self):
         button_y0 = SCREEN_HEIGHT - 270
@@ -532,9 +537,14 @@ class GameRenderer:
         # Informações adicionais
         details = [
             f"Treasure: {monster.treasure}",
-            f"Bad Stuff: {monster.bad_stuff}",
-            f"Helpers: {len(combat.helpers)}"
+            f"Helpers: {len(combat.helpers)}",
         ]
+
+        bad_stuff_lines = str(monster.bad_stuff).split('\n')
+        if bad_stuff_lines:
+            details.append(f"Bad Stuff: {bad_stuff_lines[0]}")
+        for line in bad_stuff_lines[1:]:
+            details.append(f"                  {line}")
 
         for i, text in enumerate(details):
             surface = font.render(text, True, WHITE)
@@ -588,7 +598,7 @@ class GameRenderer:
         if game_state and event.type == pygame.MOUSEBUTTONDOWN:
             # Check for clicks on any cards
             for card_sprite, card in self.hand_card_sprites:
-                if self.mouse.is_over_object(card_sprite) and card.card_type in equipable_card_types:
+                if self.mouse.is_over_object(card_sprite) and card.type in equipable_card_types:
                     self._remove_item_sprite(self.hand_card_sprites, card_sprite)
                     return 'equip_item', card
 

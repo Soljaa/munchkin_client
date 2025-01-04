@@ -40,10 +40,10 @@ class Gender(Enum):
 
 
 class Card:
-    def __init__(self, name, image, card_type):
+    def __init__(self, name, image, type):
         self.name = name
         self.image = image
-        self.card_type = card_type
+        self.type = type
 
     def __str__(self):
         return f"{self.name}"
@@ -96,13 +96,11 @@ class Item(Card):
         self.two_hands = two_hands  # armas de duas mão, default False
         self.effect = effect  # tupla com tipo e valor
 
-
 class Race(Card):
     def __init__(self, name, image, special_ability, race_type):
         super().__init__(name, image, CardType.RACE)
         self.special_ability = special_ability
         self.type = race_type
-
 
 class Class(Card):
     def __init__(self, name, image, special_ability, class_type):
@@ -110,21 +108,29 @@ class Class(Card):
         self.special_ability = special_ability
         self.type = class_type
 
-
-# Classe para cartas de maldição
 class Curse(Card):
     def __init__(self, name, image, effect):
         super().__init__(name, image, CardType.CURSE)
-        self.effect = effect  # Efeito da maldição ao ser aplicada
+        self.effect = effect
 
     def apply_effect(self, player):
         if self.effect:
             self.effect.apply(self, player)
 
+class DoorBuff(Card):
+    def __init__(self, name, image, effect):
+        super().__init__(name, image, CardType.DOOR_BUFF)
+        self.effect = effect
 
-# Classe para cartas de buff
-class Buff(Card):
-    def __init__(self, name, image, effect, target):
-        super().__init__(name, image, card_type="Buff")
-        self.effect = effect  # Efeito do buff
-        self.target = target  # Alvo do buff (jogador, monstro, etc.)
+class TreasureBuff(Card):
+    def __init__(self, name, image, effect, restriction=None):
+        super().__init__(name, image, CardType.TREASURE_BUFF)
+        self.effect = effect
+    
+    def can_use(self, player) -> bool:
+        if self.restriction:
+            return self.restriction.check(player)
+        return True
+
+    def apply_effect(self, player):
+        self.effect.apply(self, player)

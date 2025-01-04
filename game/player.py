@@ -138,14 +138,14 @@ class Player:
         door_deck = game_state.door_deck
         treasure_deck = game_state.treasure_deck
 
-        if card.card_type == CardType.DOOR_BUFF or card.card_type == CardType.CURSE or card.card_type == CardType.MONSTER or card.card_type == CardType.RACE or card.card_type == CardType.CLASS:
+        if card.type == CardType.DOOR_BUFF or card.type == CardType.CURSE or card.type == CardType.MONSTER or card.type == CardType.RACE or card.type == CardType.CLASS:
             door_deck.discard_pile.append(card)
-        if card.card_type == CardType.TREASURE_BUFF or card.card_type == CardType.ITEM:
+        if card.type == CardType.TREASURE_BUFF or card.type == CardType.ITEM:
             treasure_deck.discard_pile.append(card)
 
     def play_card(self, card):
         # TODO: para CURSE, abrir opção para escolher qual alvo
-        # if card.card_type == CardType.CURSE:
+        # if card.type == CardType.CURSE:
         #     target_player = open_target_menu()
         #     card.apply_effect(target_player)
 
@@ -161,9 +161,10 @@ class Player:
             self.level += 1
 
     def level_down(self, value=1):
-        self.level -= value
+        if self.level > 1:
+            self.level -= value
         if self.level < 1:
-            Death(self).apply()
+            self.level = 1
 
     def remove_class(self):
         if self.class_:
@@ -231,9 +232,16 @@ class Player:
             self.add_to_discard_pile(item)
             self.equipped_items.remove(item)
 
-    #TODO
+    def remove_all_hand_class_cards(self):
+        items_to_remove = [item for item in self.hand if item.class_required == self.class_]
+        
+        for item in items_to_remove:
+            self.add_to_discard_pile(item)
+            self.hand.remove(item)
+
     def lose_all_class_cards(self):
-        pass
+        self.lose_all_equipped_class_items()
+        self.remove_all_hand_class_cards()
 
     #TODO
     def lose_all_race_cards(self):
