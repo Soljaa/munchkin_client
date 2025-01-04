@@ -2,6 +2,7 @@ from game.card import Monster
 from game.cards.monster_effect import *
 from game.cards.monster_bad_stuff import *
 
+
 MONSTERS = [
         # 3,872 Orcs
         Monster(

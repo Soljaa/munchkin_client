@@ -1,12 +1,9 @@
-import copy
-
 import pygame
 from PPlay.sprite import *
 from PPlay.window import Window
 from constants import *
 from game.card import Item, CardType
 from ui.hover_button import HoverButton
-from game.dice import Dice
 from game.game_state import GamePhase
 from game.combat import CombatStates
 
@@ -18,6 +15,7 @@ BUTTONS_BY_GAME_PHASE = {
     GamePhase.LOOT_ROOM: [],
     GamePhase.COMBAT: ["run_away", "use_card", "ask_for_help", "finish_combat"],
     GamePhase.CHARITY: [],
+    GamePhase.FINAL_SETUP: ["end_turn"]
 }
 
 COMBAT_CONDITIONS = {
@@ -27,7 +25,11 @@ COMBAT_CONDITIONS = {
 
 
 class GameRenderer:
+    _instance = None
+
     def __init__(self, screen):
+        if GameRenderer._instance is None:
+            GameRenderer._instance = self
         self.screen = screen
         self.gameboard = pygame.image.load("assets/gameboard.png")
         self.dungeon_background = pygame.image.load("assets/dungeon_background.png")
@@ -40,6 +42,10 @@ class GameRenderer:
         self.equip_holder = pygame.transform.scale(pygame.image.load("assets/game/equip_holder.png"), (100, 150))
         self.hand_card_sprites = []  # [(card_sprite, card)]
         self.equipped_card_sprites = []  # [(card_sprite, card)]]
+
+    @classmethod
+    def get_instance(cls):
+        return cls._instance
 
     def _init_buttons(self):
         button_y0 = SCREEN_HEIGHT - 270
@@ -58,6 +64,7 @@ class GameRenderer:
             "ask_for_help": HoverButton("assets/game/ask_for_help.png", buttons_x, button_y3, 160, 66),
             "loot": HoverButton("assets/game/loot.png", buttons_x, button_y2, 160, 66),
             "finish_combat": HoverButton("assets/game/finish_combat.png", buttons_x, button_y1, 160, 66),
+            "end_turn": HoverButton("assets/game/end_turn.png", buttons_x, button_y1, 160, 66),
             "sell_items": HoverButton("assets/game/sell_items.png", buttons_x2, button_y4, 160, 66)
         }
 
@@ -241,71 +248,82 @@ class GameRenderer:
             extra_element=draw_card
         )
 
-    def draw_charity_fase_transition(self, players, distribution):  # TODO: Polir
+    def draw_charity_fase_transition(self, donor, players, distribution):  # TODO: Polir
         """
         Exibe a distribuição de cartas para os jogadores na fase de caridade na tela do Pygame, com um botão para continuar.
         """
-        self.screen.fill((0, 0, 0))  # Limpa a tela com um fundo preto
+        transition_image = pygame.image.load("assets/game/charity_transition.jpg")
+
+        # contraste
+        contrast_width = max([len(cards) for cards in distribution.values()]) * 100
+        rect_surface = pygame.Surface((contrast_width + 200, SCREEN_HEIGHT), pygame.SRCALPHA)
+        rect_surface.fill((255, 255, 255, 200))
+
         font = pygame.font.Font(None, 36)
-        y_position = 50  # Posição inicial no eixo Y
+        y_position = 40  # Posição inicial no eixo Y
 
         # Título da seção
-        title_text = font.render("Charity Phase - Card Distribution", True, (255, 255, 255))
-        self.screen.blit(title_text, (50, y_position))
-        y_position += 50
+        title_text = font.render(f"Doador:", True, (0, 0, 0))
+        player_name = font.render(f"{donor.name}", True, (0, 0, 0))
 
-        # Itera sobre todos os jogadores, incluindo os que não receberam cartas
-        for player in players:
-            # Exibe o nome do jogador
-            player_text = font.render(f"{player.name}:", True, (255, 255, 255))
-            self.screen.blit(player_text, (50, y_position))
-            y_position += 30
-
-            # Verifica se o jogador recebeu cartas
-            cards = distribution.get(player, [])
-            if cards:
-                # Renderiza os sprites das cartas se o jogador recebeu cartas
-                x_position = 50  # Posição inicial no eixo X para os sprites das cartas
-                for card in cards:
-                    try:
-                        card_sprite = pygame.image.load(card.image).convert_alpha()
-                        card_sprite = pygame.transform.scale(card_sprite, (100, 150)) 
-                        self.screen.blit(card_sprite, (x_position, y_position)) 
-                        x_position += 110  # Move a posição X para o próximo sprite de carta
-                    except Exception as e:
-                        print(f"Erro ao carregar sprite da carta: {card.image}. Erro: {e}")
-            else:
-                # Se o jogador não recebeu cartas, exibe uma mensagem simples
-                no_cards_text = font.render("No cards received", True, (255, 255, 255))
-                self.screen.blit(no_cards_text, (50, y_position))
-
-            y_position += 160  # Move a posição Y para o próximo jogador
-
-        # Botão de continuar no canto inferior direito
-        button_font = pygame.font.Font(None, 28)
-        button_text = button_font.render("Continue", True, (255, 255, 255))
-        button_color = (70, 130, 180)
-        button_width, button_height = 150, 50
-        button_x = 1280 - button_width - 20  # Margem de 20 pixels da borda direita
-        button_y = 720 - button_height - 20  # Margem de 20 pixels da borda inferior
-        button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-        pygame.draw.rect(self.screen, button_color, button_rect)
-        self.screen.blit(button_text, (button_rect.x + 20, button_rect.y + 10))
-
-        # Atualiza a tela para exibir o conteúdo
-        pygame.display.flip()
+        continue_btn = HoverButton("assets/game/continue.png", SCREEN_WIDTH - 100, SCREEN_HEIGHT - 50, 160, 66)
 
         waiting = True
         while waiting:
+
+            # posições iniciais
+            players_y_position = y_position + 60
+            cards_x_position = 50
+
+            # background
+            self.screen.blit(transition_image, (0, 0))
+
+            # contraste
+            self.screen.blit(rect_surface, (0, 0))
+
+            # Título da seção
+            self.screen.blit(title_text, (50, y_position))
+            self.screen.blit(player_name, (50, y_position + 25))
+
+            # Itera sobre todos os jogadores, incluindo os que não receberam cartas
+            for player in players:
+                # Exibe o nome do jogador
+                player_text = font.render(f"{player.name}:", True, (0, 0, 0))
+                self.screen.blit(player_text, (50, players_y_position))
+                players_y_position += 30
+
+                # Verifica se o jogador recebeu cartas
+                cards = distribution.get(player, [])
+                if cards:
+                    # Renderiza os sprites das cartas se o jogador recebeu cartas
+                    for card in cards:
+                        try:
+                            card_sprite = pygame.image.load(card.image).convert_alpha()
+                            card_sprite = pygame.transform.scale(card_sprite, (100, 150))
+                            self.screen.blit(card_sprite, (cards_x_position, players_y_position))
+                            cards_x_position += 110  # Move a posição X para o próximo sprite de carta
+                        except Exception as e:
+                            print(f"Erro ao carregar sprite da carta: {card.image}. Erro: {e}")
+                    cards_x_position = 50
+                else:
+                    # Se o jogador não recebeu cartas, exibe uma mensagem simples
+                    no_cards_text = font.render("Não recebeu nada...", True, (0, 0, 0))
+                    self.screen.blit(no_cards_text, (50, players_y_position))
+
+                players_y_position += 160  # Move a posição Y para o próximo jogador
+
+            # continue btn
+            continue_btn.draw()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
                 if event.type == pygame.KEYDOWN:
                     waiting = False
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if button_rect.collidepoint(event.pos):
-                        waiting = False
+                if continue_btn.handle_event():
+                    waiting = False
+            pygame.display.flip()
 
     def draw_run_away_success_transition(self):
         self.draw_transition(
@@ -374,10 +392,10 @@ class GameRenderer:
         # Desenhar informações
         font = pygame.font.Font(None, 26)
         texts = [
-            f"Jogador: {player.name}",
+            f"Jogador: {player.name} | {player.gender.value}",
             f"Nível: {player.level}",
             f"Força: {player.calculate_combat_strength()}",
-            f"Raça: {player.race.value}",
+            f"Raça: {player.get_player_race()}",
             f"Ouro: {player.gold}"  # Nova linha adicionada para mostrar o gold
         ]
 
@@ -524,9 +542,14 @@ class GameRenderer:
         # Informações adicionais
         details = [
             f"Treasure: {monster.treasure}",
-            f"Bad Stuff: {monster.bad_stuff}",
-            f"Helpers: {len(combat.helpers)}"
+            f"Helpers: {len(combat.helpers)}",
         ]
+
+        bad_stuff_lines = str(monster.bad_stuff).split('\n')
+        if bad_stuff_lines:
+            details.append(f"Bad Stuff: {bad_stuff_lines[0]}")
+        for line in bad_stuff_lines[1:]:
+            details.append(f"                  {line}")
 
         for i, text in enumerate(details):
             surface = font.render(text, True, WHITE)
@@ -570,7 +593,7 @@ class GameRenderer:
             self.message_timer -= 1
 
     def handle_event(self, event, game_state=None):
-        equipable_card_types = [CardType.CLASS, CardType.ITEM, CardType.RACE]
+        equipable_card_types = [CardType.CLASS, CardType.ITEM]
         # Handle button clicks
         for button_name, button in self.buttons.items():
             if button.handle_event():
@@ -580,7 +603,7 @@ class GameRenderer:
         if game_state and event.type == pygame.MOUSEBUTTONDOWN:
             # Check for clicks on any cards
             for card_sprite, card in self.hand_card_sprites:
-                if self.mouse.is_over_object(card_sprite) and card.card_type in equipable_card_types:
+                if self.mouse.is_over_object(card_sprite) and card.type in equipable_card_types:
                     self._remove_item_sprite(self.hand_card_sprites, card_sprite)
                     return 'equip_item', card
 
@@ -590,11 +613,11 @@ class GameRenderer:
                     return 'unequip_item', card
         return None
 
-    def _draw_zoomed_card(self):
-        zoomed_card_width = 270
-        zoomed_card_height = 395
-        zoomed_card_x = (SCREEN_WIDTH + 402)/2 - zoomed_card_width/2
-        zoomed_card_y = SCREEN_HEIGHT/2 - zoomed_card_height/2
+    def _draw_zoomed_card(self, card_size=None, zoomed_position=None):
+        zoomed_card_width = card_size[0] if card_size else 270
+        zoomed_card_height = card_size[1] if card_size else 395
+        zoomed_card_x = zoomed_position[0] if zoomed_position else (SCREEN_WIDTH + 402)/2 - zoomed_card_width/2
+        zoomed_card_y = zoomed_position[1] if zoomed_position else SCREEN_HEIGHT/2 - zoomed_card_height/2
         if self.zoomed_card:
             zoomed_sprite = Sprite(self.zoomed_card)
             zoomed_sprite.resize(zoomed_card_width, zoomed_card_height)
@@ -638,10 +661,10 @@ class GameRenderer:
         self.screen.blit(door_text, (door_deck_x, door_deck_y))
         self.screen.blit(door_discard_text, (door_discard_x, door_discard_y))
 
-    def handle_card_hover(self, card, card_sprite):
+    def handle_card_hover(self, card, card_sprite, card_size=None, zoomed_position=None):
         if self.mouse.is_over_object(card_sprite):
             self._set_zoomed_card(card.image)
-            self._draw_zoomed_card()
+            self._draw_zoomed_card(card_size=card_size, zoomed_position=zoomed_position)
         elif self.zoomed_card == card_sprite:
             self._hide_zoomed_card()
 
@@ -649,3 +672,84 @@ class GameRenderer:
         for idx, sprite_tuple in enumerate(origin):
             if sprite_tuple[0] == sprite:
                 origin.remove(sprite_tuple)
+
+    def display_selection_modal(self, cards, background, title):
+        """Mostra modal para seleção de monstros"""
+        MODAL_WIDTH = 800
+        MODAL_HEIGHT = 600
+        CARD_WIDTH = 90
+        CARD_HEIGHT = 135
+        ZOOMED_CARD_SIZE = (216, 316)
+        ZOOMED_CARD_POS = (535, 160)
+        SPACING = - 20
+
+        # Usar o screen do renderer existente
+        screen = self.screen
+
+        # Posicionamento central na tela
+        modal_x = (screen.get_width() - MODAL_WIDTH) // 2
+        modal_y = (screen.get_height() - MODAL_HEIGHT) // 2
+
+        # Criar superfície do modal
+        modal_surface = pygame.Surface((MODAL_WIDTH, MODAL_HEIGHT))
+        modal_surface.set_alpha(230)
+        monster_background_image = pygame.image.load(background)
+        modal_surface.blit(monster_background_image, (0, 0))
+
+        # Título
+        big_font = pygame.font.Font(None, 36)
+        title = big_font.render(title, True, (0, 0, 0))
+        title_rect = title.get_rect(centerx=MODAL_WIDTH // 2, y=20)
+
+        # Fechar
+        lower_font = pygame.font.Font(None, 24)
+        close = lower_font.render("(Pressione ESC para fechar)", True, (0, 0, 0))
+        close_rect = close.get_rect(centerx=MODAL_WIDTH // 2, y=50)
+
+        # Posições dos cards
+        cards_start_x = (MODAL_WIDTH - (len(cards) * (CARD_WIDTH + SPACING))) // 2
+        cards_y = 510
+
+        card_sprites = []
+
+        running = True
+        while running:
+            # Desenha o modal
+            screen.blit(modal_surface, (modal_x, modal_y))
+            screen.blit(title, (modal_x + title_rect.x, modal_y + title_rect.y))
+            screen.blit(close, (modal_x + close_rect.x, modal_y + close_rect.y))
+
+            # Desenha os cards dos monstros
+            for i, card in enumerate(cards):
+                card_sprite = Sprite(card.image)
+                card_sprite.resize(CARD_WIDTH, CARD_HEIGHT)
+
+                card_x = modal_x + cards_start_x + (i * (CARD_WIDTH + SPACING))
+                card_y = cards_y
+                card_sprite.x = card_x
+                card_sprite.y = card_y
+                card_sprite.draw()
+
+                self.handle_card_hover(card, card_sprite, card_size=ZOOMED_CARD_SIZE,
+                                       zoomed_position=ZOOMED_CARD_POS)
+
+                card_sprites.append((card_sprite, card))
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for card_sprite, monster in card_sprites:
+                        if self.mouse.is_over_object(card_sprite):
+                            return monster
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                        break
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    break
+
+            pygame.display.flip()
+
+        return None

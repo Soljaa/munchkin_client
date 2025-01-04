@@ -2,17 +2,17 @@ from enum import Enum, auto
 from game.dice import Dice
 from game.deck import DoorDeck, TreasureDeck
 from game.player import Player
-from game.card import CardType
-from game.combat import Combat
+from game.card import Gender
 
 
 class GamePhase(Enum):
     SETUP = "Preparação"
-    KICK_DOOR = "Chutar porta"
-    LOOK_FOR_TROUBLE = "Buscar encrenca"
-    LOOT_ROOM = "Saquear masmorra"
+    KICK_DOOR = "Chutar Porta"
+    LOOK_FOR_TROUBLE = "Buscar Encrenca"
+    LOOT_ROOM = "Saquear Masmorra"
     COMBAT = "Combate"
     CHARITY = "Caridade"
+    FINAL_SETUP = "Preparo Final"
 
 
 class EndGameException(Exception):
@@ -36,8 +36,8 @@ class GameState:
     def get_instance():
         return GameState._instance
 
-    def add_player(self, name, img_dir):
-        player = Player(name, img_dir)
+    def add_player(self, name, img_dir, gender=Gender.MALE):
+        player = Player(name, img_dir, gender)
         self.players.append(player)
         # Draw initial hand
         for _ in range(4):

@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
-
 from game.card import CardType
 
-# OBS: As curses já são aplicadas para o player target, não precisa se preocupar com o alvo.
 
 class CurseEffect(ABC):
     @abstractmethod

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class MonsterEffect(ABC):
     @abstractmethod
     def apply(self, monster, player) -> None:
