@@ -411,8 +411,8 @@ class GameRenderer:
             'l_hand': (500, 490),
             'r_hand': (430, 490),
             'feet': (465, 540),
-            'race': (440, 420),
-            'class': (500, 420)
+            'class': (440, 420),
+            'no-slot': (550, 460),
         }
         r_hand_used = False
 
@@ -428,15 +428,10 @@ class GameRenderer:
 
             self.equipped_card_sprites.append((item_sprite, player.class_))
 
-        # revisar display de raça e gender para player info
-        # if player.race:
-        #     item_sprite = Sprite(player.race.image)
-        #     item_sprite.resize(30, 45)
-        #     item_sprite.draw()
-        #
-        #     self.handle_card_hover(player.race, item_sprite)
-        #
-        #     self.equipped_card_sprites.append((item_sprite, player.race))
+        no_slot_x_offset = 0
+        no_slot_y_offset = 0
+
+        no_slot_items_sprite = []
 
         for item in player.equipped_items:
             item_sprite = Sprite(item.image)
@@ -446,26 +441,36 @@ class GameRenderer:
             pos_x = 0
             pos_y = 0
 
-            if item.slot == 'head':
-                pos_x = equipped_card_positions['head'][0]
-                pos_y = equipped_card_positions['head'][1]
+            if item.slot:
+                if item.slot == 'head':
+                    pos_x = equipped_card_positions['head'][0]
+                    pos_y = equipped_card_positions['head'][1]
 
-            if item.slot == 'feet':
-                pos_x = equipped_card_positions['feet'][0]
-                pos_y = equipped_card_positions['feet'][1]
+                if item.slot == 'feet':
+                    pos_x = equipped_card_positions['feet'][0]
+                    pos_y = equipped_card_positions['feet'][1]
 
-            if item.slot == 'armor':
-                pos_x = equipped_card_positions['armor'][0]
-                pos_y = equipped_card_positions['armor'][1]
+                if item.slot == 'armor':
+                    pos_x = equipped_card_positions['armor'][0]
+                    pos_y = equipped_card_positions['armor'][1]
 
-            if item.slot == 'hands':
-                if not r_hand_used:
-                    pos_x = equipped_card_positions['r_hand'][0]
-                    pos_y = equipped_card_positions['r_hand'][1]
-                    r_hand_used = True
-                else:
-                    pos_x = equipped_card_positions['l_hand'][0]
-                    pos_y = equipped_card_positions['l_hand'][1]
+                if item.slot == 'hands':
+                    if not r_hand_used:
+                        pos_x = equipped_card_positions['r_hand'][0]
+                        pos_y = equipped_card_positions['r_hand'][1]
+                        r_hand_used = True
+                    else:
+                        pos_x = equipped_card_positions['l_hand'][0]
+                        pos_y = equipped_card_positions['l_hand'][1]
+            else:
+                pos_x = equipped_card_positions['no-slot'][0] + no_slot_x_offset
+                pos_y = equipped_card_positions['no-slot'][1] + no_slot_y_offset
+
+                no_slot_items_sprite.append(item_sprite)
+                no_slot_y_offset += 50
+                if len(no_slot_items_sprite) % 2 == 0:
+                    no_slot_x_offset += 40
+                    no_slot_y_offset = 0
 
             item_sprite.x = pos_x
             item_sprite.y = pos_y
