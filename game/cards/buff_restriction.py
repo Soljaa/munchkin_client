@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 
-from game.game_state import GamePhase
-
 
 class BuffsRestriction(ABC):
     @abstractmethod
@@ -10,6 +8,7 @@ class BuffsRestriction(ABC):
 
 class OnlyInCombatRestriction(BuffsRestriction):
     def check(self):
+        from game.game_state import GamePhase
         from game.game_state import GameState
         game_state = GameState.get_instance()
 
