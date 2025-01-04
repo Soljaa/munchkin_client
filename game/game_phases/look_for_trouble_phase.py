@@ -29,8 +29,8 @@ class LookForTroublePhase(GamePhases):
             return False
 
         selected_monster = self.renderer.display_selection_modal(available_monsters,
-                                                                 "assets/game/monster_modal.png",
-                                                                 "Selecione um monstro para lutar")
+                                                                 "Selecione um monstro para lutar",
+                                                                 "assets/game/monster_modal.png")
 
         if selected_monster:
             self.current_player.hand.remove(selected_monster)

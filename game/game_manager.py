@@ -154,7 +154,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                         print("Turno:", curr_turn)
 
                     elif action == "sell_items":
-                        if game_state.phase == GamePhase.SETUP:
+                        if game_state.phase == GamePhase.SETUP or game_state.phase == GamePhase.FINAL_SETUP:
                             setup_phase = SetupPhase(game_state, ("sell_items", None), renderer)
                             setup_phase.run()
 

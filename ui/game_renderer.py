@@ -15,7 +15,7 @@ BUTTONS_BY_GAME_PHASE = {
     GamePhase.LOOT_ROOM: [],
     GamePhase.COMBAT: ["run_away", "use_card", "ask_for_help", "finish_combat"],
     GamePhase.CHARITY: [],
-    GamePhase.FINAL_SETUP: ["end_turn"]
+    GamePhase.FINAL_SETUP: ["end_turn", "sell_items"]
 }
 
 COMBAT_CONDITIONS = {
@@ -255,7 +255,7 @@ class GameRenderer:
         transition_image = pygame.image.load("assets/game/charity_transition.jpg")
 
         # contraste
-        contrast_width = max([len(cards) for cards in distribution.values()]) * 100
+        contrast_width = max([max([len(cards) for cards in distribution.values()]) * 100, 200])
         rect_surface = pygame.Surface((contrast_width + 200, SCREEN_HEIGHT), pygame.SRCALPHA)
         rect_surface.fill((255, 255, 255, 200))
 
@@ -673,8 +673,8 @@ class GameRenderer:
             if sprite_tuple[0] == sprite:
                 origin.remove(sprite_tuple)
 
-    def display_selection_modal(self, cards, background, title):
-        """Mostra modal para seleção de monstros"""
+    def display_selection_modal(self, cards, title, background=None):
+        """Mostra modal generalizado"""
         MODAL_WIDTH = 800
         MODAL_HEIGHT = 600
         CARD_WIDTH = 90
@@ -693,8 +693,11 @@ class GameRenderer:
         # Criar superfície do modal
         modal_surface = pygame.Surface((MODAL_WIDTH, MODAL_HEIGHT))
         modal_surface.set_alpha(230)
-        monster_background_image = pygame.image.load(background)
-        modal_surface.blit(monster_background_image, (0, 0))
+        if background:
+            background_image = pygame.image.load(background)
+            modal_surface.blit(background_image, (0, 0))
+        else:
+            modal_surface.fill((255, 255, 255))
 
         # Título
         big_font = pygame.font.Font(None, 36)
@@ -711,6 +714,16 @@ class GameRenderer:
         cards_y = 510
 
         card_sprites = []
+        for i, card in enumerate(cards):
+            card_sprite = Sprite(card.image)
+            card_sprite.resize(CARD_WIDTH, CARD_HEIGHT)
+
+            card_x = modal_x + cards_start_x + (i * (CARD_WIDTH + SPACING))
+            card_y = cards_y
+            card_sprite.x = card_x
+            card_sprite.y = card_y
+
+            card_sprites.append((card_sprite, card))
 
         running = True
         while running:
@@ -719,27 +732,18 @@ class GameRenderer:
             screen.blit(title, (modal_x + title_rect.x, modal_y + title_rect.y))
             screen.blit(close, (modal_x + close_rect.x, modal_y + close_rect.y))
 
-            # Desenha os cards dos monstros
-            for i, card in enumerate(cards):
-                card_sprite = Sprite(card.image)
-                card_sprite.resize(CARD_WIDTH, CARD_HEIGHT)
-
-                card_x = modal_x + cards_start_x + (i * (CARD_WIDTH + SPACING))
-                card_y = cards_y
-                card_sprite.x = card_x
-                card_sprite.y = card_y
+            # Desenha os cards
+            for card_sprite, card in card_sprites:
                 card_sprite.draw()
 
                 self.handle_card_hover(card, card_sprite, card_size=ZOOMED_CARD_SIZE,
                                        zoomed_position=ZOOMED_CARD_POS)
 
-                card_sprites.append((card_sprite, card))
-
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    for card_sprite, monster in card_sprites:
+                    for card_sprite, card in card_sprites[::-1]:
                         if self.mouse.is_over_object(card_sprite):
-                            return monster
+                            return card
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -749,6 +753,110 @@ class GameRenderer:
                 if event.type == pygame.QUIT:
                     running = False
                     break
+
+            pygame.display.flip()
+
+        return None
+
+    def display_multi_selection_modal(self, cards, title, btn_image, background=None):
+        """Mostra modal multi-select generalizado"""
+        MODAL_WIDTH = 800
+        MODAL_HEIGHT = 600
+        CARD_WIDTH = 90
+        CARD_HEIGHT = 135
+        ZOOMED_CARD_SIZE = (216, 316)
+        ZOOMED_CARD_POS = (535, 160)
+        SPACING = - 20
+
+        # Usar o screen do renderer existente
+        screen = self.screen
+
+        # Posicionamento central na tela
+        modal_x = (screen.get_width() - MODAL_WIDTH) // 2
+        modal_y = (screen.get_height() - MODAL_HEIGHT) // 2
+
+        # Criar superfície do modal
+        modal_surface = pygame.Surface((MODAL_WIDTH, MODAL_HEIGHT))
+        modal_surface.set_alpha(230)
+        if background:
+            background_image = pygame.image.load(background)
+            modal_surface.blit(background_image, (0, 0))
+        else:
+            modal_surface.fill((255, 255, 255))
+
+        # Título
+        big_font = pygame.font.Font(None, 36)
+        title = big_font.render(title, True, (0, 0, 0))
+        title_rect = title.get_rect(centerx=MODAL_WIDTH // 2, y=20)
+
+        # Fechar
+        lower_font = pygame.font.Font(None, 24)
+        close = lower_font.render("(Pressione ESC para fechar)", True, (0, 0, 0))
+        close_rect = close.get_rect(centerx=MODAL_WIDTH // 2, y=50)
+
+        # Posições dos cards
+        cards_start_x = (MODAL_WIDTH - (len(cards) * (CARD_WIDTH + SPACING))) // 2
+        cards_y = 510
+
+        card_sprites = []
+        for i, card in enumerate(cards):
+            card_sprite = Sprite(card.image)
+            card_sprite.resize(CARD_WIDTH, CARD_HEIGHT)
+
+            card_x = modal_x + cards_start_x + (i * (CARD_WIDTH + SPACING))
+            card_y = cards_y
+            card_sprite.x = card_x
+            card_sprite.y = card_y
+
+            card_sprites.append((card_sprite, card))
+
+        selected_cards = []
+
+        confirm_btn = HoverButton(btn_image, MODAL_WIDTH + 100, MODAL_HEIGHT - 200, 160, 66)
+
+        running = True
+        while running:
+            # Desenha o modal
+            screen.blit(modal_surface, (modal_x, modal_y))
+            screen.blit(title, (modal_x + title_rect.x, modal_y + title_rect.y))
+            screen.blit(close, (modal_x + close_rect.x, modal_y + close_rect.y))
+
+            # Desenha os cards
+            for card_sprite, card in card_sprites:
+                card_sprite.draw()
+                if card in selected_cards:
+                    pygame.draw.rect(
+                        self.screen,
+                        (0, 255, 0),
+                        (card_sprite.rect.x - 5, card_sprite.rect.y - 5,
+                         card_sprite.rect.width + 10, card_sprite.rect.height + 10),
+                        3
+                    )
+                self.handle_card_hover(card, card_sprite, card_size=ZOOMED_CARD_SIZE,
+                                       zoomed_position=ZOOMED_CARD_POS)
+                confirm_btn.draw()
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for card_sprite, card in card_sprites[::-1]:
+                        if self.mouse.is_over_object(card_sprite):
+                            if card in selected_cards:
+                                selected_cards.remove(card)
+                            else:
+                                selected_cards.append(card)
+                            break
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                        break
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    break
+
+                if confirm_btn.handle_event():
+                    return selected_cards
 
             pygame.display.flip()
 
