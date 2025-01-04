@@ -524,9 +524,14 @@ class GameRenderer:
         # Informações adicionais
         details = [
             f"Treasure: {monster.treasure}",
-            f"Bad Stuff: {monster.bad_stuff}",
-            f"Helpers: {len(combat.helpers)}"
+            f"Helpers: {len(combat.helpers)}",
         ]
+
+        bad_stuff_lines = str(monster.bad_stuff).split('\n')
+        if bad_stuff_lines:
+            details.append(f"Bad Stuff: {bad_stuff_lines[0]}")
+        for line in bad_stuff_lines[1:]:
+            details.append(f"                  {line}")
 
         for i, text in enumerate(details):
             surface = font.render(text, True, WHITE)

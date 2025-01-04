@@ -128,7 +128,7 @@ class TreasureDeck(Deck):
                  "armor", True, classes_prohibited=[ClassTypes.WIZARD]),
             Item("Pantyhose of Giant Strength", "assets/treasure_cards/PantyHoseOfGiantStrength.png",
                  3, 600, "feet", classes_prohibited=[ClassTypes.WARRIOR]),
-            Item("Pointy Hat of Power", "assets/treasure_cards/PointyHatofPower.png", 3, 400,
+            Item("Pointy Hat of Power", "assets/treasure_cards/PointyHatOfPower.png", 3, 400,
                  "head", class_required=ClassTypes.WIZARD),
             Item("Rapier of Unfairness", "assets/treasure_cards/RapierOfUnfairness.png", 3,
                  600, "hands", race_required=RaceTypes.ELF),
