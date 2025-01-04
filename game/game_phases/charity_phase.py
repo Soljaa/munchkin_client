@@ -34,7 +34,7 @@ class CharityPhase(GamePhases):
         other_players = [player for player in self.players if player != current_player]
         
         # Chama a renderização para exibir todos os jogadores, exceto o atual
-        self.renderer.draw_charity_fase_transition(other_players, distribution)
+        self.renderer.draw_charity_fase_transition(current_player, other_players, distribution)
 
         return True
 

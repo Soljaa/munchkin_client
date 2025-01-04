@@ -37,7 +37,7 @@ class LookForTroublePhase(GamePhases):
             combat = Combat(self.current_player, selected_monster)
             self.game_state.set_combat(combat)
             self.game_state.set_game_phase(GamePhase.COMBAT)
-            self.renderer.set_message(f"Combat started with {selected_monster.name}")
+            self.renderer.set_message(f"Combate iniciado com: {selected_monster.name}")
             return True
 
         return False

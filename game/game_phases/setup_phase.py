@@ -17,14 +17,14 @@ class SetupPhase(GamePhases):
             if card in self.player.hand:
                 item_equipped = self.player.equip_item(card)
                 if item_equipped:
-                    self.renderer.set_message(f"Equipped {card.name}!")
+                    self.renderer.set_message(f"Equipado {card.name}!")
                 else:
-                    self.renderer.set_message("Cannot equip this item!")
+                    self.renderer.set_message("Não pode equipar esse item!")
 
         elif self.action_type == "unequip_item":
             item = self.item
             if item in self.player.equipped_items:
                 self.player.unequip_item(item)
-                self.renderer.set_message(f"Unequipped {item.name}")
+                self.renderer.set_message(f"Desequipado {item.name}")
 
         return True

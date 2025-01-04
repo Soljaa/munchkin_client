@@ -12,6 +12,7 @@ class GamePhase(Enum):
     LOOT_ROOM = "Saquear Masmorra"
     COMBAT = "Combate"
     CHARITY = "Caridade"
+    FINAL_SETUP = "Preparo Final"
 
 
 class EndGameException(Exception):

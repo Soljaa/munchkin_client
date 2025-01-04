@@ -68,7 +68,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
             if action:
                 # item management É COMO SE FOSSE A FASE DE **PREPARAÇÃO**
                 if isinstance(action, tuple): # Se o clique for em um item
-                    if game_state.phase == GamePhase.SETUP:
+                    if game_state.phase == GamePhase.SETUP or game_state.phase == GamePhase.FINAL_SETUP:
                         setup_phase = SetupPhase(game_state, action, renderer)
                         setup_phase.run()
                 else: # Se o clique não for em um item (for em um botão)
@@ -89,37 +89,40 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             game_state.dice.roll() # Então rolo o dado 
                             renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
                             value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
+                            game_state.door_deck.discard(current_combat.monster)
                             if current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
                                 renderer.draw_run_away_success_transition() #Imagem referente ao sucesso na fuga
-                                renderer.set_message("Successfully ran away!")
+                                renderer.set_message("Fugiu com sucesso!")
                                 game_state.set_combat(None)
+                                renderer.set_message("Prepare-se antes de fazer caridade!")
+                                game_state.set_game_phase(GamePhase.FINAL_SETUP)
                             else: # Se não consigo fugir (value<5)
                                 renderer.draw_run_away_failed_transition() # Imagem referente a falha na fuga
-                                renderer.set_message(f"Failed to run away! {game_state.current_combat.monster.bad_stuff}")
+                                renderer.set_message(f"Fuga falhou! {game_state.current_combat.monster.bad_stuff}")
                                 current_combat.monster.apply_bad_stuff(game_state.current_player())
 
                                 if game_state.current_player().level <= 0: # Se o jogador estiver morto por causa do bad stuff do monstro (class Death())
                                     renderer.draw_alert_player_die(game_state.current_player()) # Desenha imagem do aviso da death do jogador
                                     player_died = True
-                            game_state.door_deck.discard(current_combat.monster)
-                            charity_phase = CharityPhase(game_state, renderer)
-                            charity_phase.run(player_died)
-                            game_state.next_player()
-                            curr_turn = increase_global_turns(curr_turn, game_state)
-                            print("Turno:", curr_turn)
+
+                                if player_died:
+                                    charity_phase = CharityPhase(game_state, renderer)
+                                    charity_phase.run(player_died)
+                                    game_state.next_player()
+                                    curr_turn = increase_global_turns(curr_turn, game_state)
+                                    print("Turno:", curr_turn)
+                                else:
+                                    renderer.set_message("Prepare-se antes de fazer caridade!")
+                                    game_state.set_game_phase(GamePhase.FINAL_SETUP)
 
                     elif action == "loot": # Se aperto por saquear # LOOT
                         if game_state.phase == GamePhase.KICK_DOOR:
-                            #renderer.draw_loot_the_room_transition()
                             loot_room_phase = LootRoomPhase(game_state)
                             loot_room_phase.run()
                             loot_card = loot_room_phase.show_loot_card()
                             renderer.draw_loot_the_room_transition(loot_card)
-                            charity_phase = CharityPhase(game_state, renderer)
-                            charity_phase.run()
-                            game_state.next_player()
-                            curr_turn = increase_global_turns(curr_turn, game_state)
-                            print("Turno:", curr_turn)
+                            renderer.set_message("Prepare-se antes de fazer caridade!")
+                            game_state.set_game_phase(GamePhase.FINAL_SETUP)
 
                     elif action == "finish_combat": # Se aperto para finalizar o combate...
                         if game_state.phase == GamePhase.COMBAT and game_state.current_combat: #... e estou na fase de combate
@@ -127,23 +130,27 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                 monster_card = game_state.current_combat.monster
                                 game_state.resolve_combat() # Resolve o combate, aplicando as devidas bonificações ou penalizações
                                 game_state.door_deck.discard(monster_card)
-                                charity_phase = CharityPhase(game_state, renderer)
-                                charity_phase.run()
-                                game_state.next_player()
-                                curr_turn = increase_global_turns(curr_turn, game_state)
-                                print("Turno:", curr_turn)
+                                renderer.set_message("Prepare-se antes de fazer caridade!")
+                                game_state.set_game_phase(GamePhase.FINAL_SETUP)
+
                             except EndGameException:
                                 # mostrar tela de vencedor
                                 print("Fim de jogo! Vencedor:", game_state.current_player().name)
                                 raise
 
-
                     elif action == "look_for_trouble":
                         if game_state.phase == GamePhase.KICK_DOOR:
                             look_for_trouble_phase = LookForTroublePhase(game_state, renderer)  # Adicionando renderer
                             if not look_for_trouble_phase.run():
-                                renderer.set_message("No monsters available or selection cancelled")
+                                renderer.set_message("Sem monstros ou fase cancelada!")
                                 game_state.set_game_phase(GamePhase.KICK_DOOR)
+
+                    elif action == "end_turn":
+                        charity_phase = CharityPhase(game_state, renderer)
+                        charity_phase.run()
+                        game_state.next_player()
+                        curr_turn = increase_global_turns(curr_turn, game_state)
+                        print("Turno:", curr_turn)
 
         # Draw current game state
         try:
