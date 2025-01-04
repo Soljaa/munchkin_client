@@ -79,12 +79,12 @@ class SetupPhase(GamePhases):
                 item_sprite = pygame.transform.scale(item_sprite, (CARD_WIDTH, CARD_HEIGHT))
                 screen.blit(item_sprite, card_rect)
 
-                item_name = font.render(item.name, True, (0, 0, 0))
-                name_rect = item_name.get_rect(centerx=card_rect.centerx, top=card_rect.bottom + 10)
-                screen.blit(item_name, name_rect)
+                #item_name = font.render(item.name, True, (0, 0, 0))
+                #name_rect = item_name.get_rect(centerx=card_rect.centerx, top=card_rect.bottom + 10)
+                #screen.blit(item_name, name_rect)
 
                 value_text = font.render(f"Value: {item.value}", True, (0, 0, 0))
-                value_rect = value_text.get_rect(centerx=card_rect.centerx, top=name_rect.bottom + 5)
+                value_rect = value_text.get_rect(centerx=card_rect.centerx, top=card_rect.bottom + 5)
                 screen.blit(value_text, value_rect)
 
             # Desenha botão de venda
