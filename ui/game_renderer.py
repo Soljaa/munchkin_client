@@ -575,7 +575,7 @@ class GameRenderer:
         if game_state and event.type == pygame.MOUSEBUTTONDOWN:
             # Check for clicks on any cards
             for card_sprite, card in self.hand_card_sprites:
-                if self.mouse.is_over_object(card_sprite) and card.card_type in equipable_card_types:
+                if self.mouse.is_over_object(card_sprite) and card.type in equipable_card_types:
                     self._remove_item_sprite(self.hand_card_sprites, card_sprite)
                     return 'equip_item', card
 

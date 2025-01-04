@@ -138,14 +138,14 @@ class Player:
         door_deck = game_state.door_deck
         treasure_deck = game_state.treasure_deck
 
-        if card.card_type == CardType.DOOR_BUFF or card.card_type == CardType.CURSE or card.card_type == CardType.MONSTER or card.card_type == CardType.RACE or card.card_type == CardType.CLASS:
+        if card.type == CardType.DOOR_BUFF or card.type == CardType.CURSE or card.type == CardType.MONSTER or card.type == CardType.RACE or card.type == CardType.CLASS:
             door_deck.discard_pile.append(card)
-        if card.card_type == CardType.TREASURE_BUFF or card.card_type == CardType.ITEM:
+        if card.type == CardType.TREASURE_BUFF or card.type == CardType.ITEM:
             treasure_deck.discard_pile.append(card)
 
     def play_card(self, card):
         # TODO: para CURSE, abrir opção para escolher qual alvo
-        # if card.card_type == CardType.CURSE:
+        # if card.type == CardType.CURSE:
         #     target_player = open_target_menu()
         #     card.apply_effect(target_player)
 
