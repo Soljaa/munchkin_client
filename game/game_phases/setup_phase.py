@@ -50,6 +50,7 @@ class SetupPhase(GamePhases):
         # Remove os itens vendidos da mão do jogador
         for item in selected_items:
             self.player.hand.remove(item)
+            self.player.add_to_discard_pile(item)
 
         self.player.gold += total_value
 
