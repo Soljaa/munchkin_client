@@ -217,7 +217,7 @@ class GameRenderer:
         clock = pygame.time.Clock()
 
         while elapsed_time < duration:
-            delta_time = clock.tick(60) / 1000.0  # 60 FPS
+            delta_time = clock.tick(30) / 1000.0  # 30 FPS
             elapsed_time += delta_time
 
             # Desenha a imagem de transição
