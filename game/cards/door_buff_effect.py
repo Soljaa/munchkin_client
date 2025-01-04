@@ -10,14 +10,16 @@ class IncreaseMonsterLevelBuff(DoorBuffEffect):
     def __init__(self, bonus: int):
         self.bonus = bonus
 
-    def apply(self, target) -> None:
-        target.level += self.bonus
-        if target.level < 1:
-            target.level = 1
+    def apply(self, monster) -> None:
+        monster.level += self.bonus
+        if monster.level < 1:
+            monster.level = 1
 
-class DrawExtraTreasure(DoorBuffEffect):
+class DrawExtraTreasureBuff(DoorBuffEffect):
     def __init__(self, amount: int):
         self.amount = amount
 
-    def apply(self, target) -> None:
-        target.draw_extra_treasure(self.amount)
+    def apply(self, monster) -> None:
+        monster.treasure += (self.amount)
+        if monster.treasure < 1:
+            monster.treasure = 1
