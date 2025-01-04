@@ -12,7 +12,7 @@ class CharityPhase(GamePhases):
     def run(self, died=False):
         print("Executing Charity Phase")
         self.game_state.set_game_phase(GamePhase.CHARITY)
-        self.renderer.set_message("Doing charity... Redistributing cards")
+        self.renderer.set_message("Fazendo caridade... Redistribuindo as cartas")
 
         current_player = self.players[self.current_player_index]
         donation_cards = current_player.hand if died else current_player.donate_cards()

@@ -365,7 +365,7 @@ class GameRenderer:
         
         # Draw current combat if any
         if game_state.current_combat:
-            self._draw_combat(game_state.current_combat, 620, 180)
+            self._draw_combat(game_state.current_combat, 550, 200)
         
         # Draw buttons based on game phase
         self._draw_buttons(game_state)
@@ -519,16 +519,15 @@ class GameRenderer:
                 raise e
 
     def _draw_combat(self, combat, x, y):
-        font = pygame.font.Font(None, 36)
+        font = pygame.font.Font(None, 24)
         monster = combat.monster
 
         # Desenhar imagem do monstro
-        MONSTER_WIDTH = 200
-        MONSTER_HEIGHT = 300
+        MONSTER_WIDTH = 147
+        MONSTER_HEIGHT = 212
         monster_sprite = Sprite(monster.image)
-        resized_image = pygame.transform.scale(monster_sprite.image, (MONSTER_WIDTH, MONSTER_HEIGHT))
-        monster_sprite.image = resized_image
-        monster_sprite.x = x  # Centralizar na área de combate
+        monster_sprite.resize(MONSTER_WIDTH, MONSTER_HEIGHT)
+        monster_sprite.x = x
         monster_sprite.y = y
         monster_sprite.draw()
 
@@ -549,9 +548,9 @@ class GameRenderer:
                                          RED if player_strength > monster_strength else WHITE)
 
         # Posicionar textos
-        self.screen.blit(vs_text, (x + MONSTER_WIDTH + 100, y + 100))
-        self.screen.blit(player_text, (x + MONSTER_WIDTH + 30, y + 100))
-        self.screen.blit(monster_text, (x + MONSTER_WIDTH + 210, y + 100))
+        self.screen.blit(vs_text, (x + MONSTER_WIDTH + 60, y + 50))
+        self.screen.blit(player_text, (x + MONSTER_WIDTH + 20, y + 50))
+        self.screen.blit(monster_text, (x + MONSTER_WIDTH + 140, y + 50))
 
         # Informações adicionais
         details = [
@@ -563,11 +562,13 @@ class GameRenderer:
         if bad_stuff_lines:
             details.append(f"Coisa Ruim: {bad_stuff_lines[0]}")
         for line in bad_stuff_lines[1:]:
-            details.append(f"                  {line}")
+            details.append(f"                         {line}")
 
         for i, text in enumerate(details):
             surface = font.render(text, True, WHITE)
-            self.screen.blit(surface, (x + MONSTER_WIDTH + 20, 400 + i * 30))
+            self.screen.blit(surface, (x + MONSTER_WIDTH + 20, 350 + i * 20))
+
+        self.handle_card_hover(monster, monster_sprite)
 
     def _draw_buttons(self, game_state):
         current_phase_buttons = BUTTONS_BY_GAME_PHASE[game_state.phase]

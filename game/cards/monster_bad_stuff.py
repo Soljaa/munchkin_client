@@ -34,7 +34,7 @@ class DeathBadStuff(MonsterBadStuff):
 
 class OrcsBadStuff(MonsterBadStuff):
     def __str__(self):
-        return "Role um dado. 2 ou menos, você morre. Se não, perca o nível do dado."
+        return "Role um dado. 2 ou menos: morte. Senão, perca niveis."
  
     def apply(self, player) -> None:
         from ui.game_renderer import GameRenderer        
