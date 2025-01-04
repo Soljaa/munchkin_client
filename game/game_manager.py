@@ -112,6 +112,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                                     curr_turn = increase_global_turns(curr_turn, game_state)
                                     print("Turno:", curr_turn)
                                 else:
+                                    game_state.set_combat(None)
                                     renderer.set_message("Prepare-se antes de fazer caridade!")
                                     game_state.set_game_phase(GamePhase.FINAL_SETUP)
 
