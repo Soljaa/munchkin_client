@@ -71,7 +71,6 @@ ITEMS = [
         image="assets/treasure_cards/CloakOfObscurity.png",
         bonus=4,
         value=600,
-        slot="armor",
         class_required=ClassTypes.THIEF
     ),
     Item(
@@ -148,7 +147,6 @@ ITEMS = [
         image="assets/treasure_cards/LimburgerAndAnchovySandwich.png",
         bonus=3,
         value=400,
-        slot="hands",
         race_required=RaceTypes.HALFlING
     ),
     Item(
@@ -173,7 +171,6 @@ ITEMS = [
         image="assets/treasure_cards/PantyHoseOfGiantStrength.png",
         bonus=3,
         value=600,
-        slot="feet",
         classes_prohibited=[ClassTypes.WARRIOR]
     ),
     Item(
@@ -232,7 +229,7 @@ ITEMS = [
         value=400,
         slot="hands"
     ),
-    # Item("Spiky Knees", "assets/treasure_cards/SpikyKnees.png", 1, 200, "armor"), rever items sem slot
+    Item("Spiky Knees", "assets/treasure_cards/SpikyKnees.png", 1, 200),
     Item(
         name="Staff of Napalm",
         image="assets/treasure_cards/StaffOfNapalm.png",
@@ -246,7 +243,6 @@ ITEMS = [
         image="assets/treasure_cards/Stepladder.png",
         bonus=3,
         value=400,
-        slot="feet",
         two_hands=True,
         race_required=RaceTypes.HALFlING
     ),
@@ -258,6 +254,19 @@ ITEMS = [
         slot="hands",
         two_hands=True,
         race_required=RaceTypes.HUMAN
+    ),
+    Item(
+        name="Really Impressive Title",
+        image="assets/treasure_cards/Really.png",
+        bonus=3,
+        value=None,
+    ),
+    Item(
+        name="Hireling",
+        image="assets/treasure_cards/Hireling.png",
+        bonus=1,
+        value=None,
+        effect=None  # adicionar efeitos
     ),
 
     #Item("Sword of Slashing", "image", 3, 400),
