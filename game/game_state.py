@@ -8,9 +8,9 @@ from game.combat import Combat
 
 class GamePhase(Enum):
     SETUP = "Preparação"
-    KICK_DOOR = "Chutar porta"
-    LOOK_FOR_TROUBLE = "Buscar encrenca"
-    LOOT_ROOM = "Saquear masmorra"
+    KICK_DOOR = "Chutar Porta"
+    LOOK_FOR_TROUBLE = "Buscar Encrenca"
+    LOOT_ROOM = "Saquear Masmorra"
     COMBAT = "Combate"
     CHARITY = "Caridade"
 
