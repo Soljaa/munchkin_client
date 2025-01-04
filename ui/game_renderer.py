@@ -373,7 +373,7 @@ class GameRenderer:
             f"Jogador: {player.name}",
             f"Nível: {player.level}",
             f"Força: {player.calculate_combat_strength()}",
-            f"Raça: {player.race.value}"
+            f"Raça: {player.get_player_race()}"
         ]
 
         text_x = x + new_width + 20
@@ -585,11 +585,11 @@ class GameRenderer:
                     return 'unequip_item', card
         return None
 
-    def _draw_zoomed_card(self):
-        zoomed_card_width = 270
-        zoomed_card_height = 395
-        zoomed_card_x = (SCREEN_WIDTH + 402)/2 - zoomed_card_width/2
-        zoomed_card_y = SCREEN_HEIGHT/2 - zoomed_card_height/2
+    def _draw_zoomed_card(self, card_size=None, zoomed_position=None):
+        zoomed_card_width = card_size[0] if card_size else 270
+        zoomed_card_height = card_size[1] if card_size else 395
+        zoomed_card_x = zoomed_position[0] if zoomed_position else (SCREEN_WIDTH + 402)/2 - zoomed_card_width/2
+        zoomed_card_y = zoomed_position[1] if zoomed_position else SCREEN_HEIGHT/2 - zoomed_card_height/2
         if self.zoomed_card:
             zoomed_sprite = Sprite(self.zoomed_card)
             zoomed_sprite.resize(zoomed_card_width, zoomed_card_height)
@@ -633,10 +633,10 @@ class GameRenderer:
         self.screen.blit(door_text, (door_deck_x, door_deck_y))
         self.screen.blit(door_discard_text, (door_discard_x, door_discard_y))
 
-    def handle_card_hover(self, card, card_sprite):
+    def handle_card_hover(self, card, card_sprite, card_size=None, zoomed_position=None):
         if self.mouse.is_over_object(card_sprite):
             self._set_zoomed_card(card.image)
-            self._draw_zoomed_card()
+            self._draw_zoomed_card(card_size=card_size, zoomed_position=zoomed_position)
         elif self.zoomed_card == card_sprite:
             self._hide_zoomed_card()
 
@@ -644,3 +644,84 @@ class GameRenderer:
         for idx, sprite_tuple in enumerate(origin):
             if sprite_tuple[0] == sprite:
                 origin.remove(sprite_tuple)
+
+    def display_selection_modal(self, cards, background, title):
+        """Mostra modal para seleção de monstros"""
+        MODAL_WIDTH = 800
+        MODAL_HEIGHT = 600
+        CARD_WIDTH = 90
+        CARD_HEIGHT = 135
+        ZOOMED_CARD_SIZE = (216, 316)
+        ZOOMED_CARD_POS = (535, 160)
+        SPACING = - 20
+
+        # Usar o screen do renderer existente
+        screen = self.screen
+
+        # Posicionamento central na tela
+        modal_x = (screen.get_width() - MODAL_WIDTH) // 2
+        modal_y = (screen.get_height() - MODAL_HEIGHT) // 2
+
+        # Criar superfície do modal
+        modal_surface = pygame.Surface((MODAL_WIDTH, MODAL_HEIGHT))
+        modal_surface.set_alpha(230)
+        monster_background_image = pygame.image.load(background)
+        modal_surface.blit(monster_background_image, (0, 0))
+
+        # Título
+        big_font = pygame.font.Font(None, 36)
+        title = big_font.render(title, True, (0, 0, 0))
+        title_rect = title.get_rect(centerx=MODAL_WIDTH // 2, y=20)
+
+        # Fechar
+        lower_font = pygame.font.Font(None, 24)
+        close = lower_font.render("(Pressione ESC para fechar)", True, (0, 0, 0))
+        close_rect = close.get_rect(centerx=MODAL_WIDTH // 2, y=50)
+
+        # Posições dos cards
+        cards_start_x = (MODAL_WIDTH - (len(cards) * (CARD_WIDTH + SPACING))) // 2
+        cards_y = 510
+
+        monster_sprites = []
+
+        running = True
+        while running:
+            # Desenha o modal
+            screen.blit(modal_surface, (modal_x, modal_y))
+            screen.blit(title, (modal_x + title_rect.x, modal_y + title_rect.y))
+            screen.blit(close, (modal_x + close_rect.x, modal_y + close_rect.y))
+
+            # Desenha os cards dos monstros
+            for i, monster in enumerate(cards):
+                card_sprite = Sprite(monster.image)
+                card_sprite.resize(CARD_WIDTH, CARD_HEIGHT)
+
+                card_x = modal_x + cards_start_x + (i * (CARD_WIDTH + SPACING))
+                card_y = cards_y
+                card_sprite.x = card_x
+                card_sprite.y = card_y
+                card_sprite.draw()
+
+                self.handle_card_hover(monster, card_sprite, card_size=ZOOMED_CARD_SIZE,
+                                       zoomed_position=ZOOMED_CARD_POS)
+
+                monster_sprites.append((card_sprite, monster))
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for card_sprite, monster in monster_sprites:
+                        if self.mouse.is_over_object(card_sprite):
+                            return monster
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                        break
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    break
+
+            pygame.display.flip()
+
+        return None
