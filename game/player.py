@@ -233,7 +233,7 @@ class Player:
 
     def lose_all_equipped_class_items(self):
         items_to_remove = [item for item in self.equipped_items 
-                          if item.class_required == self.class_.class_type]
+                          if self.class_ and item.class_required == self.class_.class_type]
         
         for item in items_to_remove:
             item.equipped = False
