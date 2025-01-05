@@ -60,6 +60,10 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
             game_state.current_player().level_up() # Revive (dando +1 de nível, ficando com nível 1)
 
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:  # Verifica se a tecla foi pressionada
+                if event.key == pygame.K_p:   # Verifica se a tecla pressionada foi 'P'
+                    renderer.draw_selection_player(game_state.players, game_state.current_player(), "Title")
+
             if event.type == pygame.QUIT:
                 return
 

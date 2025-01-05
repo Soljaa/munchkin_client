@@ -911,3 +911,111 @@ class GameRenderer:
             pygame.display.flip()
 
         return None
+
+    def draw_selection_player(self, players, current_player, title, background=None):
+        """Mostra modal para selecionar um jogador na partida, excluindo o jogador atual, com retângulo de seleção ajustado ao nome"""
+        MODAL_WIDTH = 800
+        MODAL_HEIGHT = 600
+        PLAYER_WIDTH = 80  
+        PLAYER_HEIGHT = 80  
+        SPACING = 20  # Espaçamento entre os jogadores verticalmente
+        RECT_PADDING = 10  # Padding entre o retângulo e o conteúdo (avatar + nome)
+
+        # Usar o screen do renderer existente
+        screen = self.screen
+
+        # Posicionamento central na tela
+        modal_x = (screen.get_width() - MODAL_WIDTH) // 2
+        modal_y = (screen.get_height() - MODAL_HEIGHT) // 2
+
+        # Criar superfície do modal
+        modal_surface = pygame.Surface((MODAL_WIDTH, MODAL_HEIGHT))
+        modal_surface.set_alpha(230)
+        if background:
+            background_image = pygame.image.load(background)
+            modal_surface.blit(background_image, (0, 0))
+        else:
+            modal_surface.fill((255, 255, 255))
+
+        # Título
+        big_font = pygame.font.Font(None, 36)
+        title_text = big_font.render(title, True, (0, 0, 0))
+        title_rect = title_text.get_rect(centerx=MODAL_WIDTH // 2, y=20) 
+
+        # Fechar
+        lower_font = pygame.font.Font(None, 24)
+        close_text = lower_font.render("(Pressione ESC para fechar)", True, (0, 0, 0))
+        close_rect = close_text.get_rect(centerx=MODAL_WIDTH // 2, y=50) 
+
+        # Filtra os jogadores para excluir o jogador atual
+        available_players = [player for player in players if player != current_player]
+
+        # Calcular o maior nome
+        max_name_width = 0
+        name_font = pygame.font.Font(None, 30)
+        for player in available_players:
+            name_text = name_font.render(player.name, True, (0, 0, 0))
+            max_name_width = max(max_name_width, name_text.get_width())
+
+        # Posições dos jogadores
+        player_sprites = []
+        line_spacing = 160  # Espaçamento entre as linhas dos jogadores
+
+        for i, player in enumerate(available_players):
+            # Cria o "card" do jogador (usando uma imagem de avatar)
+            player_sprite = Sprite(player.avatar_img_dir)
+            player_sprite.resize(PLAYER_WIDTH, PLAYER_HEIGHT)
+
+            # Calcula a posição do jogador com base na linha
+            player_x = modal_x + 20
+            player_y = modal_y + 120 + i * line_spacing 
+            player_sprite.x = player_x
+            player_sprite.y = player_y
+
+            # Cria o nome do jogador ao lado do avatar
+            name_text = name_font.render(player.name, True, (0, 0, 0))
+            name_text_rect = name_text.get_rect(topleft=(player_x + PLAYER_WIDTH + SPACING, player_y + (PLAYER_HEIGHT // 2 - 15)))
+
+            # Retângulos em volta do player
+            rect_width = PLAYER_WIDTH + max_name_width + SPACING + RECT_PADDING + 10  # Largura fixada pelo maior nome
+            rect_height = PLAYER_HEIGHT + 2 * RECT_PADDING  # Ajusta a altura do retângulo baseado no avatar
+            rect_x = player_x - RECT_PADDING
+            rect_y = player_y - RECT_PADDING
+
+            # Adiciona o retângulo de fundo e o restante dos elementos ao player_sprites
+            player_sprites.append((rect_x, rect_y, rect_width, rect_height, player_sprite, name_text, name_text_rect, player))
+
+        running = True
+        while running:
+            # Desenha o modal
+            screen.blit(modal_surface, (modal_x, modal_y))
+            screen.blit(title_text, (modal_x + title_rect.x, modal_y + title_rect.y))
+            screen.blit(close_text, (modal_x + close_rect.x, modal_y + close_rect.y))
+
+            # Desenha os retângulos de seleção e jogadores (avatar e nome)
+            for rect_x, rect_y, rect_width, rect_height, player_sprite, name_text, name_text_rect, player in player_sprites:
+                pygame.draw.rect(screen, (200, 200, 200), (rect_x, rect_y, rect_width, rect_height)) 
+                player_sprite.draw()  
+                screen.blit(name_text, name_text_rect) 
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()  # Obtém a posição do mouse
+                    for rect_x, rect_y, rect_width, rect_height, player_sprite, name_text, name_text_rect, player in player_sprites[::-1]:
+                        # Verifica se o clique foi dentro do retângulo
+                        if rect_x <= mouse_x <= rect_x + rect_width and rect_y <= mouse_y <= rect_y + rect_height:
+                            print("Selected Player:", player.name)
+                            return player  # Se sim, Retorna o jogador selecionado
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                        break
+
+                if event.type == pygame.QUIT:
+                    running = False
+                    break
+
+            pygame.display.flip()
+
+        return None
