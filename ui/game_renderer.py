@@ -346,6 +346,30 @@ class GameRenderer:
             duration=2.0
         )
 
+    def draw_winner(self, player):
+        font = pygame.font.SysFont("Comic Sans MS", 40, bold=True)
+
+        # Texto dividido em duas linhas
+        text_lines = [
+            font.render(f"{player.name}".upper(), True, (255, 255, 255)), 
+            font.render("venceu!".upper(), True, (255, 255, 255))  
+        ]
+
+        # Calcula a posição central da tela
+        center_x = self.screen.get_width() // 2
+        center_y = self.screen.get_height() // 2
+
+        # Avatar do referido jogador
+        avatar_img = pygame.image.load(player.avatar_img_dir)
+        self.screen.blit(avatar_img, (center_x - avatar_img.get_width()/2, 100))
+
+        # Desenha o texto, linha por linha
+        pos_y = center_y - 40
+        for line in text_lines:
+            text_rect = line.get_rect(center=(center_x + 5, pos_y))
+            self.screen.blit(line, text_rect)
+            pos_y += 70
+
     def draw_game_state(self, game_state):
         # cuidado, a ordem dos draws importa
 

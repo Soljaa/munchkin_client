@@ -138,6 +138,9 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
 
                             except EndGameException:
                                 # mostrar tela de vencedor
+                                renderer.draw_transition("assets/game/bg_winner.jpg", duration=2,
+                                                             extra_element=lambda: renderer.draw_winner(
+                                                                 game_state.current_player()))
                                 print("Fim de jogo! Vencedor:", game_state.current_player().name)
                                 raise
 
