@@ -13,7 +13,7 @@ class Player:
         self.equipped_items = []
         self.race = RaceTypes.HUMAN
         self.gold = 0  # Adicionando o atributo gold inicializado em 0
-        self.class_ = []  # esta como array por causa do super munchking
+        self.class_ = None  # esta como array por causa do super munchkin # TODO: Cancelar super munchkin
         self.gender = gender
         # adicionar referencia a efeitos ativos, com referencia aos itens donos do efeito e
         # ver se vale dividir em etapas de aplicação dos efeitos como efeitos que se aplicam no setup,
@@ -77,16 +77,14 @@ class Player:
             # class restrictions
             if item.class_required:
                 can_use = False
-                for class_card in self.class_:
-                    if class_card.type == item.class_required:
+                if self.class_ and self.class_.type == item.class_required:
                         can_use = True
                 if not can_use:
                     return False
 
             if item.classes_prohibited:
-                for class_card in self.class_:
-                    if class_card.type in item.classes_prohibited:
-                        return False
+                if self.class_ and self.class_.type in item.classes_prohibited:
+                    return False
 
             # gender restrictions
             if item.gender_required:
@@ -113,7 +111,7 @@ class Player:
             if self.class_:
                 return False
 
-            self.class_.append(item)
+            self.class_ = item.type
             self.hand.remove(item)
 
         return True
@@ -121,10 +119,6 @@ class Player:
     def unequip_item(self, item):
         if item in self.equipped_items:
             self.equipped_items.remove(item)
-            self.hand.append(item)
-
-        if item in self.class_:
-            self.class_.remove(item)
             self.hand.append(item)
 
     def draw_card(self, deck):

@@ -217,7 +217,7 @@ class GameRenderer:
         clock = pygame.time.Clock()
 
         while elapsed_time < duration:
-            delta_time = clock.tick(60) / 1000.0  # 60 FPS
+            delta_time = clock.tick(30) / 1000.0  # 30 FPS
             elapsed_time += delta_time
 
             # Desenha a imagem de transição
@@ -548,9 +548,9 @@ class GameRenderer:
                                          RED if player_strength > monster_strength else WHITE)
 
         # Posicionar textos
-        self.screen.blit(vs_text, (x + MONSTER_WIDTH + 60, y + 50))
+        self.screen.blit(vs_text, (x + MONSTER_WIDTH + 70, y + 50))
         self.screen.blit(player_text, (x + MONSTER_WIDTH + 20, y + 50))
-        self.screen.blit(monster_text, (x + MONSTER_WIDTH + 140, y + 50))
+        self.screen.blit(monster_text, (x + MONSTER_WIDTH + 150, y + 50))
 
         # Informações adicionais
         details = [
