@@ -42,6 +42,21 @@ CURSES = [
     Curse(
         name="Curse! Lose The Footgear You Are Wearing",
         image="assets/door_cards/Curse!LoseTheFootgearYouAreWearing.png",
-        effect=LoseEquippedItemBadStuff('footgear')
+        effect=LoseEquippedItemBadStuff('foot')
+    ),
+    Curse(
+        name="Curse! Lose The Armor You Are Wearing",
+        image="assets/door_cards/Curse!LoseTheArmorYouAreWearing.png",
+        effect=LoseEquippedItemBadStuff('armor')
+    ),
+    Curse(
+        name="Curse! Lose The Headgear You Are Wearing",
+        image="assets/door_cards/Curse!LoseTheArmorYouAreWearing.png",
+        effect=LoseEquippedItemBadStuff('head')
+    ),
+    Curse(
+        name="Curse! Lose Two Cards",
+        image="assets/door_cards/Curse!LoseTheArmorYouAreWearing.png",
+        effect=LoseEquippedItemBadStuff('head')
     )
 ]

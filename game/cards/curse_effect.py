@@ -52,4 +52,5 @@ class LoseRaceCurseEffect(CurseEffect):
 
 class LoseClassCurseEffect(CurseEffect):
     def apply(self, player) -> None:
+        player.add_to_discard_pile(self.class_[0])
         player.remove_class()
