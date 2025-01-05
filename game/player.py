@@ -138,10 +138,6 @@ class Player:
             treasure_deck.discard_pile.append(card)
 
     def play_card(self, card, game_state):
-        # TODO: para CURSE, abrir opção para escolher qual alvo
-        # if card.type == CardType.CURSE:
-        #     target_player = open_target_menu()
-        #     card.apply_effect(target_player)
         from ui.game_renderer import GameRenderer        
         game_renderer = GameRenderer.get_instance()
 

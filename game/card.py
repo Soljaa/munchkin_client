@@ -122,7 +122,7 @@ class Curse(Card):
 
     def apply_effect(self, player):
         if self.effect:
-            self.effect.apply(self, player)
+            self.effect.apply(player)
 
 class DoorBuff(Card):
     def __init__(self, name, image, effect, restriction=None, after_death_effect=None):
