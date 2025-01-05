@@ -1,0 +1,69 @@
+@startuml
+
+actor Player as "Jogador"
+participant GameManager
+participant GameState
+participant DoorDeck
+participant Combat
+participant Dice
+
+Player -> GameManager: main("Player1", "avatar1.png", MALE)
+activate GameManager
+
+GameManager -> GameState: get_instance()
+activate GameState
+
+GameState -> DoorDeck: __init__()
+activate DoorDeck
+DoorDeck --> GameState: door_deck
+deactivate DoorDeck
+
+GameState -> GameState: add_player("Player1", "avatar1.png", MALE)
+GameState --> GameManager: game_state
+deactivate GameState
+
+GameManager -> GameState: current_player()
+activate GameState
+GameState --> GameManager: player
+deactivate GameState
+
+' Início da fase de combate
+GameManager -> GameState: phase = GamePhase.KICK_DOOR
+activate GameState
+
+GameState -> DoorDeck: draw()
+activate DoorDeck
+DoorDeck --> GameState: monster_card
+deactivate DoorDeck
+
+GameState -> Combat: __init__(current_player, monster_card)
+activate Combat
+
+' Resolução do combate
+Combat -> Combat: get_player_strength()
+Combat -> Combat: get_monster_strength()
+
+' Jogada de dados
+Combat -> Dice: roll()
+activate Dice
+Dice --> Combat: roll_result
+deactivate Dice
+
+Combat -> Combat: resolve_combat()
+Combat --> GameState: (combat_result, rewards)
+deactivate Combat
+
+' Aplicação dos resultados
+alt combat_result == True
+    GameState -> GameState: current_player().level += 1
+else
+    GameState -> GameState: handle_bad_stuff()
+end
+
+GameState --> GameManager: combat_resolved
+deactivate GameState
+
+GameManager --> Player: display_results()
+deactivate GameManager
+
+@enduml
