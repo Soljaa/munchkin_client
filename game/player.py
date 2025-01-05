@@ -249,7 +249,8 @@ class Player:
             self.equipped_items.remove(item)
 
     def remove_all_hand_class_cards(self):
-        items_to_remove = [item for item in self.hand if item.class_required == self.class_.class_type]
+        items_to_remove = [item for item in self.hand if hasattr(item, 'class_required') and item.class_required == self.class_.class_type] # Adição da verificação se a carta tem o atributo "class_required", pois o DoorBuff não tem e dava bug.
+
         
         for item in items_to_remove:
             self.add_to_discard_pile(item)
