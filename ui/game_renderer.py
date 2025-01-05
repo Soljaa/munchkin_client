@@ -621,6 +621,17 @@ class GameRenderer:
                 if self.mouse.is_over_object(card_sprite) and card.type in equipable_card_types:
                     self._remove_item_sprite(self.hand_card_sprites, card_sprite)
                     return 'equip_item', card
+                
+                if self.mouse.is_over_object(card_sprite):
+                    if hasattr(card, 'restriction'):
+                        if card.restriction and card.can_use(game_state.current_player()):
+                            print('Pode usar')
+                            game_state.current_player().play_card(card, game_state)
+                        else:
+                            print('Não pode usar')
+                    else:
+                        print('Pode usar')
+                        game_state.current_player().play_card(card, game_state)
 
             for card_sprite, card in self.equipped_card_sprites:
                 if self.mouse.is_over_object(card_sprite):
