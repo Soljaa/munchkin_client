@@ -30,9 +30,32 @@ class EveryoneScapesBuff(TreasureBuffEffect):
         curr_turn = self.increase_global_turns(curr_turn, game_state)
         print("Turno:", curr_turn)
 
-class BonusToEitherSide(TreasureBuffEffect):
+class BonusToEitherSideBuff(TreasureBuffEffect):
     def __init__(self, bonus):
         self.bonus = bonus
 
     def apply(self, target) -> None:
         pass
+
+class UpALevelBuff(TreasureBuffEffect):
+    def apply(self, target) -> None:
+        target.level_up()
+
+class DrawExtraTreasureBuff(TreasureBuffEffect):
+    def __init__(self, amount, treasure_deck):
+        self.amount = amount
+        self.treasure_deck = treasure_deck
+
+    def apply(self, target):
+        for _ in range(self.amount):
+            target.draw_card(self.treasure_deck)
+
+class StealALevelBuff(TreasureBuffEffect):
+    def __init__(self, curr_player):
+        self.curr_player = curr_player
+
+    def apply(self, target):
+        # TODO: Para ter esse Buff, precisará implementar a tela para o curr_player selecionar o target
+        self.curr_player.level_up()
+        target.level_down()
+        
