@@ -29,11 +29,9 @@ TREASURE_BUFFS = [
         image="assets/treasure_cards/InvokeObscureRules.png",
         effect=UpALevelBuff()
     ),
-    """
-    TreasureBuff(
-        name="Steal A Level",
-        image="assets/treasure_cards/StealALevel.png",
-        effect=StealALevelBuff()
-    ),
-    """
+    # TreasureBuff(
+    #     name="Steal A Level",
+    #     image="assets/treasure_cards/StealALevel.png",
+    #     effect=StealALevelBuff()
+    # )
 ]
