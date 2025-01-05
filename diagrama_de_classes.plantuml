@@ -135,9 +135,6 @@ class GameManager {
     + main(name: str = "Player", avatar_img_dir: str = "assets/selecao_player/avatares/avatar1.png", gender: Gender = Gender.MALE): void
 }
 
-class EndGameException {
-}
-
 class GameState {
     - door_deck: DoorDeck
     - treasure_deck: TreasureDeck
