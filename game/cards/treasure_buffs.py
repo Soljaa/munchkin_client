@@ -1,7 +1,6 @@
 from game.card import TreasureBuff
 from game.cards.buff_restriction import *
 from game.cards.treasure_buff_effect import *
-from game.game_state import GameState
 
 TREASURE_BUFFS = [
     TreasureBuff(
@@ -26,18 +25,15 @@ TREASURE_BUFFS = [
         effect=UpALevelBuff()
     ),
     TreasureBuff(
-        name="Hoard",
-        image="assets/treasure_cards/Hoard.png",
-        effect=DrawExtraTreasureBuff(3, GameState.treasure_deck) #TODO Será que da carta repetida, já que é instanciado outra classe GameState?
-    ),
-    TreasureBuff(
         name="Invoke Obscure Rules",
         image="assets/treasure_cards/InvokeObscureRules.png",
         effect=UpALevelBuff()
     ),
+    """
     TreasureBuff(
         name="Steal A Level",
         image="assets/treasure_cards/StealALevel.png",
         effect=StealALevelBuff()
     ),
+    """
 ]
