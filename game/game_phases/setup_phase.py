@@ -57,7 +57,7 @@ class SetupPhase(GamePhases):
         # Se o jogador está abaixo do nível 9, pode converter ouro em níveis
         if self.player.level < 9:
             levels_to_gain = self.player.gold // 1000
-            remaining_gold = total_value % 1000
+            remaining_gold = self.player.gold - levels_to_gain*1000  #total_value % 1000
 
             for _ in range(levels_to_gain):
                 if self.player.level < 9: self.player.level_up() #limita o up até o level 9
