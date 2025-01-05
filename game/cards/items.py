@@ -229,7 +229,12 @@ ITEMS = [
         value=400,
         slot="hands"
     ),
-    Item("Spiky Knees", "assets/treasure_cards/SpikyKnees.png", 1, 200),
+    Item(
+        name="Spiky Knees",
+        image="assets/treasure_cards/SpikyKnees.png",
+        bonus=1,
+        value=200
+    ),
     Item(
         name="Staff of Napalm",
         image="assets/treasure_cards/StaffOfNapalm.png",

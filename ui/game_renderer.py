@@ -648,7 +648,7 @@ class GameRenderer:
                 
                 if self.mouse.is_over_object(card_sprite):
                     if hasattr(card, 'restriction'):
-                        if card.restriction and card.can_use(game_state.current_player()):
+                        if card.can_use(game_state.current_player()):
                             print('Pode usar')
                             game_state.current_player().play_card(card, game_state)
                         else:

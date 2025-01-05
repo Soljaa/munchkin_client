@@ -137,7 +137,7 @@ class DoorBuff(Card):
         return True
 
     def apply_effect(self, target):  # TODO: quando for usar esse método, a princípio o target é monster, pelo menos pras cartas com IncreaseMonsterLevelBuff.
-        self.effect.apply(self, target)
+        self.effect.apply(target)
 
 class TreasureBuff(Card):
     def __init__(self, name, image, effect, restriction=None):
@@ -151,4 +151,4 @@ class TreasureBuff(Card):
         return True
 
     def apply_effect(self, player):
-        self.effect.apply(self, player)
+        self.effect.apply(player)
