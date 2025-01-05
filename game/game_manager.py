@@ -128,6 +128,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
 
                     elif action == "loot": # Se aperto por saquear # LOOT
                         if game_state.phase == GamePhase.KICK_DOOR:
+                            game_state.current_curse = None
                             loot_room_phase = LootRoomPhase(game_state)
                             loot_room_phase.run()
                             loot_card = loot_room_phase.show_loot_card()
@@ -154,6 +155,7 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
 
                     elif action == "look_for_trouble":
                         if game_state.phase == GamePhase.KICK_DOOR:
+                            game_state.current_curse = None
                             look_for_trouble_phase = LookForTroublePhase(game_state, renderer)  # Adicionando renderer
                             if not look_for_trouble_phase.run():
                                 renderer.set_message("Sem monstros ou fase cancelada!")

@@ -1,5 +1,4 @@
 from game.card import CardType
-from game.combat import Combat
 from game.game_phases.combat_phase import CombatPhase
 from game.game_phases.game_phases import GamePhases
 from game.game_state import GamePhase
@@ -37,5 +36,7 @@ class KickDoorFase(GamePhases):
         elif card.type == CardType.CURSE:
             print(f"Cursed! {card.name}")
             card.effect.apply(self.current_player)
+            self.renderer.set_message(f"Ah não! {card.name}")
+            self.game_state.current_curse = card
 
         return True

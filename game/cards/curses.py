@@ -51,12 +51,12 @@ CURSES = [
     ),
     Curse(
         name="Curse! Lose The Headgear You Are Wearing",
-        image="assets/door_cards/Curse!LoseTheArmorYouAreWearing.png",
+        image="assets/door_cards/Curse!LoseTheHeadgearYouAreWearing.png",
         effect=LoseEquippedItemBadStuff('head')
     ),
     Curse(
         name="Curse! Lose Two Cards",
-        image="assets/door_cards/Curse!LoseTheArmorYouAreWearing.png",
-        effect=LoseEquippedItemBadStuff('head')
+        image="assets/door_cards/Curse!LoseTwoCards.png",
+        effect=LoseHandCardsBadStuff(2)
     )
 ]

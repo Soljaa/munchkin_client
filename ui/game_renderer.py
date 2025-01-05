@@ -390,6 +390,10 @@ class GameRenderer:
         # Draw current combat if any
         if game_state.current_combat:
             self._draw_combat(game_state.current_combat, 550, 200)
+
+        # Draw current combat if any
+        if game_state.current_curse:
+            self._draw_curse(game_state.current_curse, 550, 200)
         
         # Draw buttons based on game phase
         self._draw_buttons(game_state)
@@ -594,6 +598,29 @@ class GameRenderer:
 
         self.handle_card_hover(monster, monster_sprite)
 
+    def _draw_curse(self, curse, x, y):
+        # Desenhar imagem do monstro
+        CURSE_WIDTH = 147
+        CURSE_HEIGHT = 212
+        curse_sprite = Sprite(curse.image)
+        curse_sprite.resize(CURSE_WIDTH, CURSE_HEIGHT)
+        curse_sprite.x = x
+        curse_sprite.y = y
+        curse_sprite.draw()
+
+        details = [
+            f"{curse.name}",
+            f"{curse.effect.__str__()}",
+        ]
+
+        font = pygame.font.Font(None, 22)
+
+        for i, text in enumerate(details):
+            surface = font.render(text, True, WHITE)
+            self.screen.blit(surface, (x + CURSE_WIDTH + 20, 200 + i * 20))
+
+        self.handle_card_hover(curse, curse_sprite)
+
     def _draw_buttons(self, game_state):
         current_phase_buttons = BUTTONS_BY_GAME_PHASE[game_state.phase]
 
@@ -641,21 +668,21 @@ class GameRenderer:
         # Handle card clicks
         if game_state and event.type == pygame.MOUSEBUTTONDOWN:
             # Check for clicks on any cards
-            for card_sprite, card in self.hand_card_sprites:
+            for card_sprite, card in self.hand_card_sprites[::-1]:
                 if self.mouse.is_over_object(card_sprite) and card.type in equipable_card_types:
                     self._remove_item_sprite(self.hand_card_sprites, card_sprite)
                     return 'equip_item', card
-                
+
                 if self.mouse.is_over_object(card_sprite):
                     if hasattr(card, 'restriction'):
-                        if card.can_use(game_state.current_player()):
-                            print('Pode usar')
+                        if card.restriction and card.can_use(game_state.current_player()):
                             game_state.current_player().play_card(card, game_state)
+                            self.set_message(f"{card.name} utilizada!")
                         else:
-                            print('Não pode usar')
+                            self.set_message("Não pode usar esta carta!")
                     else:
-                        print('Pode usar')
                         game_state.current_player().play_card(card, game_state)
+                        self.set_message(f"{card.name} utilizada!")
 
             for card_sprite, card in self.equipped_card_sprites:
                 if self.mouse.is_over_object(card_sprite):
