@@ -92,8 +92,7 @@ class LoseEquippedItemBadStuff(MonsterBadStuff):
         self.item_type = item_type
 
     def apply(self, player) -> None:
-        player.remove_equipped_item_type(self.item_type) 
-    
+        player.remove_equipped_item_type(self.item_type)    
 class LoseAllClassItemsBadStuff(MonsterBadStuff):
     def __str__(self):
         return "Você perde todos os itens da sua classe."
@@ -101,4 +100,21 @@ class LoseAllClassItemsBadStuff(MonsterBadStuff):
     def apply(self, player) -> None:
         player.lose_all_class_cards()
 
+class LoseEquippedItemOrLevelBadStuff(MonsterBadStuff):
+    def __str__(self):
+        level_word = "nível" if self.level_loss == 1 else "níveis"
+        return "Você perde o item equipado de tipo {} ou perde {} {}.".format(self.item_type, self.level_loss, level_word)
+
+    def __init__(self, item_type: str, level_loss: int):
+        self.item_type = item_type
+        self.level_loss = level_loss
+
+    def apply(self, player) -> None:
+        for item in player.equipped_items:
+            if item.slot == self.item_type:
+                player.remove_equipped_item_type(self.item_type)
+                return
+        player.level_down(self.level_loss)
+
 # TODO: Continuar com os outros bad stuffs
+

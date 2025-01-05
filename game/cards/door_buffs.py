@@ -39,4 +39,11 @@ DOOR_BUFFS = [
         restriction=OnlyInCombatRestriction(),
         after_death_effect=DrawExtraTreasureBuff(2)
     ),
+    DoorBuff(
+        name="HalfA...",
+        image="assets/door_cards/HalfA....png",
+        effect=IncreaseMonsterLevelBuff(-5),
+        restriction=OnlyInCombatRestriction(),
+        after_death_effect=DrawExtraTreasureBuff(-1)
+    )
 ]

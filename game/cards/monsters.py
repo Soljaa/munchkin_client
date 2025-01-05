@@ -4,7 +4,6 @@ from game.cards.monster_bad_stuff import *
 
 
 MONSTERS = [
-        # 3,872 Orcs
         Monster(
             name="3,872 Orcs",
             image="assets/door_cards/3872Orcs.png",
@@ -13,18 +12,17 @@ MONSTERS = [
             effect=IncreaseMonsterLevelEffect('Dwarf', 6),
             bad_stuff=OrcsBadStuff(),
         ),
-        # Amazon #TODO tem coisa de female character.
-        Monster(name="Amazon", image="assets/door_cards/Amazon.png", level=8, treasure=2, bad_stuff=None),
-        # Auntie Paladin
+        # Amazon -->  se for mulher, não ter combate e dar tesouro
         Monster(
             name="Auntie Paladin",
             image="assets/door_cards/AuntiePaladin.png",
             level=18,
             treasure=4,
-            effect=IncreaseMonsterLevelEffect("Cleric", 5), # TODO: também é +5 contra male character. Vamos fazer isso ou ignorar?
+            effect=IncreaseMonsterLevelEffect("Cleric", 5), # TODO: também é +5 contra male character.
             bad_stuff=CompositeBadStuff(LoseEquippedItemBadStuff('armor'), LoseLevelBadStuff(3)),
             reward_two_levels=True
         ),
+        # Bad Ass --> #TODO --> viável
         Monster(
             name="Bigfoot",
             image="assets/door_cards/Bigfoot.png",
@@ -36,6 +34,8 @@ MONSTERS = [
             ),
             bad_stuff=LoseEquippedItemBadStuff('headgear'),
         ),
+        # Big Fat Hairy Dale --> precisaria de multiplayer
+        # Bipolar Bear --> roda dado, se for impar foge. Rola dado, se for par compra um tesouro face up?!
         Monster(
             name="Bullrog",
             image="assets/door_cards/Bullrog.png",
@@ -45,12 +45,15 @@ MONSTERS = [
             bad_stuff=DeathBadStuff(),
             reward_two_levels=True
         ),
-        # Crabs #TODO
-        Monster("Crabs", "assets/door_cards/Crabs.png", level=1, treasure=1, bad_stuff=None),
-        # Drooling Slime #TODO
-        #Monster("Drooling Slime", "assets/door_cards/DroolingSlime.png", 1, 1, "X"),
-
-        # Face Sucker
+        # Crabs --> tem que impedir fugir dele
+        Monster(
+            name="Drooling Slime",
+            image="assets/door_cards/DroolingSlime.png",
+            level=1,
+            treasure=1,
+            effect=IncreaseMonsterLevelEffect('Elf', 4),
+            bad_stuff=LoseEquippedItemOrLevelBadStuff('feet', 1)
+        ),
         Monster(name="Face Sucker",
                 image="assets/door_cards/FaceSucker.png",
                 level=8,
@@ -61,18 +64,12 @@ MONSTERS = [
                     LoseLevelBadStuff(1),
                 ),
             ),    
-        # Floating Nose #TODO
-        #Monster("Floating Nose", "assets/door_cards/FloatingNose.png", 10, 3, "X"),
-        # Flying Frogs #TODO
-        #Monster("Flying Frogs", "assets/door_cards/FlyingFrogs.png", 2, 1, "X"),
-        # Gazebo #TODO
-        #Monster("Gazebo", "assets/door_cards/Gazebo.png", 8, 2, "X"),
-        # Gelatinous Octahedron #TODO
-        #Monster("Gelatinous Octahedron", "assets/door_cards/Gazebo.png", 2, 1, "X"),
-        # Ghoulfiends #TODO
-        #Monster("Ghoulfiends", "assets/door_cards/Ghoulfiends.png", 8, 2, "X"),
-        
-        #Hairy Potter
+        # Floating Nose --> muito dificil de fazer
+        # Flying Frogs --> -1 de Run Away
+        # Gazebo --> não pode ajuda contra essa carta
+        # Gelatinous Octahedron --> +1 Run Away e tem que dropar item grande
+        # Ghoulfiends --> Itens ou bonus não podem ajudar pra matar ele
+        # Ghost Writer --> #TODO viável, não tem hireling no deck pro badstuff
         Monster(
             name="Hairy Potter",
             image="assets/door_cards/HairyPotter.png", # TODO: Falta png
@@ -82,14 +79,17 @@ MONSTERS = [
             bad_stuff=LoseAllClassItemsBadStuff(),
             reward_two_levels=True
         ),
-        # Harpies #TODO
-        #Monster("Harpies", "assets/door_cards/Harpies.png", 4, 2, "X"),
-        # Hippogriff #TODO
-        #Monster("Hippogriff", "assets/door_cards/Hippogriff.png", 16, 4, "X"),
-        # Insurance Salesman #TODO
-        #Monster("Insurance Salesman", "assets/door_cards/InsuranceSalesman.png", 14, 4, "X"),
-
-        # King Tut
+        Monster(
+            name="Harpies",
+            image="assets/door_cards/Harpies.png",
+            level=4,
+            treasure=2,
+            effect=IncreaseMonsterLevelEffect("Wizard", 5),
+            bad_stuff=LoseLevelBadStuff(2)
+        ),
+        # Hippogriff --> impossivel sem multiplayer
+        # Insurance Salesman --> level não conta pra matar ele
+        # Katrina -> descarta todos menos os Big
         Monster(
             name="King Tut",
             image="assets/door_cards/KingTut.png",
@@ -103,16 +103,10 @@ MONSTERS = [
                 LoseItemsBadStuff(),
                 LoseHandCardsBadStuff(),
             ),
-        ),
-        
-        #Lame Goblin #TODO
-        #Monster("Lame Goblin", "assets/door_cards/LameGoblin.png", 1, 1, "X"),
-        #Large Angry Chicken #TODO
-        #Monster("Large Angry Chicken", "assets/door_cards/LargeAngryChicken.png", 2, 1, "X"),
-        #Lawyers #TODO
-        #Monster("Lawyers", "assets/door_cards/Lawyers.png", 6, 2, "X"),
-        
-        #Leperchaun
+        ),        
+        #Lame Goblin --> +1 Run Away
+        #Large Angry Chicken --> detectar se matou com fire ou flame
+        #Lawyers --> outro player comprar carta sua  
         Monster(
             name="Leperchaun",
             image="assets/door_cards/Leperchaun.png",
@@ -121,17 +115,15 @@ MONSTERS = [
             effect=CompositeEffect(IncreaseMonsterLevelEffect("Elf", 5)),
             bad_stuff=LoseItemsBadStuff(2),
         ),
-        #Maul Rat
         Monster(
             name="Maul Rat",
-                image="assets/door_cards/MaulRat.png",
-                level=1,
-                treasure=1,
-                effect=CompositeEffect(IncreaseMonsterLevelEffect("Cleric", 3)),
-                bad_stuff=LoseLevelBadStuff(1),
-            ),
-
-        # TODO: Falta png
+            image="assets/door_cards/MaulRat.png",
+            level=1,
+            treasure=1,
+            effect=CompositeEffect(IncreaseMonsterLevelEffect("Cleric", 3)),
+            bad_stuff=LoseLevelBadStuff(1),
+        ),
+        # Misplacer Beast --> outros compram suas cartas
         Monster(
             name="Medusa",
             image="assets/door_cards/Medusa.png",
@@ -141,19 +133,15 @@ MONSTERS = [
             bad_stuff=DeathBadStuff(), # TODO: E não permitir ninguém pegar os items. Vamos fazer isso ou ignorar?
             reward_two_levels=True
         ),
-        
-        #Mr. Bones #TODO
-        #Monster("Mr. Bones", "assets/door_cards/MrBones.png", 2, 1, "X"), # TODO: Ele é undead
-        # Net Troll #TODO
-        #Monster("Net Troll", "assets/door_cards/NetTroll.png", 10, 3, "X"),
-        #Pit Bull #TODO
-        #Monster("Pit Bull", "assets/door_cards/PitBull.png", 2, 1, "X"),
-        # Platycore #TODO
+        # Mr. Bones --> obriga a fugir. Perde nível se escapar. Ele é undead
+        # Net Troll --> player de maior level pega algum item seu 
+        # Male CHauvinist Pig --> # extra treasure pra cada female ajudando, parece viável
+        # Pit Bull --> tem que jogar um item (wand, pole ou staff) pra ganhar
+
+        # Platycore #TODO Viável!
         #Monster("Platycore", "assets/door_cards/Platycore.png", 6, 2, "X"),
 
-        # Polly Hedron --> pensar se vale fazer (falha próximo Run Away)
-        
-        # Plutonium Dragon
+        # Polly Hedron --> falha próximo Run Away
         Monster(
             name="Plutonium Dragon",
             image="assets/door_cards/PlutoniumDragon.png",
@@ -163,7 +151,6 @@ MONSTERS = [
             bad_stuff=DeathBadStuff(),
             reward_two_levels=True
         ),
-        # Potted Plant
         Monster(
             name="Potted Plant",
             image="assets/door_cards/PottedPlant.png",
@@ -173,14 +160,12 @@ MONSTERS = [
             bad_stuff=None
         ),
 
-        # Pukachu #TODO
-        #Monster("Pukachu", "assets/door_cards/Pukachu.png", 6, 2, "X"),
-        # Shrieking Geek #TODO
+        # Pukachu --> extra level se derrotar sem usar ajuda ou bonus
+
+        # Shrieking Geek #TODO Viável!
         #Monster("Shrieking Geek", "assets/door_cards/ShriekingGeek.png", 6, 2, "X"),
-        # Snails on Speed #TODO
-        #Monster("Snails on Speed", "assets/door_cards/SnailsOnSpeed.png", 4, 2, "X"),
-        
-        # Squidzilla
+
+        # Snails on Speed --> -2 Run Away
         Monster(
             name="Squidzilla", 
             image="assets/door_cards/Squidzilla.png", 
@@ -190,12 +175,10 @@ MONSTERS = [
             bad_stuff=DeathBadStuff(),
             reward_two_levels=True
         ),
-        # Stoned Golem #TODO
-        #Monster("Stoned Golem", "assets/door_cards/StonedGolem.png", 14, 4, "X"),
-        # Tongue Demon #TODO
-        #Monster("Tongue Demon", "assets/door_cards/TongueDemon.png", 12, 3, "X"), 
-
-        # Undead Horse
+        # Stoned Golem --> escolhe lugar com ele ou não
+        # Tequila Mockingbird --> descarta 2 cards de sua escolha
+        # The Dead Sea Trolls --> +1 Run away
+        # Tongue Demon --> voce escolher 1 carta e ela é descartada antes do combate
         Monster(
             name="Undead Horse",
             image="assets/door_cards/UndeadHorse.png", 
@@ -205,12 +188,10 @@ MONSTERS = [
             bad_stuff=LoseLevelBadStuff(2),
         ), # TODO: Ele é undead
         
-        # Unspeakably Awful Indescriblabe Horror #TODO
+        # Unspeakably Awful Indescriblabe Horror #TODO Viável!
         #Monster("Unspeakably Awful Indescribable Horror", "assets/door_cards/UnspeakablyAwfulIndescribableHorror.png", 14, 4, "X"),
-        # Wannabe Vampire #TODO
-        #Monster("Wannabe Vampire", "assets/door_cards/WannabeVampire.png", 12, 3, "X"),
+        # Wannabe Vampire --> Cleric dá instakill nele sem ganhar nível.   --> podemos reduzir vida do monstro se for clerigo. Mas como evitar level increase?
         
-        # Wight Brothers
         Monster(
             name="Wight Brothers",
             image="assets/door_cards/WightBrothers.png",
@@ -223,15 +204,5 @@ MONSTERS = [
             bad_stuff=LoseLevelBadStuff(1),
             reward_two_levels=True
         )
-
-        #Monster("Dragon", "image", 20, 5, "Lose 2 levels"),
-        #Monster("Goblin", 1, 1, "Lose 1 level"),
-        #Monster("Orc", 4, 2, "Lose a race card"),
-        #Monster("Troll", 10, 3, "Lose your equipped items"),
-        #Monster("Skeleton", 2, 1, "Lose your headgear"),
-        #Monster("Vampire", 8, 2, "Lose 2 levels"),
-        #Monster("Zombie", 3, 1, "Lose your footgear"),
-        #Monster("Werewolf", 6, 2, "Lose your armor"),
-        #Monster("Ghost", 5, 1, "Run away or lose a level"),
-        #Monster("Giant Rat", 1, 1, "Lose your food items"),
     ]
+    

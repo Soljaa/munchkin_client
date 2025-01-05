@@ -42,7 +42,7 @@ CURSES = [
     Curse(
         name="Curse! Lose The Footgear You Are Wearing",
         image="assets/door_cards/Curse!LoseTheFootgearYouAreWearing.png",
-        effect=LoseEquippedItemBadStuff('foot')
+        effect=LoseEquippedItemBadStuff('feet')
     ),
     Curse(
         name="Curse! Lose The Armor You Are Wearing",
@@ -58,5 +58,10 @@ CURSES = [
         name="Curse! Lose Two Cards",
         image="assets/door_cards/Curse!LoseTwoCards.png",
         effect=LoseHandCardsBadStuff(2)
-    )
+    ),
+    Curse(
+        name="Curse! Duck of Doom",
+        image="assets/door_cards/Curse!DuckOfDoom.png",
+        effect=LoseLevelBadStuff(2)
+    ),
 ]

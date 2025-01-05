@@ -61,7 +61,7 @@ class Monster(Card):
         self.effect = effect
         self.bad_stuff = bad_stuff
         self.reward_two_levels = reward_two_levels
-        self.pursue = True
+        self.pursue = True # TODO: Não tá fazendo nada no restante do código, implementar pursue system
         self.after_death_effect = None
 
     def reset_stats(self):
