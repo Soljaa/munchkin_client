@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class DoorBuffEffect(ABC):
     @abstractmethod
-    def apply(self, target) -> None:
+    def apply(self, monster) -> None:
         pass
 
 class IncreaseMonsterLevelBuff(DoorBuffEffect):
