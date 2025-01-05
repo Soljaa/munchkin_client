@@ -15,7 +15,12 @@ class CharityPhase(GamePhases):
         self.renderer.set_message("Fazendo caridade... Redistribuindo as cartas")
 
         current_player = self.players[self.current_player_index]
-        donation_cards = current_player.hand if died else current_player.donate_cards()
+        if died:
+            donation_cards = current_player.hand
+            current_player.hand = []
+        else:
+            donation_cards = current_player.donate_cards()
+
         lowest_cards_players = self.get_lowest_cards_players()
 
         if len(donation_cards) == 1:

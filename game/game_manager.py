@@ -56,8 +56,12 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
         renderer.draw_gameboard()
 
         # Revive jogador morto
-        if game_state.current_player().level==0: # Se o jogador morreu
-            game_state.current_player().level_up() # Revive (dando +1 de nível, ficando com nível 1)
+        if game_state.current_player().level == 0:  # Se o jogador morreu
+            game_state.current_player().level_up()  # Revive (dando +1 de nível, ficando com nível 1)
+            if not game_state.current_player().hand:
+                for _ in range(4):
+                    game_state.current_player().draw_card(game_state.door_deck)
+                    game_state.current_player().draw_card(game_state.treasure_deck)
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:  # Verifica se a tecla foi pressionada
