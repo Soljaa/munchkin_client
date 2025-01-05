@@ -1,4 +1,4 @@
-from game.card import CardType, RaceTypes
+from game.card import CardType, ClassTypes, RaceTypes
 from game.death import Death
 import random
 
@@ -13,7 +13,7 @@ class Player:
         self.equipped_items = []
         self.race = RaceTypes.HUMAN
         self.gold = 0  # Adicionando o atributo gold inicializado em 0
-        self.class_ = None  # esta como array por causa do super munchkin # TODO: Cancelar super munchkin
+        self.class_ = None  # estava como array por causa do super munchkin, mas ele foi cancelado
         self.gender = gender
         # adicionar referencia a efeitos ativos, com referencia aos itens donos do efeito e
         # ver se vale dividir em etapas de aplicação dos efeitos como efeitos que se aplicam no setup,
@@ -77,13 +77,12 @@ class Player:
             # class restrictions
             if item.class_required:
                 can_use = False
-                if self.class_ and self.class_.type == item.class_required:
+                if self.class_ and self.class_.class_type == item.class_required:
                         can_use = True
-                if not can_use:
-                    return False
+                return can_use
 
             if item.classes_prohibited:
-                if self.class_ and self.class_.type in item.classes_prohibited:
+                if self.class_ and self.class_.class_type in item.classes_prohibited:
                     return False
 
             # gender restrictions
@@ -98,21 +97,21 @@ class Player:
             self.equipped_items.append(item)
             self.hand.remove(item)
 
-        if isinstance(item, Race):
-            # equip race
-            if self.race:
-                return False
+        # if isinstance(item, Race):
+        #     # equip race
+        #     if self.race:
+        #         return False
 
-            self.race = item.type
-            self.hand.remove(item)
+        #     self.race = item
+        #     self.hand.remove(item)
 
-        if isinstance(item, Class):
-            # equip class
-            if self.class_:
-                return False
+        # if isinstance(item, Class):
+        #     # equip class
+        #     if self.class_:
+        #         return False
 
-            self.class_ = item.type
-            self.hand.remove(item)
+        #     self.class_ = item
+        #     self.hand.remove(item)
 
         return True
 
@@ -138,11 +137,33 @@ class Player:
         if card.type == CardType.TREASURE_BUFF or card.type == CardType.ITEM:
             treasure_deck.discard_pile.append(card)
 
-    def play_card(self, card):
+    def play_card(self, card, game_state):
         # TODO: para CURSE, abrir opção para escolher qual alvo
         # if card.type == CardType.CURSE:
         #     target_player = open_target_menu()
         #     card.apply_effect(target_player)
+        from ui.game_renderer import GameRenderer        
+        game_renderer = GameRenderer.get_instance()
+
+        if (card.type == CardType.CURSE):
+            print('Clicou em curse')
+            # player_target = game_renderer.open_curse_target_menu() # TODO: Curse target menu
+            # card.apply_effect(player_target)
+        elif card.type == CardType.RACE:
+            print('Clicou em race')
+            self.replace_race(card)
+        elif card.type == CardType.CLASS:
+            print('Clicou em class')
+            self.replace_class(card)
+        elif card.type == CardType.MONSTER:
+            print('Clicou em monster')
+            return
+        elif (card.type == CardType.DOOR_BUFF):
+            print('Clicou em door_buff')
+            card.apply_effect(game_state.current_combat.monster) # OBS: A princípio, os targets do door_buff são os monstros do combate (tem restrição de só jogar em combate)
+        elif (card.type == CardType.TREASURE_BUFF):
+            print('Clicou em treasure_buff')
+            card.apply_effect(self)
 
         self.add_to_discard_pile(card)
 
@@ -163,6 +184,7 @@ class Player:
 
     def remove_class(self):
         if self.class_:
+            self.add_to_discard_pile(self.class_)
             self.class_ = None
 
     def replace_class(self, card):
@@ -171,6 +193,8 @@ class Player:
 
     def remove_race(self):
         if self.race:
+            if self.race != RaceTypes.HUMAN:
+                self.add_to_discard_pile(self.race)
             self.race = RaceTypes.HUMAN
 
     def replace_race(self, card):
@@ -211,7 +235,7 @@ class Player:
 
     def lose_all_equipped_class_items(self):
         items_to_remove = [item for item in self.equipped_items 
-                          if item.class_required == self.class_]
+                          if item.class_required == self.class_.class_type]
         
         for item in items_to_remove:
             item.equipped = False
@@ -227,7 +251,7 @@ class Player:
             self.equipped_items.remove(item)
 
     def remove_all_hand_class_cards(self):
-        items_to_remove = [item for item in self.hand if item.class_required == self.class_]
+        items_to_remove = [item for item in self.hand if item.class_required == self.class_.class_type]
         
         for item in items_to_remove:
             self.add_to_discard_pile(item)
@@ -253,6 +277,8 @@ class Player:
         return []
 
     def get_player_race(self):
+        if self.race and self.race != RaceTypes.HUMAN:
+            return self.race.race_type.value
         if self.race:
             return self.race.value
         return "Sem raça"

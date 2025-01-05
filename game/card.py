@@ -107,13 +107,13 @@ class Race(Card):
     def __init__(self, name, image, special_ability, race_type):
         super().__init__(name, image, CardType.RACE)
         self.special_ability = special_ability
-        self.type = race_type
+        self.race_type = race_type
 
 class Class(Card):
     def __init__(self, name, image, special_ability, class_type):
         super().__init__(name, image, CardType.CLASS)
         self.special_ability = special_ability
-        self.type = class_type
+        self.class_type = class_type
 
 class Curse(Card):
     def __init__(self, name, image, effect):
