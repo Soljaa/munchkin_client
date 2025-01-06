@@ -1,5 +1,6 @@
 import pygame
 import pygame.mixer
+from utils import resource_path
 
 # Initizalizes pygame's modules
 pygame.init()
@@ -18,7 +19,7 @@ class Sound():
 
     def load(self, sound_file):
         if(pygame.mixer):
-            return pygame.mixer.Sound(sound_file)
+            return pygame.mixer.Sound(resource_path(sound_file))
 
     """Value deve ser um valor entre 0 e 100"""
     def set_volume(self, value):

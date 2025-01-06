@@ -5,6 +5,7 @@ import pygame
 from . import window
 from . import animation
 from pygame.locals import *
+from utils import resource_path
 
 # Initializes pygame's modules
 pygame.init()
@@ -18,7 +19,9 @@ class Sprite(animation.Animation):
     def __init__(self, image_file, frames=1):
         # Parent's constructor must be first-called
         animation.Animation.__init__(self, image_file, frames)
-        self.original_image = pygame.image.load(image_file).convert_alpha()  # Carrega a imagem original
+        # Use resource_path to resolve the image file path
+        image_path = resource_path(image_file)
+        self.original_image = pygame.image.load(image_path).convert_alpha()  # Carrega a imagem original
         self.image = self.original_image
         self.rect = self.image.get_rect()  # Define o retângulo da imagem
 

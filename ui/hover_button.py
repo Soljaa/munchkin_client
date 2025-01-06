@@ -1,6 +1,6 @@
 import pygame
 from ui.button import Button
-
+from utils import resource_path
 class HoverButton(Button):
     def __init__(self, image_path, x, y, width=None, height=None, scale_factor=1.1, acao=None):
         super().__init__(image_path, x, y, width, height, acao)
@@ -33,5 +33,5 @@ class HoverButton(Button):
         self.sprite.draw()
 
     def play_sound(self):
-        hovered_button_sound = pygame.mixer.Sound("assets/sounds/hovered_button.mp3")
+        hovered_button_sound = pygame.mixer.Sound(resource_path("assets/sounds/hovered_button.mp3"))
         hovered_button_sound.play()

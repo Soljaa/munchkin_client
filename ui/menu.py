@@ -1,4 +1,3 @@
-
 import sys
 from PPlay.window import *
 from PPlay.sprite import *
@@ -7,6 +6,7 @@ from PPlay.gameimage import *
 from game.game_manager import main
 from ui.hover_button import HoverButton
 from ui.player_selection import PlayerSelection
+from utils import resource_path
 
 
 class Menu:
@@ -49,7 +49,7 @@ class Menu:
         }
 
     def play_music(self):
-        music_path = "assets/sounds/medieval_music.mp3"
+        music_path = resource_path("assets/sounds/medieval_music.mp3")
         self.medieval_music_sound = pygame.mixer.Sound(music_path)
         self.medieval_music_sound.play()
         
@@ -57,7 +57,7 @@ class Menu:
         self.medieval_music_sound.fadeout(800)
 
     def play_transition_fade_sound(self):
-        sound_path = "assets/sounds/transition_fade.mp3"
+        sound_path = resource_path("assets/sounds/transition_fade.mp3")
         self.transition_fade_sound = pygame.mixer.Sound(sound_path)
         self.transition_fade_sound.set_volume(0.3)
         self.transition_fade_sound.play()

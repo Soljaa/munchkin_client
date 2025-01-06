@@ -1,5 +1,6 @@
 from PPlay.sprite import *
 from ui.button import Button  # Importa a classe Button
+from utils import resource_path
 
 class ClickButton(Button):
     def __init__(self, image_path, x, y, width=None, height=None, acao=None):  # Inicializa o botão
@@ -72,5 +73,5 @@ class ClickButton(Button):
         return False
 
     def play_sound(self):
-        hovered_button_sound = pygame.mixer.Sound("assets/sounds/clicked_button.mp3")
+        hovered_button_sound = pygame.mixer.Sound(resource_path("assets/sounds/clicked_button.mp3"))
         hovered_button_sound.play()
