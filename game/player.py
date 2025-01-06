@@ -96,23 +96,6 @@ class Player:
 
             self.equipped_items.append(item)
             self.hand.remove(item)
-
-        # if isinstance(item, Race):
-        #     # equip race
-        #     if self.race:
-        #         return False
-
-        #     self.race = item
-        #     self.hand.remove(item)
-
-        # if isinstance(item, Class):
-        #     # equip class
-        #     if self.class_:
-        #         return False
-
-        #     self.class_ = item
-        #     self.hand.remove(item)
-
         return True
 
     def unequip_item(self, item):

@@ -51,9 +51,9 @@ class DoorDeck(Deck):
         for race in RACES:
             self.add_card(race)
 
-        # print(f"Adding {len(CLASSES)} classes to deck")
-        # for class_ in CLASSES:
-        #     self.add_card(class_)
+        print(f"Adding {len(CLASSES)} classes to deck")
+        for class_ in CLASSES:
+            self.add_card(class_)
 
         print(f"Adding {len(DOOR_BUFFS)} door buffs to deck")
         for buff in DOOR_BUFFS:

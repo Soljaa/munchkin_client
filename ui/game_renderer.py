@@ -432,7 +432,7 @@ class GameRenderer:
             f"Jogador: {player.name} | {player.gender.value}",
             f"Nível: {player.level}",
             f"Força: {player.calculate_combat_strength()}",
-            f"Raça: {player.get_player_race()}",
+            f"Raça: {player.get_player_race()} | Classe: {player.class_}",
             f"Ouro: {player.gold}"  # Nova linha adicionada para mostrar o gold
         ]
 
@@ -457,13 +457,26 @@ class GameRenderer:
 
         # revisar display para usar o super munchkin
         if player.class_:
-            item_sprite = Sprite(player.class_[0].image)  # aqui
+            item_sprite = Sprite(player.class_.image)  # aqui
             item_sprite.resize(30, 45)
+            item_sprite.x = 495
+            item_sprite.y = 130
             item_sprite.draw()
 
             self.handle_card_hover(player.class_, item_sprite)
 
             self.equipped_card_sprites.append((item_sprite, player.class_))
+
+        if hasattr(player.race, 'race_type'):
+            item_sprite = Sprite(player.race.image)  # aqui
+            item_sprite.resize(30, 45)
+            item_sprite.x = 460
+            item_sprite.y = 130
+            item_sprite.draw()
+
+            self.handle_card_hover(player.race, item_sprite)
+
+            self.equipped_card_sprites.append((item_sprite, player.race))
 
         no_slot_x_offset = 0
         no_slot_y_offset = 0
@@ -659,7 +672,7 @@ class GameRenderer:
             self.message_timer -= 1
 
     def handle_event(self, event, game_state=None):
-        equipable_card_types = [CardType.CLASS, CardType.ITEM]
+        equipable_card_types = [CardType.ITEM]
         # Handle button clicks
         for button_name, button in self.buttons.items():
             if button.handle_event():
@@ -686,6 +699,10 @@ class GameRenderer:
 
             for card_sprite, card in self.equipped_card_sprites:
                 if self.mouse.is_over_object(card_sprite):
+                    if card.type == CardType.RACE:
+                        game_state.current_player().remove_race()
+                    if card.type == CardType.CLASS:
+                        game_state.current_player().remove_class()
                     self._remove_item_sprite(self.equipped_card_sprites, card_sprite)
                     return 'unequip_item', card
         return None
