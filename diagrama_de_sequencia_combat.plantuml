@@ -1,0 +1,19 @@
+@startuml
+actor Player
+participant GameState
+participant Combat
+participant Monster
+participant PlayerClass
+
+Player -> GameState: resolve_combat()
+activate GameState
+GameState -> Combat: new Combat(player, monster)
+activate Combat
+Combat -> PlayerClass: calculate_combat_strength()
+Combat -> Monster: get_monster_strength()
+Combat -> Combat: resolve_combat()
+Combat --> GameState: combat_result
+deactivate Combat
+GameState --> Player: combat_outcome
+deactivate GameState
+@enduml
