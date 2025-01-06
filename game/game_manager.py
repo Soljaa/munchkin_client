@@ -55,6 +55,9 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
         # Render the gameboard
         renderer.draw_gameboard()
 
+        if pygame.key.get_pressed()[pygame.K_F11]:
+            pygame.display.toggle_fullscreen()
+
         # Revive jogador morto
         if game_state.current_player().level == 0:  # Se o jogador morreu
             game_state.current_player().level_up()  # Revive (dando +1 de nível, ficando com nível 1)
