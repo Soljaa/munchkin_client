@@ -335,8 +335,11 @@ Combat --> "0..*" Player : helpers
 
 Death --> Player
 
+Player --> ClassTypes
+
 Deck <|-- DoorDeck
 Deck <|-- TreasureDeck
+Deck --> CardType
 
 GameManager --> GameState
 GameManager --> Gender
@@ -374,6 +377,7 @@ ItemEffect <|-- BlockCurses
 Item --> ItemEffect
 Item --> RaceTypes
 Item --> Gender
+Item --> ItemSlotTypes
 
 MonsterBadStuff <|-- CompositeBadStuff
 
