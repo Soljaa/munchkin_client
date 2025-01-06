@@ -1,5 +1,7 @@
 from enum import Enum, auto
 
+from game.card import RaceTypes
+
 
 class CombatStates(Enum):
     WINNING = auto()
@@ -61,7 +63,7 @@ class Combat:
 
             return True, {
                 'treasure': self.monster.treasure,
-                'level_gain': 2 if self.monster.reward_two_levels else 1,
+                'level_gain': 2 if (self.player.race == RaceTypes.ORC and self.monster.level > 10) or self.monster.reward_two_levels else 1,
                 'message': f"Victory! Gained {self.monster.treasure} treasure(s)!"
             }
         return False, {

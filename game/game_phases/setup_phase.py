@@ -1,3 +1,4 @@
+from game.card import RaceTypes
 from game.game_phases.game_phases import GamePhases
 import pygame
 
@@ -46,6 +47,9 @@ class SetupPhase(GamePhases):
             return
 
         total_value = sum(item.value for item in selected_items)
+
+        if self.player.race == RaceTypes.HALFlING: # Se for um Halfling, o preço dos itens vendidos valoriza 1.5x
+            total_value = 1.5*total_value
 
         # Remove os itens vendidos da mão do jogador
         for item in selected_items:

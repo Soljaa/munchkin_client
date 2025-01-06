@@ -7,7 +7,7 @@ from game.game_phases.loot_room_phase import LootRoomPhase
 from game.game_phases.setup_phase import SetupPhase
 from game.game_state import GameState, GamePhase, EndGameException
 from ui.game_renderer import GameRenderer
-from game.card import Gender
+from game.card import Gender, RaceTypes
 
 
 def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/avatar1.png", gender=Gender.MALE):
@@ -97,6 +97,8 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             game_state.dice.roll() # Então rolo o dado 
                             renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
                             value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
+                            if game_state.current_player().race == RaceTypes.ELF: # Se for Elf, dá +1 no Run Away
+                                value += 1
                             game_state.door_deck.discard(current_combat.monster)
                             if current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
                                 renderer.draw_run_away_success_transition() #Imagem referente ao sucesso na fuga
