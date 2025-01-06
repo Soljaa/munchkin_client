@@ -97,9 +97,10 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
                             game_state.dice.roll() # Então rolo o dado 
                             renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
                             value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem
-                            if game_state.current_player().race == RaceTypes.ELF: # Se for Elf, dá +1 no Run Away
+                            if hasattr(game_state.current_player().race, 'race_type') and game_state.current_player().race.race_type == RaceTypes.ELF: # Se for Elf, dá +1 no Run Away
                                 value += 1
                             game_state.door_deck.discard(current_combat.monster)
+                            print("VALOR DO DADO: ", value)
                             if current_combat.try_to_run(value): # Se consigo fugir com sucesso (value>=5)
                                 renderer.draw_run_away_success_transition() #Imagem referente ao sucesso na fuga
                                 renderer.set_message("Fugiu com sucesso!")

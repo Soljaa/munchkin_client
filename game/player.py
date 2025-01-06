@@ -269,7 +269,7 @@ class Player:
 
     def donate_cards(self, max_hand_size=5):  # retorna a lista de cartas para doação ou [] se tiver 5 cartas
         hand_size = len(self.hand)
-        if self.race == RaceTypes.DWARF: # Se for Dwarf, a mão pode ter 6 cartas
+        if hasattr(self.race, 'race_type') and self.race.race_type == RaceTypes.DWARF: # Se for Dwarf, a mão pode ter 6 cartas
             max_hand_size = 6
         if hand_size > max_hand_size:
             self.shuffle_hand()

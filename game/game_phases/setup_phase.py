@@ -48,8 +48,10 @@ class SetupPhase(GamePhases):
 
         total_value = sum(item.value for item in selected_items)
 
-        if self.player.race == RaceTypes.HALFlING: # Se for um Halfling, o preço dos itens vendidos valoriza 1.5x
-            total_value = 1.5*total_value
+        if hasattr(self.player.race, 'race_type') and self.player.race.race_type == RaceTypes.HALFlING:
+            # Se for um Halfling, o preço dos itens vendidos valoriza 1.5x
+            total_value = 1.5 * total_value
+            total_value = int(total_value)
 
         # Remove os itens vendidos da mão do jogador
         for item in selected_items:
