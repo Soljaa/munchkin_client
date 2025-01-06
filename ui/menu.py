@@ -84,8 +84,8 @@ class Menu:
         self.play_music()
         """Executa o loop principal do menu."""
         while self.running:
-            # if pygame.key.get_pressed()[pygame.K_F11]:
-            #     pygame.display.toggle_fullscreen() fazer para todas as telas
+            if pygame.key.get_pressed()[pygame.K_F11]:
+                pygame.display.toggle_fullscreen()
 
             self.bg.draw()  
             for button in self.buttons.values():
