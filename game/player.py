@@ -243,10 +243,6 @@ class Player:
         self.lose_all_equipped_class_items()
         self.remove_all_hand_class_cards()
 
-    #TODO
-    def lose_all_race_cards(self):
-        pass
-
     def shuffle_hand(self):
         random.shuffle(self.hand)
 

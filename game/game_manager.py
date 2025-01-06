@@ -93,7 +93,14 @@ def main(name: str = "Player", avatar_img_dir="assets/selecao_player/avatares/av
 
                     elif action == "run_away": # Se aperto para fugir... # RUN AWAY
                         player_died = False
-                        if game_state.phase == GamePhase.COMBAT and game_state.current_combat: # ... e estou em combate
+                        current_combat.monster.apply_effect(game_state.current_player())
+                        if current_combat.monster.pursue is not True:
+                            renderer.draw_run_away_success_transition()
+                            renderer.set_message("Level muito baixo, o monstro decidiu não te perseguir!")
+                            game_state.set_combat(None)
+                            renderer.set_message("Prepare-se antes de fazer caridade!")
+                            game_state.set_game_phase(GamePhase.FINAL_SETUP)
+                        elif game_state.phase == GamePhase.COMBAT and game_state.current_combat: # ... e estou em combate
                             game_state.dice.roll() # Então rolo o dado 
                             renderer.draw_dice_animation(game_state.dice) # Faço a animação da rolagem
                             value = game_state.dice.last_roll # E salvo o valor do dado após a rolagem

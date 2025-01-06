@@ -17,7 +17,7 @@ RACES = [
     Race(
         name="Halfling",
         image="assets/door_cards/Halfling.png",
-        special_ability="Pode vender 1 item por 1.5x o preço.",
+        special_ability="Pode vender items por 1.5x o preço.",
         race_type=RaceTypes.HALFlING,
     ),
     Race(

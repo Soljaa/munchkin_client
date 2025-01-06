@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 
-# TODO implementar efeitos dos items
 class ItemEffect(ABC):
     @abstractmethod
     def apply(self, player) -> None:

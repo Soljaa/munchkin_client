@@ -61,7 +61,7 @@ class Monster(Card):
         self.effect = effect
         self.bad_stuff = bad_stuff
         self.reward_two_levels = reward_two_levels
-        self.pursue = True # TODO: Não tá fazendo nada no restante do código, implementar pursue system
+        self.pursue = True
         self.after_death_effect = None
 
     def reset_stats(self):
@@ -99,7 +99,6 @@ class Item(Card):
         self.races_prohibited = races_prohibited
         self.gender_required = gender_required
         self.genders_prohibited = genders_prohibited
-        # add gender
         self.two_hands = two_hands  # armas de duas mão, default False
         self.effect = effect  # tupla com tipo e valor
 
@@ -135,7 +134,7 @@ class DoorBuff(Card):
             return self.restriction.check(player)
         return True
 
-    def apply_effect(self, target):  # TODO: quando for usar esse método, a princípio o target é monster, pelo menos pras cartas com IncreaseMonsterLevelBuff.
+    def apply_effect(self, target):
         self.effect.apply(target)
 
 class TreasureBuff(Card):

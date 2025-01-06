@@ -64,7 +64,7 @@ MONSTERS = [
                     LoseLevelBadStuff(1),
                 ),
             ),    
-        # Floating Nose --> muito dificil de fazer
+        # Floating Nose --> complicado de fazer
         # Flying Frogs --> -1 de Run Away
         # Gazebo --> não pode ajuda contra essa carta
         # Gelatinous Octahedron --> +1 Run Away e tem que dropar item grande
@@ -72,7 +72,7 @@ MONSTERS = [
         # Ghost Writer --> #TODO viável, não tem hireling no deck pro badstuff
         Monster(
             name="Hairy Potter",
-            image="assets/door_cards/HairyPotter.png", # TODO: Falta png
+            image="assets/door_cards/HairyPotter.png",
             level=15,
             treasure=4,
             effect=CompositeEffect(IncreaseMonsterLevelEffect('Wizard', 4), IncreaseMonsterLevelEffect('Elf', -3), NotPursueLevelEffect(2)),
@@ -130,7 +130,7 @@ MONSTERS = [
             level=19,
             treasure=5,
             effect=IncreaseMonsterLevelEffect("Elf", 4),
-            bad_stuff=DeathBadStuff(), # TODO: E não permitir ninguém pegar os items. Vamos fazer isso ou ignorar?
+            bad_stuff=DeathBadStuff(), # TODO: E não permitir ninguém pegar os items.
             reward_two_levels=True
         ),
         # Mr. Bones --> obriga a fugir. Perde nível se escapar. Ele é undead
