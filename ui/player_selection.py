@@ -7,6 +7,7 @@ import pygame
 from ui.hover_button import HoverButton
 from ui.click_button import ClickButton
 from game.card import Gender
+from utils import resource_path
 
 
 class PlayerSelection:
@@ -33,9 +34,10 @@ class PlayerSelection:
 
     def initialize_avatars(self):
         """Carrega os avatares disponíveis na pasta específica."""
+        avatars_dir = resource_path("assets/selecao_player/avatares")
         self.avatars = [
-            os.path.join("assets/selecao_player/avatares", file)
-            for file in os.listdir("assets/selecao_player/avatares")
+            os.path.join(avatars_dir, file)
+            for file in os.listdir(avatars_dir)
             if file.startswith("avatar") and file.endswith(".png")
         ]
         self.avatar_index = 0  # Índice do avatar atual

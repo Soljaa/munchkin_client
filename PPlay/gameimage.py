@@ -4,6 +4,7 @@ import pygame
 from pygame.locals import *
 from . import window
 from . import gameobject
+from utils import resource_path  # Adjust the import path as necessary
 
 # Initializes pygame's modules
 pygame.init()
@@ -11,7 +12,7 @@ pygame.init()
 # Loads an image (with colorkey and alpha)
 def load_image(name, colorkey=None, alpha=False):
     """loads an image into memory"""
-    image = pygame.image.load(name)
+    image = pygame.image.load(resource_path(name))
     if alpha:image = image.convert_alpha()
     else:image=image.convert()
     if colorkey is not None:
@@ -30,8 +31,10 @@ class GameImage(gameobject.GameObject):
         # Parent constructor must be called first
         gameobject.GameObject.__init__(self)
         
+        # Use resource_path to resolve the image file path
+        image_path = resource_path(image_file)
         # Loads image from the source, converts to fast-blitting format
-        self.image = pygame.image.load(image_file).convert_alpha()
+        self.image = pygame.image.load(image_path).convert_alpha()
         # Gets the image pygame.Rect
         self.rect = self.image.get_rect()
         

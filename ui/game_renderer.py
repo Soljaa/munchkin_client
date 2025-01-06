@@ -6,6 +6,7 @@ from game.card import Item, CardType
 from ui.hover_button import HoverButton
 from game.game_state import GamePhase
 from game.combat import CombatStates
+from utils import resource_path
 
 
 BUTTONS_BY_GAME_PHASE = {
@@ -31,15 +32,15 @@ class GameRenderer:
         if GameRenderer._instance is None:
             GameRenderer._instance = self
         self.screen = screen
-        self.gameboard = pygame.image.load("assets/gameboard.png")
-        self.dungeon_background = pygame.image.load("assets/dungeon_background.png")
+        self.gameboard = pygame.image.load(resource_path("assets/gameboard.png"))
+        self.dungeon_background = pygame.image.load(resource_path("assets/dungeon_background.png"))
         self.buttons = {}
         self.message = ""
         self.message_timer = 0
         self._init_buttons()
         self.zoomed_card: Sprite | None = None
         self.mouse = Window.get_mouse()
-        self.equip_holder = pygame.transform.scale(pygame.image.load("assets/game/equip_holder.png"), (100, 150))
+        self.equip_holder = pygame.transform.scale(pygame.image.load(resource_path("assets/game/equip_holder.png")), (100, 150))
         self.hand_card_sprites = []  # [(card_sprite, card)]
         self.equipped_card_sprites = []  # [(card_sprite, card)]]
 
@@ -144,7 +145,7 @@ class GameRenderer:
         
         clock = pygame.time.Clock()
         
-        rolling_dice_sound = pygame.mixer.Sound("assets/sounds/rolling_dice.mp3")
+        rolling_dice_sound = pygame.mixer.Sound(resource_path("assets/sounds/rolling_dice.mp3"))
         rolling_dice_sound.play()
         while elapsed_time < roll_time_seconds:
             # Calcula o tempo entre quadros
@@ -184,7 +185,7 @@ class GameRenderer:
         center_y = self.screen.get_height() // 2
 
         # Avatar do referido jogador
-        avatar_img = pygame.image.load(player.avatar_img_dir)
+        avatar_img = pygame.image.load(resource_path(player.avatar_img_dir))
         self.screen.blit(avatar_img, (center_x - avatar_img.get_width()/2, 60))
 
         # Desenha o texto, linha por linha
@@ -205,11 +206,11 @@ class GameRenderer:
             extra_element (callable, optional): Função que desenha elementos extras na tela. Default é None.
         """
         # Carrega a imagem de transição
-        transition_image = pygame.image.load(image_path)
+        transition_image = pygame.image.load(resource_path(image_path))
 
         # Toca o som, se fornecido
         if sound_path:
-            sound = pygame.mixer.Sound(sound_path)
+            sound = pygame.mixer.Sound(resource_path(sound_path))
             sound.play()
 
         # Controle do tempo de animação
@@ -261,7 +262,7 @@ class GameRenderer:
         """
         Exibe a distribuição de cartas para os jogadores na fase de caridade na tela do Pygame, com um botão para continuar.
         """
-        transition_image = pygame.image.load("assets/game/charity_transition.jpg")
+        transition_image = pygame.image.load(resource_path("assets/game/charity_transition.jpg"))
 
         # contraste
         contrast_width = max([max([len(cards) for cards in distribution.values()]) * 100, 200])
@@ -307,7 +308,7 @@ class GameRenderer:
                     # Renderiza os sprites das cartas se o jogador recebeu cartas
                     for card in cards:
                         try:
-                            card_sprite = pygame.image.load(card.image).convert_alpha()
+                            card_sprite = pygame.image.load(resource_path(card.image)).convert_alpha()
                             card_sprite = pygame.transform.scale(card_sprite, (100, 150))
                             self.screen.blit(card_sprite, (cards_x_position, players_y_position))
                             cards_x_position += 110  # Move a posição X para o próximo sprite de carta
@@ -360,7 +361,7 @@ class GameRenderer:
         center_y = self.screen.get_height() // 2
 
         # Avatar do referido jogador
-        avatar_img = pygame.image.load(player.avatar_img_dir)
+        avatar_img = pygame.image.load(resource_path(player.avatar_img_dir))
         self.screen.blit(avatar_img, (center_x - avatar_img.get_width()/2, 100))
 
         # Desenha o texto, linha por linha
@@ -788,7 +789,7 @@ class GameRenderer:
         modal_surface = pygame.Surface((MODAL_WIDTH, MODAL_HEIGHT))
         modal_surface.set_alpha(230)
         if background:
-            background_image = pygame.image.load(background)
+            background_image = pygame.image.load(resource_path(background))
             modal_surface.blit(background_image, (0, 0))
         else:
             modal_surface.fill((255, 255, 255))
@@ -873,7 +874,7 @@ class GameRenderer:
         modal_surface = pygame.Surface((MODAL_WIDTH, MODAL_HEIGHT))
         modal_surface.set_alpha(230)
         if background:
-            background_image = pygame.image.load(background)
+            background_image = pygame.image.load(resource_path(background))
             modal_surface.blit(background_image, (0, 0))
         else:
             modal_surface.fill((255, 255, 255))
@@ -976,7 +977,7 @@ class GameRenderer:
         modal_surface = pygame.Surface((MODAL_WIDTH, MODAL_HEIGHT))
         modal_surface.set_alpha(230)
         if background:
-            background_image = pygame.image.load(background)
+            background_image = pygame.image.load(resource_path(background))
             modal_surface.blit(background_image, (0, 0))
         else:
             modal_surface.fill((255, 255, 255))
