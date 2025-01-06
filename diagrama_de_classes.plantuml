@@ -152,6 +152,24 @@ class GameState {
     + resolve_combat(): bool
 }
 
+class GameRenderer {
+    - screen: Surface
+    - gameboard: Surface
+    - dungeon_background: Surface
+    - buttons: dict[str, HoverButton]
+    - message: str
+    - message_timer: int
+    - zoomed_card: Sprite | None
+    - mouse: Mouse
+    - equip_holder: Surface
+    - hand_card_sprites: list[tuple[Sprite, Card]]
+    - equipped_card_sprites: list[tuple[Sprite, Card]]
+
+    + __init__(screen: Surface)
+    + get_instance(): GameRenderer
+    + _init_buttons(): void
+}
+
 ' Classes de efeitos e restrições
 abstract class BuffsRestriction {
     {abstract} + check(): bool
@@ -314,11 +332,15 @@ class ClickButton {
 Combat --> "1" Player
 Combat --> "1" Monster
 Combat --> "0..*" Player : helpers
+
 Death --> Player
+
 Deck <|-- DoorDeck
 Deck <|-- TreasureDeck
+
 GameManager --> GameState
 GameManager --> Gender
+
 GameState --> DoorDeck
 GameState --> TreasureDeck
 GameState --> Player
@@ -327,27 +349,40 @@ GameState --> GamePhase
 GameState --> Combat
 GameState --> Gender
 
+GameRenderer --> HoverButton
+GameRenderer --> Sprite
+GameRenderer --> Mouse
+GameRenderer --> Surface
+GameRenderer --> GamePhase
+GameRenderer --> CombatStates
+
 BuffsRestriction <|-- OnlyInCombatRestriction
+
 CurseEffect <|-- ApplyDiscardCardBadStuffCurseEffect
 CurseEffect <|-- ChangeClassCurseEffect
 CurseEffect <|-- ChangeRaceCurseEffect
 CurseEffect <|-- LoseRaceCurseEffect
 CurseEffect <|-- LoseClassCurseEffect
+
 Curse --> CurseEffect
 
 ItemEffect <|-- IncreaseDiceRollEffect
 ItemEffect <|-- BonusByRace
 ItemEffect <|-- EscapeCombat
 ItemEffect <|-- BlockCurses
+
 Item --> ItemEffect
 Item --> RaceTypes
 Item --> Gender
 
 MonsterBadStuff <|-- CompositeBadStuff
+
 Monster --> MonsterEffect
 Monster --> MonsterBadStuff
 
 Button <|-- HoverButton
+
 HoverButton <|-- ClickButton
+HoverButton <|-- Button
 
 @enduml
