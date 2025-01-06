@@ -163,7 +163,7 @@ ITEMS = [
         bonus=3,
         value=600,
         slot="armor",
-        two_hands=True,
+        big=True,
         classes_prohibited=[ClassTypes.WIZARD]
     ),
     Item(
