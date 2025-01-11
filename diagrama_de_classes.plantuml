@@ -135,7 +135,7 @@ class Player {
   - combat_strength: int
   - hand: list
   - equipped_items: list
-  - race: RaceTypes
+  - race: Race
   - gold: int
   - class_: Class
   - gender: string
@@ -504,10 +504,10 @@ Card <|-- Curse
 Card <|-- DoorBuff
 Card <|-- TreasureBuff
 
-Player --> Gender
-Player --> RaceTypes
-Player --> ClassTypes
+Race --> RaceTypes
+Class --> ClassTypes
 
+Player --> Gender
 Player "1" *-- "*" Card
 Player "1" *-- "*" Item
 Player "1" -- "0..1" Race
