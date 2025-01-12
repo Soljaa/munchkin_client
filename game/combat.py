@@ -63,7 +63,7 @@ class Combat:
 
             return True, {
                 'treasure': self.monster.treasure,
-                'level_gain': 2 if (hasattr(self.player.race, 'race_type') and self.player.race.race_type == RaceTypes.ORC and self.monster.level > 10) or self.monster.reward_two_levels else 1,
+                'level_gain': 2 if (self.player.get_player_race() == RaceTypes.ORC and self.monster.level > 10) or self.monster.reward_two_levels else 1,
                 'message': f"Victory! Gained {self.monster.treasure} treasure(s)!"
             }
         return False, {

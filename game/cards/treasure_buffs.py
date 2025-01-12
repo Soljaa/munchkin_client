@@ -6,6 +6,7 @@ TREASURE_BUFFS = [
     TreasureBuff(
         name="Instant Wall",
         image="assets/treasure_cards/InstantWall.png",
+        value=300,
         effect=EveryoneScapesBuff(),
         restriction=OnlyInCombatRestriction()
     ),

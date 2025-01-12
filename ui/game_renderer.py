@@ -438,7 +438,7 @@ class GameRenderer:
             f"Jogador: {player.name} | {player.gender.value}",
             f"Nível: {player.level}",
             f"Força: {player.calculate_combat_strength()}",
-            f"Raça: {player.get_player_race()} | Classe: {player.class_}",
+            f"Raça: {player.get_player_race().value} | Classe: {player.class_}",
             f"Ouro: {player.gold}"  # Nova linha adicionada para mostrar o gold
         ]
 

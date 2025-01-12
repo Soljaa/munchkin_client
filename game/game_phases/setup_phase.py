@@ -48,7 +48,7 @@ class SetupPhase(GamePhases):
 
         total_value = sum(item.value for item in selected_items)
 
-        if hasattr(self.player.race, 'race_type') and self.player.race.race_type == RaceTypes.HALFlING:
+        if self.player.get_player_race() == RaceTypes.HALFlING:
             # Se for um Halfling, o preço dos itens vendidos valoriza 1.5x
             total_value = 1.5 * total_value
             total_value = int(total_value)

@@ -150,8 +150,7 @@ class GameManager:
                         self.game_state.dice.roll()  # Então rolo o dado
                         self.renderer.draw_dice_animation(self.game_state.dice)  # Faço a animação da rolagem
                         value = self.game_state.dice.last_roll  # E salvo o valor do dado após a rolagem
-                        if hasattr(self.game_state.current_player().race,
-                                   'race_type') and self.game_state.current_player().race.race_type == RaceTypes.ELF:  # Se for Elf, dá +1 no Run Away
+                        if self.game_state.current_player().get_player_race() == RaceTypes.ELF:  # Se for Elf, dá +1 no Run Away
                             value += 1
                         self.game_state.door_deck.discard(current_combat.monster)
                         print("VALOR DO DADO: ", value)

@@ -19,6 +19,7 @@ class RaceTypes(Enum):
     HALFlING = "Hobbit"
     HUMAN = "Humano"
     ORC = "Orc"
+    NO_RACE = "Sem Raça"
 
 
 class ClassTypes(Enum):
