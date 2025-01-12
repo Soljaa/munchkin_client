@@ -12,6 +12,17 @@ from utils import resource_path
 
 class PlayerSelection:
     def __init__(self, window):
+        self.avatar = None
+        self.clock = None
+        self.color_change_interval = None
+        self.last_color_change_time = None
+        self.color_index = None
+        self.colors = None
+        self.buttons = None
+        self.avatar_index = None
+        self.avatars = None
+        self.mouse = None
+        self.bg = None
         self.window = window
         self.running = True
         self.input_text = ""
@@ -115,7 +126,7 @@ class PlayerSelection:
             self.input_text = self.input_text[:-1]  # Remove o último caractere
         else:
             new_char = event.unicode  # Obtém o novo caractere digitado
-            if new_char.isalnum():  # Verifica se o caractere é alfanumérico
+            if new_char.isalnum() or new_char == " ":  # Verifica se o caractere é alfanumérico
                 self.input_text += new_char  # Adiciona o novo caractere ao texto
 
     def update_cursor(self):
@@ -144,7 +155,7 @@ class PlayerSelection:
         """Atualiza a navegação dos avatares."""
         if self.reload_mouse <= 0:
             self.avatar_index = (self.avatar_index + incremento) % len(self.avatars)
-            self.reload_mouse = 0.2
+            self.reload_mouse = 0.8
 
     def back(self):
         """Ação para o botão 'back'."""
