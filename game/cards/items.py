@@ -257,6 +257,7 @@ ITEMS = [
         bonus=4,
         value=600,
         slot="hands",
+        big=True,
         two_hands=True,
         race_required=RaceTypes.HUMAN
     ),
