@@ -1,685 +1,430 @@
-@startuml
-
-enum CardType {
-    MONSTER
-    CURSE
-    RACE
-    CLASS
-    ITEM
-    DOOR_BUFF
-    TREASURE_BUFF
-}
-
-enum RaceTypes {
-    DWARF
-    ELF
-    HALFlING
-    HUMAN
-    ORC
-}
-
-enum ClassTypes {
-    WARRIOR
-    CLERIC
-    THIEF
-    WIZARD
-    BARD
-}
-
-enum ItemSlotTypes {
-    HANDS
-    HEAD
-    ARMOR
-    FEET
-}
-
-enum Gender {
-    MALE
-    FEMALE
-}
-
-enum CombatStates {
-    WINNING
-    LOSING
-}
-
-enum GamePhase {
-    SETUP
-    KICK_DOOR
-    LOOK_FOR_TROUBLE
-    LOOT_ROOM
-    COMBAT
-    CHARITY
-    FINAL_SETUP
-}
-
-class Card {
-    +name: str
-    +image: str
-    +type: CardType
-    +__init__(name, image, type)
-    +__str__(): str
-}
-
-class Monster {
-    +base_level: int
-    +level: int
-    +base_treasure: int
-    +treasure: int
-    +effect: MonsterEffect
-    +bad_stuff: MonsterBadStuff
-    +reward_two_levels: bool
-    +pursue: bool
-    +after_death_effect
-    +__init__(name, image, level, treasure, effect, bad_stuff, reward_two_levels)
-    +reset_stats()
-    +apply_effect(player)
-    +apply_bad_stuff(player)
-    +apply_after_death_effect(player)
-}
-
-class Item {
-    +bonus: int
-    +value: int
-    +slot: ItemSlotTypes
-    +big: bool
-    +class_required
-    +classes_prohibited
-    +race_required
-    +races_prohibited
-    +gender_required
-    +genders_prohibited
-    +two_hands: bool
-    +effect
-    +__init__(name, image, bonus, value, slot, big, two_hands, class_required, classes_prohibited, race_required, races_prohibited, gender_required, genders_prohibited, effect)
-}
-
-class Race {
-    +special_ability
-    +race_type: RaceTypes
-    +__init__(name, image, special_ability, race_type)
-}
-
-class Class {
-    +class_type: ClassTypes
-    +__init__(name, image, class_type)
-}
-
-class Curse {
-    +effect
-    +__init__(name, image, effect)
-    +apply_effect(player)
-}
-
-class DoorBuff {
-    +effect
-    +restriction
-    +after_death_effect
-    +__init__(name, image, effect, restriction, after_death_effect)
-    +can_use(player): bool
-    +apply_effect(target)
-}
-
-class TreasureBuff {
-    +effect
-    +restriction
-    +__init__(name, image, effect, restriction)
-    +can_use(player): bool
-    +apply_effect(player)
-}
-
-class Player {
-  - name: string
-  - avatar_img_dir: string
-  - level: int
-  - combat_strength: int
-  - hand: list
-  - equipped_items: list
-  - race: Race
-  - gold: int
-  - class_: Class
-  - gender: string
-
-  + __init__(name: string, avatar_img_dir: string, gender: string)
-  + calculate_combat_strength(): int
-  + equip_item(item: Item): bool
-  + unequip_item(item: Item): void
-  + draw_card(deck: Deck): void
-  + add_to_discard_pile(card: Card): void
-  + play_card(card: Card, game_state: GameState): bool
-  + level_up(): void
-  + level_down(value: int = 1): void
-  + remove_class(): void
-  + replace_class(card: Card): void
-  + remove_race(): void
-  + replace_race(card: Card): void
-  + remove_hand_card(card: Card): void
-  + lose_all_hand_cards(): void
-  + remove_equipped_items(quantity: int = None): void
-  + remove_hand_cards(quantity: int = None): void
-  + lose_all_equipped_class_items(): void
-  + remove_equipped_item_type(item_type: string): void
-  + remove_all_hand_class_cards(): void
-  + lose_all_class_cards(): void
-  + shuffle_hand(): void
-  + donate_cards(max_hand_size: int = 5): list
-  + get_player_race(): string
-}
-
-class Deck {
-  - cards: List
-  - discard_pile: List
-  + __init__()
-  + add_card(card)
-  + shuffle()
-  + draw()
-  + discard(card)
-}
-
-class DoorDeck {
-  + __init__()
-  - _initialize_deck()
-}
-
-class TreasureDeck {
-  + __init__()
-  - _initialize_deck()
-}
-
-class Dice {
-    - img_dir: str
-    - sides: int
-    - last_roll: int
-    - sprite_rolling_dice: Sprite
-    - sprite_value_dice: Sprite
-
-    + __init__()
-    + roll(): int
-    + draw_rolling_dice(x: int = 0, y: int = 0): void
-    + draw_value_dice(x: int = 0, y: int = 0): void
-}
-
-class Combat {
-    - player
-    - monster
-    - player_modifiers: int
-    - monster_modifiers: int
-    - can_run_away: bool
-    - helpers: list
-    + __init__(player, monster)
-    + get_player_strength(): int
-    + apply_monster_effect(): void
-    + get_monster_strength(): int
-    + add_helper(player): bool
-    + remove_helper(player): bool
-    + add_player_modifier(value): int
-    + add_monster_modifier(value): int
-    + try_to_run(value): bool
-    + resolve_combat(): tuple
-    + get_combat_state(): CombatStates
-}
-
-class Death {
-  - player: Player
-  + __init__(player: Player)
-  + apply(): void
-  + draw(): void
-}
-
-class GameState {
-    - _instance: GameState
-    - door_deck: DoorDeck
-    - treasure_deck: TreasureDeck
-    - players: list[Player]
-    - dice: Dice
-    - current_player_index: int
-    - phase: GamePhase
-    - current_combat: Combat
-    - current_curse: Curse
-    + __init__()
-    + {static} get_instance(): GameState
-    + add_player(name: str, img_dir: str, gender: Gender): void
-    + next_player(): void
-    + current_player(): Player
-    + resolve_combat(): bool
-    + set_game_phase(new_phase: GamePhase): void
-    + set_combat(combat: Combat): void
-}
-
-abstract class GamePhases {
-  - game_state
-  + __init__(game_state)
-  + {abstract} run()
-}
-
-class SetupPhase {
-    - player
-    - action_type
-    - item
-    - renderer
-    + __init__(game_state, action, renderer)
-    + run()
-    - show_sell_items_modal()
-    - process_sale(selected_items)
-}
-
-class KickDoorPhase {
-  - door_deck
-  - current_player
-  - renderer
-  + __init__(game_state, renderer)
-  + run()
-}
-
-class CombatPhase {
-    - player
-    - card
-    - renderer
-    + __init__(game_state, card, renderer)
-    + run(): boolean
-}
-
-class LookForTroublePhase {
-    -current_player
-    -renderer
-    +__init__(game_state, renderer)
-    +get_monsters_from_hand(): List[Monster]
-    +run(): boolean
-}
-
-class LootRoomPhase {
-    - treasure_deck
-    - current_player
-    - loot_card
-    + __init__(game_state)
-    + run(): boolean
-    + show_loot_card()
-}
-
-class CharityPhase {
-  - players: List
-  - current_player_index: int
-  - renderer: Renderer
-  + __init__(game_state: GameState, renderer: Renderer)
-  + run(died: bool = False): bool
-  + get_lowest_cards_players(): List
-  + {static} distribute_cards(players: List, cards: List): Dict
-}
-
-abstract class MonsterEffect {
-    + {abstract} apply(monster, player): None
-}
-
-class CompositeEffect {
-    - effects: MonsterEffect[]
-    + apply(monster, player): None
-}
-
-class IncreaseMonsterLevelEffect {
-    - raceClass: str
-    - bonus: int
-    + apply(monster, player): None
-}
-
-class NotPursueLevelEffect {
-    - level_limit: int
-    - exclude_race: str
-    + apply(monster, player): None
-}
-
-class PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect {
-    - level_loss: int
-    + apply(monster, player): None
-}
-
-class MoreTreasureEffect {
-    - qty_plus_treasure: int
-    - include_race: str
-    + apply(monster, player): None
-}
-
-abstract class MonsterBadStuff {
-    + {abstract} apply(player): None
-}
-
-class CompositeBadStuff {
-    - bad_stuffs: MonsterBadStuff[]
-    + __init__(*bad_stuffs: MonsterBadStuff)
-    + apply(player): None
-    + __str__(): String
-}
-
-class DeathBadStuff {
-    - exclude_race: String
-    + __init__(exclude_race=None)
-    + apply(player): None
-    + __str__(): String
-}
-
-class OrcsBadStuff {
-    + apply(player): None
-    + __str__(): String
-}
-
-class LoseItemsBadStuff {
-    - qty: int
-    + __init__(qty=None)
-    + apply(player): None
-    + __str__(): String
-}
-
-class LoseHandCardsBadStuff {
-    - qty: int
-    + __init__(qty=None)
-    + apply(player): None
-    + __str__(): String
-}
-
-class LoseLevelBadStuff {
-    - level_loss: int
-    + __init__(level_loss: int)
-    + apply(player): None
-    + __str__(): String
-}
-
-class LoseEquippedItemBadStuff {
-    - item_type: String
-    + __init__(item_type: String)
-    + apply(player): None
-    + __str__(): String
-}
-
-class LoseAllClassItemsBadStuff {
-    + apply(player): None
-    + __str__(): String
-}
-
-class LoseEquippedItemOrLevelBadStuff {
-    - item_type: String
-    - level_loss: int
-    + __init__(item_type: String, level_loss: int)
-    + apply(player): None
-    + __str__(): String
-}
-
-abstract class ItemEffect {
-    + {abstract} apply(player): None
-}
-
-class IncreaseDiceRollEffect {
-    - increase_by: int
-    + __init__(value: int = 1)
-    + apply(player): None
-}
-
-class BonusByRace {
-    - increase_by: int
-    - race_required: str
-    + __init__(race: str, value: int = 2)
-    + apply(player): None
-}
-
-class EscapeCombat {
-    - monster_level_limit: int
-    + __init__(monster_level: int = None)
-    + apply(player): None
-}
-
-class BlockCurses {
-    + apply(player): None
-}
-
-abstract class CurseEffect {
-    + {abstract} apply(player): None
-}
-
-class ApplyDiscardCardBadStuffCurseEffect {
-    + apply(player): None
-}
-
-class ChangeClassCurseEffect {
-    + apply(player): None
-}
-
-class ChangeRaceCurseEffect {
-    + apply(player): None
-}
-
-class LoseRaceCurseEffect {
-    + apply(player): None
-}
-
-class LoseClassCurseEffect {
-    + apply(player): None
-}
-
-abstract class DoorBuffEffect {
-    + {abstract} apply(monster): None
-}
-
-class IncreaseMonsterLevelBuff {
-    - bonus: int
-    + apply(monster): None
-}
-
-class DrawExtraTreasureBuff {
-    - amount: int
-    + apply(monster): None
-}
-
-abstract class TreasureBuffEffect {
-    + {abstract} apply(target): None
-}
-
-class EveryoneScapesBuff {
-    + increase_global_turns(turn, game_state)
-    + apply(target): None
-}
-
-class BonusToEitherSideBuff {
-    - bonus: int
-    + apply(target): None
-}
-
-class UpALevelBuff {
-    + apply(target): None
-}
-
-class DrawExtraTreasureBuff {
-    - amount: int
-    - treasure_deck: TreasureDeck
-    + apply(target): None
-}
-
-class StealALevelBuff {
-    - curr_player: Player
-    + apply(target): None
-}
-
-Card <|-- Monster
-Card <|-- Item
-Card <|-- Race
-Card <|-- Class
-Card <|-- Curse
-Card <|-- DoorBuff
-Card <|-- TreasureBuff
-
-Race --> RaceTypes
-Class --> ClassTypes
-
-Player --> Gender
-Player "1" *-- "*" Card
-Player "1" *-- "*" Item
-Player "1" -- "0..1" Race
-Player "1" -- "0..1" Class
-
-Death --> Player
-
-Deck <|-- DoorDeck
-Deck <|-- TreasureDeck
-
-DoorDeck ..> CardType
-
-TreasureDeck ..> CardType
-
-Combat o-- CombatStates
-Combat "1" *-- "1" Monster
-Combat "1" *-- "1" Player
-
-DoorDeck --> GameState
-TreasureDeck --> GameState
-
-SetupPhase --> Player
-SetupPhase --> Item
-
-KickDoorPhase --> DoorDeck
-KickDoorPhase --> Player
-KickDoorPhase --> Combat
-KickDoorPhase --|> GamePhases
-KickDoorPhase --> GameState
-KickDoorPhase --> CardType
-KickDoorPhase --> CombatPhase
-
-CombatPhase --> Combat
-CombatPhase --> Player
-CombatPhase --> Monster
-
-LookForTroublePhase --> Player
-LookForTroublePhase --> Monster
-LookForTroublePhase --> Combat
-
-LootRoomPhase o-- GameState
-LootRoomPhase --> TreasureDeck
-LootRoomPhase --> Player
-
-CharityPhase --> Player
-CharityPhase --> Card
-
-GameState "1" *-- "*" Player
-GameState "1" *-- "1" Dice
-GameState "1" *-- "1" GamePhase
-GameState "1" *-- "0..1" Combat
-
-GamePhases --> "1" GameState
-GamePhases <|-- SetupPhase
-GamePhases <|-- CombatPhase
-GamePhases <|-- LookForTroublePhase
-GamePhases <|-- LootRoomPhase
-GamePhases <|-- CharityPhase
-GamePhases --> DoorDeck
-GamePhases --> TreasureDeck
-GamePhases --> Player
-
-MonsterEffect <|-- CompositeEffect
-MonsterEffect <|-- IncreaseMonsterLevelEffect
-MonsterEffect <|-- NotPursueLevelEffect
-MonsterEffect <|-- PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect
-MonsterEffect <|-- MoreTreasureEffect
-
-MonsterBadStuff <|-- CompositeBadStuff
-MonsterBadStuff <|-- DeathBadStuff
-MonsterBadStuff <|-- OrcsBadStuff
-MonsterBadStuff <|-- LoseItemsBadStuff
-MonsterBadStuff <|-- LoseHandCardsBadStuff
-MonsterBadStuff <|-- LoseLevelBadStuff
-MonsterBadStuff <|-- LoseEquippedItemBadStuff
-MonsterBadStuff <|-- LoseAllClassItemsBadStuff
-MonsterBadStuff <|-- LoseEquippedItemOrLevelBadStuff
-
-Monster "1" *-- "1" MonsterEffect
-Monster "1" *-- "1" MonsterBadStuff
-Monster "1" *-- "0..1" AfterDeathEffect
-
-ItemEffect <|-- IncreaseDiceRollEffect
-ItemEffect <|-- BonusByRace
-ItemEffect <|-- EscapeCombat
-ItemEffect <|-- BlockCurses
-
-Item --> ItemSlotTypes
-Item "1" *-- "0..1" ItemEffect
-
-CurseEffect <|-- ApplyDiscardCardBadStuffCurseEffect
-CurseEffect <|-- ChangeClassCurseEffect
-CurseEffect <|-- ChangeRaceCurseEffect
-CurseEffect <|-- LoseRaceCurseEffect
-CurseEffect <|-- LoseClassCurseEffect
-
-DoorBuffEffect <|-- IncreaseMonsterLevelBuff
-DoorBuffEffect <|-- DrawExtraTreasureBuff
-
-TreasureBuffEffect <|-- EveryoneScapesBuff
-TreasureBuffEffect <|-- BonusToEitherSideBuff
-TreasureBuffEffect <|-- UpALevelBuff
-TreasureBuffEffect <|-- DrawExtraTreasureBuff
-TreasureBuffEffect <|-- StealALevelBuff
-
-Curse "1" *-- "1" CurseEffect
-DoorBuff "1" *-- "1" DoorBuffEffect
-TreasureBuff "1" *-- "1" TreasureBuffEffect
-
-note right of Player
-  - Limite máximo de 5 cartas na mão
-  - Só pode ter 1 headgear, 1 armor, 1 footgear
-  - Pode ter até 2 itens de "hands" (ou 1 item "two_hands")
-  - Só pode ter 1 raça ativa (exceto se for Halfling)
-  - Só pode ter 1 classe ativa (exceto se tiver habilidade especial)
-  - Nível máximo é 10
-  - Nível mínimo é 1
-end note
-
-note right of Monster
-  - Efeitos são aplicados quando o monstro entra em combate
-  - Bad Stuff é aplicado apenas se o jogador perder ou fugir
-  - AfterDeathEffect é aplicado apenas se o monstro for derrotado
-  - Nível base não pode ser modificado
-  - Nível atual pode ser modificado por efeitos
-end note
-
-note left of Combat
-  - Player precisa ter força total > nível do monstro para vencer
-  - Força total = nível + bônus de itens + bônus de raça/classe
-  - Fuga requer rolagem de dado >= 5
-  - Helpers só podem ser adicionados antes do combate começar
-  - Máximo de 1 helper por combate
-end note
-
-note right of Item
-  - Items "big" contam como 2 itens no limite de carregamento
-  - Items "two_hands" ocupam os 2 slots de mão
-  - Restrições de classe/raça/gênero são verificadas ao equipar
-  - Valor em ouro é usado apenas para venda
-end note
-
-note left of GameState
-  - Só pode existir uma instância (Singleton)
-  - Controla sequência de fases do jogo
-  - Mantém estado atual do jogo
-  - Gerencia transições entre fases
-  - Coordena interações entre jogadores
-end note
-
-note right of Deck
-  - Quando acabam as cartas, embaralha descarte
-  - Cartas descartadas vão para baixo do deck
-  - Não pode haver mais que 1 cópia da mesma carta
-  - DoorDeck e TreasureDeck são separados
-end note
-
-note left of GamePhases
-  - Setup: Equipa itens e vende para subir de nível
-  - KickDoor: Revela primeira carta da porta
-  - Combat: Resolve batalha com monstro
-  - LookForTrouble: Joga monstro da mão
-  - LootRoom: Compra carta de tesouro
-  - Charity: Descarta excesso de cartas
-end note
-
-note right of ItemEffect
-  - Efeitos são imutáveis após criação
-  - Podem ser compostos (CompositeEffect)
-  - Devem especificar claramente condições
-  - Podem ter restrições de uso
-  - Podem ter duração limitada
-end note
-
+@startuml classes
+set namespaceSeparator none
+class "ApplyDiscardCardBadStuffCurseEffect" as game.cards.curse_effect.ApplyDiscardCardBadStuffCurseEffect {
+  apply(player) -> None
+}
+class "BlockCurses" as game.cards.item_effect.BlockCurses {
+  {abstract}apply(player) -> None
+}
+class "BonusByRace" as game.cards.item_effect.BonusByRace {
+  increase_by : int
+  race_required
+  {abstract}apply(player) -> None
+}
+class "BonusToEitherSideBuff" as game.cards.treasure_buff_effect.BonusToEitherSideBuff {
+  bonus
+  {abstract}apply(target) -> None
+}
+class "BuffsRestriction" as game.cards.buff_restriction.BuffsRestriction {
+  {abstract}check(player) -> bool
+}
+class "Card" as game.card.Card {
+  image
+  name
+  type
+}
+class "ChangeClassCurseEffect" as game.cards.curse_effect.ChangeClassCurseEffect {
+  apply(player) -> None
+}
+class "ChangeRaceCurseEffect" as game.cards.curse_effect.ChangeRaceCurseEffect {
+  apply(player) -> None
+}
+class "CharityPhase" as game.game_phases.charity_phase.CharityPhase {
+  ai_turn : bool
+  current_player_index
+  players
+  renderer
+  distribute_cards(players, cards)
+  get_lowest_cards_players()
+  run(died)
+}
+class "Class" as game.card.Class {
+  class_type
+}
+class "Combat" as game.combat.Combat {
+  can_run_away : bool
+  helpers : list
+  monster
+  monster_modifiers : int
+  player
+  player_modifiers : int
+  add_helper(player)
+  add_monster_modifier(value)
+  add_player_modifier(value)
+  apply_monster_effect()
+  get_combat_state()
+  get_monster_strength()
+  get_player_strength()
+  remove_helper(player)
+  resolve_combat()
+  try_to_run(value)
+}
+class "CombatPhase" as game.game_phases.combat_phase.CombatPhase {
+  card
+  player
+  renderer
+  run()
+}
+class "CompositeBadStuff" as game.cards.monster_bad_stuff.CompositeBadStuff {
+  bad_stuffs : tuple
+  apply(player) -> None
+}
+class "CompositeEffect" as game.cards.monster_effect.CompositeEffect {
+  effects : tuple
+  apply(monster, player) -> None
+}
+class "Curse" as game.card.Curse {
+  effect
+  apply_effect(player)
+}
+class "CurseEffect" as game.cards.curse_effect.CurseEffect {
+  {abstract}apply(player) -> None
+}
+class "Death" as game.death.Death {
+  player
+  apply()
+  {abstract}draw()
+}
+class "DeathBadStuff" as game.cards.monster_bad_stuff.DeathBadStuff {
+  exclude_race : NoneType
+  apply(player)
+}
+class "Deck" as game.deck.Deck {
+  cards : list
+  discard_pile : list
+  add_card(card)
+  discard(card)
+  draw()
+  shuffle()
+}
+class "Dice" as game.dice.Dice {
+  img_dir : str
+  last_roll : NoneType
+  sides : int
+  sprite_rolling_dice : Sprite
+  sprite_value_dice : Sprite
+  draw_rolling_dice(x, y)
+  draw_value_dice(x, y)
+  roll()
+}
+class "DoorBuff" as game.card.DoorBuff {
+  after_death_effect : NoneType
+  effect
+  restriction
+  apply_effect(target)
+  can_use(player) -> bool
+}
+class "DoorBuffEffect" as game.cards.door_buff_effect.DoorBuffEffect {
+  {abstract}apply(monster) -> None
+}
+class "DoorDeck" as game.deck.DoorDeck {
+}
+class "DrawExtraTreasureBuff" as game.cards.door_buff_effect.DrawExtraTreasureBuff {
+  amount : int
+  apply(monster) -> None
+}
+class "DrawExtraTreasureBuff" as game.cards.treasure_buff_effect.DrawExtraTreasureBuff {
+  amount
+  treasure_deck
+  apply(target)
+}
+class "EscapeCombat" as game.cards.item_effect.EscapeCombat {
+  monster_level_limit : NoneType
+  {abstract}apply(player) -> None
+}
+class "EveryoneScapesBuff" as game.cards.treasure_buff_effect.EveryoneScapesBuff {
+  apply(target) -> None
+  increase_global_turns(game_state)
+}
+class "GameManager" as game.game_manager.GameManager {
+  clock
+  curr_turn : int
+  game_state
+  players : list
+  renderer : GameRenderer
+  screen
+  waiting_timer : int
+  handle_action(action, ai_turn: bool)
+  increase_global_turns()
+  play_automatic_turn()
+  run()
+}
+class "GamePhases" as game.game_phases.game_phases.GamePhases {
+  game_state
+  {abstract}run()
+}
+class "GameState" as game.game_state.GameState {
+  current_combat : NoneType
+  current_curse : NoneType
+  current_player_index : int
+  dice
+  door_deck
+  phase : SETUP
+  players
+  treasure_deck
+  add_player(name, img_dir, gender, is_ai: bool)
+  current_player()
+  get_instance()
+  next_player()
+  resolve_combat()
+  set_combat(combat)
+  set_game_phase(new_phase)
+}
+class "IncreaseDiceRollEffect" as game.cards.item_effect.IncreaseDiceRollEffect {
+  increase_by : int
+  {abstract}apply(player) -> None
+}
+class "IncreaseMonsterLevelBuff" as game.cards.door_buff_effect.IncreaseMonsterLevelBuff {
+  bonus : int
+  apply(monster) -> None
+}
+class "IncreaseMonsterLevelEffect" as game.cards.monster_effect.IncreaseMonsterLevelEffect {
+  bonus : int
+  raceClass : str
+  apply(monster, player) -> None
+}
+class "Item" as game.card.Item {
+  big : bool
+  bonus
+  class_required : NoneType
+  classes_prohibited : NoneType
+  effect
+  gender_required : NoneType
+  genders_prohibited : NoneType
+  race_required : NoneType
+  races_prohibited : NoneType
+  slot : NoneType
+  two_hands : bool
+  value
+}
+class "ItemEffect" as game.cards.item_effect.ItemEffect {
+  {abstract}apply(player) -> None
+}
+class "KickDoorFase" as game.game_phases.kick_door_phase.KickDoorFase {
+  current_player
+  door_deck
+  renderer
+  run()
+}
+class "LookForTroublePhase" as game.game_phases.look_for_trouble_phase.LookForTroublePhase {
+  current_player
+  renderer
+  get_monsters_from_hand()
+  run()
+}
+class "LootRoomPhase" as game.game_phases.loot_room_phase.LootRoomPhase {
+  current_player
+  loot_card : NoneType
+  treasure_deck
+  run()
+  show_loot_card()
+}
+class "LoseAllClassItemsBadStuff" as game.cards.monster_bad_stuff.LoseAllClassItemsBadStuff {
+  apply(player) -> None
+}
+class "LoseClassCurseEffect" as game.cards.curse_effect.LoseClassCurseEffect {
+  apply(player) -> None
+}
+class "LoseEquippedItemBadStuff" as game.cards.monster_bad_stuff.LoseEquippedItemBadStuff {
+  item_type : str
+  apply(player) -> None
+}
+class "LoseEquippedItemOrLevelBadStuff" as game.cards.monster_bad_stuff.LoseEquippedItemOrLevelBadStuff {
+  item_type : str
+  level_loss : int
+  apply(player) -> None
+}
+class "LoseHandCardsBadStuff" as game.cards.monster_bad_stuff.LoseHandCardsBadStuff {
+  qty : NoneType
+  apply(player) -> None
+}
+class "LoseItemsBadStuff" as game.cards.monster_bad_stuff.LoseItemsBadStuff {
+  qty : NoneType
+  apply(player) -> None
+}
+class "LoseLevelBadStuff" as game.cards.monster_bad_stuff.LoseLevelBadStuff {
+  level_loss : int
+  apply(player) -> None
+}
+class "LoseRaceCurseEffect" as game.cards.curse_effect.LoseRaceCurseEffect {
+  apply(player) -> None
+}
+class "Monster" as game.card.Monster {
+  after_death_effect : NoneType
+  bad_stuff
+  base_level : int
+  base_treasure : int
+  effect
+  level : int
+  pursue : bool
+  reward_two_levels : bool
+  treasure : int
+  apply_after_death_effect(player)
+  apply_bad_stuff(player)
+  apply_effect(player)
+  reset_stats()
+}
+class "MonsterBadStuff" as game.cards.monster_bad_stuff.MonsterBadStuff {
+  {abstract}apply(player) -> None
+}
+class "MonsterEffect" as game.cards.monster_effect.MonsterEffect {
+  {abstract}apply(monster, player) -> None
+}
+class "MoreTreasureEffect" as game.cards.monster_effect.MoreTreasureEffect {
+  include_race : NoneType
+  qty_plus_treasure
+  apply(monster, player) -> None
+}
+class "NotPursueLevelEffect" as game.cards.monster_effect.NotPursueLevelEffect {
+  exclude_race : NoneType
+  level_limit
+  apply(monster, player) -> None
+}
+class "OnlyInCombatRestriction" as game.cards.buff_restriction.OnlyInCombatRestriction {
+  check(player)
+}
+class "OrcsBadStuff" as game.cards.monster_bad_stuff.OrcsBadStuff {
+  apply(player) -> None
+}
+class "Player" as game.player.Player {
+  avatar_img_dir
+  class_ : NoneType
+  combat_strength : int
+  equipped_items : list
+  gender
+  gold : int
+  hand : list
+  is_ai : bool
+  level : int
+  name
+  race : HUMAN
+  add_to_discard_pile(card)
+  calculate_combat_strength()
+  donate_cards(max_hand_size)
+  draw_card(deck)
+  equip_item(item)
+  get_player_race()
+  level_down(value)
+  level_up()
+  lose_all_class_cards()
+  lose_all_equipped_class_items()
+  lose_all_hand_cards()
+  play_card(card, game_state)
+  remove_all_hand_class_cards()
+  remove_class()
+  remove_equipped_item_type(item_type: str)
+  remove_equipped_items(quantity)
+  remove_hand_card(card)
+  remove_hand_cards(quantity)
+  remove_race()
+  replace_class(card)
+  replace_race(card)
+  shuffle_hand()
+  unequip_item(item)
+}
+class "PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect" as game.cards.monster_effect.PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect {
+  level_loss : int
+  apply(monster, player) -> None
+}
+class "Race" as game.card.Race {
+  race_type
+  special_ability
+}
+class "SetupPhase" as game.game_phases.setup_phase.SetupPhase {
+  action_type
+  item
+  player
+  renderer
+  process_sale(selected_items)
+  run()
+  show_sell_items_modal()
+}
+class "StealALevelBuff" as game.cards.treasure_buff_effect.StealALevelBuff {
+  curr_player
+  apply(target)
+}
+class "TreasureBuff" as game.card.TreasureBuff {
+  effect
+  restriction
+  apply_effect(player)
+  can_use(player) -> bool
+}
+class "TreasureBuffEffect" as game.cards.treasure_buff_effect.TreasureBuffEffect {
+  {abstract}apply(target) -> None
+}
+class "TreasureDeck" as game.deck.TreasureDeck {
+}
+class "UpALevelBuff" as game.cards.treasure_buff_effect.UpALevelBuff {
+  apply(target) -> None
+}
+game.card.Class --|> game.card.Card
+game.card.Curse --|> game.card.Card
+game.card.DoorBuff --|> game.card.Card
+game.card.Item --|> game.card.Card
+game.card.Monster --|> game.card.Card
+game.card.Race --|> game.card.Card
+game.card.TreasureBuff --|> game.card.Card
+game.cards.buff_restriction.OnlyInCombatRestriction --|> game.cards.buff_restriction.BuffsRestriction
+game.cards.curse_effect.ApplyDiscardCardBadStuffCurseEffect --|> game.cards.curse_effect.CurseEffect
+game.cards.curse_effect.ChangeClassCurseEffect --|> game.cards.curse_effect.CurseEffect
+game.cards.curse_effect.ChangeRaceCurseEffect --|> game.cards.curse_effect.CurseEffect
+game.cards.curse_effect.LoseClassCurseEffect --|> game.cards.curse_effect.CurseEffect
+game.cards.curse_effect.LoseRaceCurseEffect --|> game.cards.curse_effect.CurseEffect
+game.cards.door_buff_effect.DrawExtraTreasureBuff --|> game.cards.door_buff_effect.DoorBuffEffect
+game.cards.door_buff_effect.IncreaseMonsterLevelBuff --|> game.cards.door_buff_effect.DoorBuffEffect
+game.cards.item_effect.BlockCurses --|> game.cards.item_effect.ItemEffect
+game.cards.item_effect.BonusByRace --|> game.cards.item_effect.ItemEffect
+game.cards.item_effect.EscapeCombat --|> game.cards.item_effect.ItemEffect
+game.cards.item_effect.IncreaseDiceRollEffect --|> game.cards.item_effect.ItemEffect
+game.cards.monster_bad_stuff.CompositeBadStuff --|> game.cards.monster_bad_stuff.MonsterBadStuff
+game.cards.monster_bad_stuff.DeathBadStuff --|> game.cards.monster_bad_stuff.MonsterBadStuff
+game.death.Death --|> game.cards.monster_bad_stuff.DeathBadStuff
+game.cards.monster_bad_stuff.LoseAllClassItemsBadStuff --|> game.cards.monster_bad_stuff.MonsterBadStuff
+game.cards.monster_bad_stuff.LoseEquippedItemBadStuff --|> game.cards.monster_bad_stuff.MonsterBadStuff
+game.cards.monster_bad_stuff.LoseEquippedItemOrLevelBadStuff --|> game.cards.monster_bad_stuff.MonsterBadStuff
+game.cards.monster_bad_stuff.LoseHandCardsBadStuff --|> game.cards.monster_bad_stuff.MonsterBadStuff
+game.cards.monster_bad_stuff.LoseItemsBadStuff --|> game.cards.monster_bad_stuff.MonsterBadStuff
+game.cards.monster_bad_stuff.LoseLevelBadStuff --|> game.cards.monster_bad_stuff.MonsterBadStuff
+game.cards.monster_bad_stuff.OrcsBadStuff --|> game.cards.monster_bad_stuff.MonsterBadStuff
+game.cards.monster_effect.CompositeEffect --|> game.cards.monster_effect.MonsterEffect
+game.cards.monster_effect.IncreaseMonsterLevelEffect --|> game.cards.monster_effect.MonsterEffect
+game.cards.monster_effect.MoreTreasureEffect --|> game.cards.monster_effect.MonsterEffect
+game.cards.monster_effect.NotPursueLevelEffect --|> game.cards.monster_effect.MonsterEffect
+game.cards.monster_effect.PlayerLoseLevelsIfLevelIsBiggerThanMonsterEffect --|> game.cards.monster_effect.MonsterEffect
+game.cards.treasure_buff_effect.BonusToEitherSideBuff --|> game.cards.treasure_buff_effect.TreasureBuffEffect
+game.cards.treasure_buff_effect.DrawExtraTreasureBuff --|> game.cards.treasure_buff_effect.TreasureBuffEffect
+game.cards.treasure_buff_effect.EveryoneScapesBuff --|> game.cards.treasure_buff_effect.TreasureBuffEffect
+game.cards.treasure_buff_effect.StealALevelBuff --|> game.cards.treasure_buff_effect.TreasureBuffEffect
+game.cards.treasure_buff_effect.UpALevelBuff --|> game.cards.treasure_buff_effect.TreasureBuffEffect
+game.deck.DoorDeck --|> game.deck.Deck
+game.deck.TreasureDeck --|> game.deck.Deck
+game.game_phases.charity_phase.CharityPhase --|> game.game_phases.game_phases.GamePhases
+game.game_phases.combat_phase.CombatPhase --|> game.game_phases.game_phases.GamePhases
+game.game_phases.kick_door_phase.KickDoorFase --|> game.game_phases.game_phases.GamePhases
+game.game_phases.look_for_trouble_phase.LookForTroublePhase --|> game.game_phases.game_phases.GamePhases
+game.game_phases.loot_room_phase.LootRoomPhase --|> game.game_phases.game_phases.GamePhases
+game.game_phases.setup_phase.SetupPhase --|> game.game_phases.game_phases.GamePhases
+game.card.Class --* game.deck.DoorDeck
+game.card.Curse --* game.deck.DoorDeck
+game.card.Curse --* game.game_state.GameState : current_curse
+game.card.DoorBuff --* game.deck.DoorDeck
+game.card.Item --* game.deck.TreasureDeck
+game.card.Monster --* game.deck.DoorDeck
+game.card.Race --* game.deck.DoorDeck
+game.card.TreasureBuff --* game.deck.TreasureDeck
+game.cards.buff_restriction.BuffsRestriction --* game.card.DoorBuff : restriction
+game.cards.buff_restriction.BuffsRestriction --* game.card.TreasureBuff : restriction
+game.cards.curse_effect.CurseEffect --* game.card.Curse : effect
+game.cards.door_buff_effect.DoorBuffEffect --* game.card.DoorBuff : effect
+game.cards.item_effect.ItemEffect --* game.card.Item : effect
+game.cards.monster_bad_stuff.MonsterBadStuff --* game.card.Monster : bad_stuff
+game.cards.monster_effect.MonsterEffect --* game.card.Monster : effect
+game.cards.treasure_buff_effect.TreasureBuffEffect --* game.card.TreasureBuff : effect
+game.combat.Combat --* game.game_state.GameState : current_combat
+game.deck.DoorDeck --* game.game_state.GameState : door_deck
+game.deck.TreasureDeck --* game.game_state.GameState : treasure_deck
+game.dice.Dice --* game.game_state.GameState : dice
+game.game_phases.game_phases.GamePhases --* game.game_state.GameState : phase
+game.game_state.GameState --* game.game_manager.GameManager : game_state
+game.player.Player --* game.game_state.GameState : players
 @enduml
