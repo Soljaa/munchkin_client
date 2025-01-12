@@ -126,7 +126,7 @@ class PlayerSelection:
             self.input_text = self.input_text[:-1]  # Remove o último caractere
         else:
             new_char = event.unicode  # Obtém o novo caractere digitado
-            if new_char.isalnum() or new_char == " ":  # Verifica se o caractere é alfanumérico
+            if new_char.isalnum():  # Verifica se o caractere é alfanumérico
                 self.input_text += new_char  # Adiciona o novo caractere ao texto
 
     def update_cursor(self):
