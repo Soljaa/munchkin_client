@@ -14,7 +14,7 @@ class ApplyDiscardCardBadStuffCurseEffect(CurseEffect):
         card = next((card for card in reversed(door_deck.discard_pile) if card.type == CardType.MONSTER), None)
 
         if card:
-            player.discard_card(card)
+            player.add_to_discard_pile(card)
 
 class ChangeClassCurseEffect(CurseEffect):        
     def apply(self, player) -> None:
