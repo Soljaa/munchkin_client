@@ -69,29 +69,34 @@ class Menu:
         selecao_player = PlayerSelection(self.window)
         result = selecao_player.run()  # Retorna o nickname e avatar_img_dir
         if result:
-            nickname, avatar_img_dir, gender = result
+            nickname, avatar_img_dir, gender, ai_mode = result
             self.stop_music()
             self.play_transition_fade_sound()
+            # get AIs from game mode selected
             players = [
                 {
                     "name": nickname,
                     "avatar": avatar_img_dir,
                     "gender": gender,
+                    "is_ai": False
                 },
                 {
-                    "name": "Munch Lord",
+                    "name": "Munch Lord" if ai_mode else "Player 2",
                     "avatar": "assets/selecao_player/avatares/avatar7.png",
                     "gender": Gender.FEMALE,
+                    "is_ai": ai_mode
                 },
                 {
-                    "name": "GameMaster9000",
+                    "name": "GameMaster9000" if ai_mode else "Player 3",
                     "avatar": "assets/selecao_player/avatares/avatar4.png",
                     "gender": Gender.MALE,
+                    "is_ai": ai_mode
                 },
                 {
-                    "name": "Boomer",
+                    "name": "Boomer" if ai_mode else "Player 4",
                     "avatar": "assets/selecao_player/avatares/avatar5.png",
                     "gender": Gender.FEMALE,
+                    "is_ai": ai_mode
                 }
             ]
             # start game manager

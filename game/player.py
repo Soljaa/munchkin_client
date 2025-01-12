@@ -4,7 +4,7 @@ import random
 
 
 class Player:
-    def __init__(self, name, avatar_img_dir, gender):
+    def __init__(self, name, avatar_img_dir, gender, is_ai: bool = False):
         self.name = name
         self.avatar_img_dir = avatar_img_dir
         self.level = 1
@@ -15,6 +15,7 @@ class Player:
         self.gold = 0  # Adicionando o atributo gold inicializado em 0
         self.class_ = None  # estava como array por causa do super munchkin, mas ele foi cancelado
         self.gender = gender
+        self.is_ai = is_ai
         # adicionar referencia a efeitos ativos, com referencia aos itens donos do efeito e
         # ver se vale dividir em etapas de aplicação dos efeitos como efeitos que se aplicam no setup,
         # ou no combate, ou na fuga e etc
@@ -67,10 +68,13 @@ class Player:
 
             # race restrictions
             if item.race_required:
-                if not self.race or self.race == RaceTypes.HUMAN:
-                    return False
-                if self.race.race_type != item.race_required:
-                    return False
+                if item.race_required == RaceTypes.HUMAN and self.race == RaceTypes.HUMAN:
+                    pass
+                else:
+                    if not self.race or self.race == RaceTypes.HUMAN:
+                        return False
+                    if self.race.race_type != item.race_required:
+                        return False
 
             if item.races_prohibited:
                 if self.race and self.race != RaceTypes.HUMAN and self.race in item.races_prohibited:

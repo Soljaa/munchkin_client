@@ -37,8 +37,8 @@ class GameState:
     def get_instance():
         return GameState._instance
 
-    def add_player(self, name, img_dir, gender=Gender.MALE):
-        player = Player(name, img_dir, gender)
+    def add_player(self, name, img_dir, gender=Gender.MALE, is_ai: bool = False):
+        player = Player(name, img_dir, gender, is_ai)
         self.players.append(player)
         # Draw initial hand
         for _ in range(4):

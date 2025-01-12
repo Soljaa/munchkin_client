@@ -43,6 +43,7 @@ class GameRenderer:
         self.equip_holder = pygame.transform.scale(pygame.image.load(resource_path("assets/game/equip_holder.png")), (100, 150))
         self.hand_card_sprites = []  # [(card_sprite, card)]
         self.equipped_card_sprites = []  # [(card_sprite, card)]]
+        self.waiting = 0
 
     @classmethod
     def get_instance(cls):
@@ -258,7 +259,7 @@ class GameRenderer:
             extra_element=draw_card
         )
 
-    def draw_charity_fase_transition(self, donor, players, distribution):  # TODO: Polir
+    def draw_charity_fase_transition(self, donor, players, distribution, ai_turn: bool = False):  # TODO: Polir
         """
         Exibe a distribuição de cartas para os jogadores na fase de caridade na tela do Pygame, com um botão para continuar.
         """
@@ -278,9 +279,9 @@ class GameRenderer:
 
         continue_btn = HoverButton("assets/game/continue.png", SCREEN_WIDTH - 100, SCREEN_HEIGHT - 50, 160, 66)
 
-        waiting = True
-        while waiting:
-
+        self.waiting = 2
+        clock = pygame.time.Clock()
+        while self.waiting > 0:
             # posições iniciais
             players_y_position = y_position + 60
             cards_x_position = 50
@@ -325,14 +326,18 @@ class GameRenderer:
             # continue btn
             continue_btn.draw()
 
+            if ai_turn:
+                delta_time = clock.tick(60) / 1000.0
+                self.waiting -= delta_time
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
                 if event.type == pygame.KEYDOWN:
-                    waiting = False
+                    self.waiting = 0
                 if continue_btn.handle_event():
-                    waiting = False
+                    self.waiting = 0
             pygame.display.flip()
 
     def draw_run_away_success_transition(self):
@@ -379,9 +384,6 @@ class GameRenderer:
         players = game_state.players
         self._draw_player_info(player, 430, 10)
 
-        # Draw equipped items
-        self._draw_player_equips(player)
-
         # Draw avatars
         self.draw_avatars(players)
 
@@ -398,6 +400,9 @@ class GameRenderer:
         
         # Draw buttons based on game phase
         self._draw_buttons(game_state)
+
+        # Draw equipped items
+        self._draw_player_equips(player)
 
         # Draw hand
         self._draw_hand(player, 430, 190)

@@ -30,6 +30,7 @@ class PlayerSelection:
         self.cursor_visible = True
         self.last_blink_time = time.time()
         self.gender = None
+        self.use_ai = False
 
         # Initialization
         self.initialize_window()
@@ -92,12 +93,28 @@ class PlayerSelection:
                 510,
                 acao=lambda: self.set_player_gender(Gender.FEMALE)
             ),
+            "pvp": ClickButton(
+                "assets/selecao_player/pvp.png",
+                self.window.width / 2 + 20,
+                160,
+                acao=lambda: self.set_use_ai(False)
+            ),
+            "pvcom": ClickButton(
+                "assets/selecao_player/ia.png",
+                self.window.width / 2 + 70,
+                160,
+                acao=lambda: self.set_use_ai(True)
+            ),
         }
 
         # Espelha a imagem do botão "back"
         self.buttons["back"].sprite.image = pygame.transform.flip(
             self.buttons["back"].sprite.image, True, False
         )
+
+    def set_use_ai(self, value):
+        self.use_ai = value
+        print(self.use_ai)
 
     def initialize_animation(self):
         """Inicializa as variáveis para a animação de cores."""
@@ -166,10 +183,10 @@ class PlayerSelection:
         nickname = self.input_text.strip()
         avatar_img_dir = self.avatars[self.avatar_index]
         player_gender = self.gender
+        use_ai = self.use_ai
         if self.is_valid_nickname(nickname) and player_gender:
             # Ao invés de chamar main() diretamente, vamos retornar os dados
-            return nickname, avatar_img_dir, player_gender
-
+            return nickname, avatar_img_dir, player_gender, use_ai
 
     def quit(self):
         self.running = False
@@ -206,6 +223,22 @@ class PlayerSelection:
                         max(button.original_width, button.original_height) // 2 + 5,
                         3
                     )
+                if name == "pvcom" and self.use_ai:
+                    pygame.draw.circle(
+                        self.window.screen,
+                        (0, 0, 0),
+                        (button.original_x, button.original_y),
+                        max(button.original_width, button.original_height) // 2 + 5,
+                        3
+                    )
+                if name == "pvp" and not self.use_ai:
+                    pygame.draw.circle(
+                        self.window.screen,
+                        (0, 0, 0),
+                        (button.original_x, button.original_y),
+                        max(button.original_width, button.original_height) // 2 + 5,
+                        3
+                    )
                 if button.handle():
                     return button.handle()
                 else:
@@ -232,6 +265,7 @@ class PlayerSelection:
             self.draw_text(self.window.screen, "Digite seu nickname:", (input_box_x, input_box_y - 30), 28, (0, 0, 0))  # Texto acima do campo
             self.draw_text(self.window.screen, self.get_display_text(), (input_box_x + 10, input_box_y + 10), 28, (0, 0, 0))  # Texto digitado
             self.draw_text(self.window.screen, "Escolha um gênero:", (input_box_x, input_box_y + 110), 28, (0, 0, 0))  # Texto digitado
+            self.draw_text(self.window.screen, "Modo de jogo:", (input_box_x + 50, input_box_y - 240), 28, (0, 0, 0))  # Texto digitado
 
             # Verifica se é hora de alternar a cor do aviso
             current_time = pygame.time.get_ticks()

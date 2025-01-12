@@ -3,11 +3,12 @@ from game.game_state import GamePhase
 
 
 class CharityPhase(GamePhases):
-    def __init__(self, game_state, renderer):
+    def __init__(self, game_state, renderer, ai_turn: bool=False):
         super().__init__(game_state)  # Inicializa a classe base
         self.players = game_state.players
         self.current_player_index = game_state.current_player_index
         self.renderer = renderer
+        self.ai_turn = ai_turn
 
     def run(self, died=False):
         print("Executing Charity Phase")
@@ -39,7 +40,7 @@ class CharityPhase(GamePhases):
         other_players = [player for player in self.players if player != current_player]
         
         # Chama a renderização para exibir todos os jogadores, exceto o atual
-        self.renderer.draw_charity_fase_transition(current_player, other_players, distribution)
+        self.renderer.draw_charity_fase_transition(current_player, other_players, distribution, ai_turn=self.ai_turn)
 
         return True
 
