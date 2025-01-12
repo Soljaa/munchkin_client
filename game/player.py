@@ -67,19 +67,21 @@ class Player:
 
             # race restrictions
             if item.race_required:
-                if self.race != item.race_required:
+                if not self.race or self.race == RaceTypes.HUMAN:
+                    return False
+                if self.race.race_type != item.race_required:
                     return False
 
             if item.races_prohibited:
-                if self.race in item.races_prohibited:
+                if self.race and self.race != RaceTypes.HUMAN and self.race in item.races_prohibited:
                     return False
 
             # class restrictions
             if item.class_required:
-                can_use = False
-                if self.class_ and self.class_.class_type == item.class_required:
-                        can_use = True
-                return can_use
+                if not self.class_:
+                    return False
+                if self.class_.class_type != item.class_required:
+                    return False
 
             if item.classes_prohibited:
                 if self.class_ and self.class_.class_type in item.classes_prohibited:
@@ -166,6 +168,9 @@ class Player:
     def remove_class(self):
         if self.class_:
             self.add_to_discard_pile(self.class_)
+            for item in self.equipped_items:
+                if item.class_required and item.class_required == self.class_.class_type:
+                    self.unequip_item(item)
             self.class_ = None
 
     def replace_class(self, card):
@@ -173,10 +178,12 @@ class Player:
         self.class_ = card
 
     def remove_race(self):
-        if self.race:
-            if self.race != RaceTypes.HUMAN:
-                self.add_to_discard_pile(self.race)
-            self.race = RaceTypes.HUMAN
+        if self.race != RaceTypes.HUMAN:
+            self.add_to_discard_pile(self.race)
+            for item in self.equipped_items:
+                if item.race_required and item.race_required == self.race.race_type:
+                    self.unequip_item(item)
+        self.race = RaceTypes.HUMAN
 
     def replace_race(self, card):
         self.remove_race()
