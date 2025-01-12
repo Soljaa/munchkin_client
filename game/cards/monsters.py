@@ -41,7 +41,7 @@ MONSTERS = [
             image="assets/door_cards/Bullrog.png",
             level=18, 
             treasure=5, 
-            effect=CompositeBadStuff(NotPursueLevelEffect(4)),
+            effect=CompositeEffect(NotPursueLevelEffect(4)),
             bad_stuff=DeathBadStuff(),
             reward_two_levels=True
         ),

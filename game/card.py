@@ -139,10 +139,11 @@ class DoorBuff(Card):
         self.effect.apply(target)
 
 class TreasureBuff(Card):
-    def __init__(self, name, image, effect, restriction=None):
+    def __init__(self, name, image, effect, restriction=None, value=None):
         super().__init__(name, image, CardType.TREASURE_BUFF)
         self.effect = effect
         self.restriction = restriction
+        self.value = value
 
     def can_use(self, player) -> bool:
         if self.restriction:

@@ -248,7 +248,7 @@ ITEMS = [
         image="assets/treasure_cards/Stepladder.png",
         bonus=3,
         value=400,
-        two_hands=True,
+        big = True,
         race_required=RaceTypes.HALFlING
     ),
     Item(
