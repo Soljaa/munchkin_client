@@ -132,7 +132,7 @@ class Player:
 
         if (card.type == CardType.CURSE):
             print('Clicou em curse')
-            player_target = game_renderer.draw_selection_player(game_state.players, game_state.current_player(), "Selecione o alvo da maldição")
+            player_target = game_renderer.draw_selection_player(game_state.players, game_state.current_player(), "Selecione o alvo da maldição", background="assets/game/sell_modal.jpeg")
             if not player_target:
                 return
             card.apply_effect(player_target)

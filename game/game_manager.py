@@ -64,7 +64,7 @@ class GameManager:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:  # Verifica se a tecla foi pressionada
                     if event.key == pygame.K_p:   # Verifica se a tecla pressionada foi 'P'
-                        self.renderer.draw_selection_player(self.game_state.players, self.game_state.current_player(), "Jogadores")
+                        self.renderer.draw_selection_player(self.game_state.players, self.game_state.current_player(), "Jogadores", background="assets/game/sell_modal.jpeg")
 
                 if event.type == pygame.QUIT:
                     return
