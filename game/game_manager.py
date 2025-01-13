@@ -73,6 +73,9 @@ class GameManager:
                 action = self.renderer.handle_event(event, self.game_state)
                 self.handle_action(action)
 
+            if self.game_state.phase == GamePhase.CHARITY:
+                self.game_state.next_player()
+                self.increase_global_turns()
 
             # Draw current game state
             try:
@@ -114,7 +117,7 @@ class GameManager:
                 print("ia na caridade")
                 action = None
                 self.game_state.next_player()
-            self.waiting_timer = 60
+            self.waiting_timer = 120
             if action:
                 self.handle_action(action, ai_turn=True)
 
@@ -175,8 +178,6 @@ class GameManager:
                             if player_died:
                                 charity_phase = CharityPhase(self.game_state, self.renderer, ai_turn=ai_turn)
                                 charity_phase.run(player_died)
-                                self.game_state.next_player()
-                                self.increase_global_turns()
                             else:
                                 self.game_state.set_combat(None)
                                 self.renderer.set_message("Prepare-se antes de fazer caridade!")
@@ -203,7 +204,7 @@ class GameManager:
 
                         except EndGameException:
                             # mostrar tela de vencedor
-                            self.renderer.draw_transition("assets/game/bg_winner.jpg", duration=2,
+                            self.renderer.draw_transition("assets/game/bg_winner.jpg", duration=10,
                                                           extra_element=lambda: self.renderer.draw_winner(
                                                               self.game_state.current_player()))
                             print("Fim de jogo! Vencedor:", self.game_state.current_player().name)
@@ -221,8 +222,6 @@ class GameManager:
                 elif action == "end_turn":
                     charity_phase = CharityPhase(self.game_state, self.renderer, ai_turn=ai_turn)
                     charity_phase.run()
-                    self.game_state.next_player()
-                    self.increase_global_turns()
 
                 elif action == "sell_items":
                     if self.game_state.phase == GamePhase.SETUP or self.game_state.phase == GamePhase.FINAL_SETUP:
