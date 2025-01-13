@@ -699,7 +699,7 @@ class GameRenderer:
                             self.set_message(f"{card.name} utilizada!")
                         else:
                             self.set_message("Não pode usar esta carta!")
-                    else:
+                    elif card.type != CardType.MONSTER:
                         game_state.current_player().play_card(card, game_state)
                         self.set_message(f"{card.name} utilizada!")
 
