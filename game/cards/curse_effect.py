@@ -14,9 +14,13 @@ class ApplyDiscardCardBadStuffCurseEffect(CurseEffect):
         card = next((card for card in reversed(door_deck.discard_pile) if card.type == CardType.MONSTER), None)
 
         if card:
+            card.apply_bad_stuff(player)
             player.add_to_discard_pile(card)
 
-class ChangeClassCurseEffect(CurseEffect):        
+    def __str__(self):
+        return "Você recebe a bad stuff do último monstro!"
+
+class ChangeClassCurseEffect(CurseEffect):
     def apply(self, player) -> None:
         if player.class_ == None:
             return
@@ -30,6 +34,9 @@ class ChangeClassCurseEffect(CurseEffect):
             return
         if card:
             player.replace_class(card)
+
+    def __str__(self):
+        return "Você muda de classe!"
 
 class ChangeRaceCurseEffect(CurseEffect):        
     def apply(self, player) -> None:
@@ -46,10 +53,19 @@ class ChangeRaceCurseEffect(CurseEffect):
         if card:
             player.replace_race(card)
 
+    def __str__(self):
+        return "Você muda de raça!"
+
 class LoseRaceCurseEffect(CurseEffect):
     def apply(self, player) -> None:
         player.remove_race()
 
+    def __str__(self):
+        return "Você perde sua raça!"
+
 class LoseClassCurseEffect(CurseEffect):
     def apply(self, player) -> None:
         player.remove_class()
+
+    def __str__(self):
+        return "Você perde sua classe!"
