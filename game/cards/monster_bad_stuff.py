@@ -45,11 +45,12 @@ class OrcsBadStuff(MonsterBadStuff):
         if dice.last_roll <= 2:
             Death(player).apply()
         else:
+            game_renderer.set_message("Fugiu, mas perdeu 1 nível!")
             player.level_down(dice.last_roll)
 
 class LoseItemsBadStuff(MonsterBadStuff):
     def __str__(self):
-        if self.qty == 0:
+        if not self.qty:
             return "Você perde todos os itens."
         item_word = "item" if self.qty == 1 else "itens"
         return "Você perde {} {}.".format(self.qty, item_word)
