@@ -4,13 +4,13 @@ from game.cards.monster_bad_stuff import MonsterBadStuff
 
 
 class CardType(Enum):
-    MONSTER = auto()
-    CURSE = auto()
-    RACE = auto()
-    CLASS = auto()
-    ITEM = auto()
-    DOOR_BUFF = auto()
-    TREASURE_BUFF = auto()
+    MONSTER = "Monstro"
+    CURSE = "Maldição"
+    RACE = "Raça"
+    CLASS = "Classe"
+    ITEM = "Item"
+    DOOR_BUFF = "Buff de porta"
+    TREASURE_BUFF = "Tesouro de buff"
 
 
 class RaceTypes(Enum):
