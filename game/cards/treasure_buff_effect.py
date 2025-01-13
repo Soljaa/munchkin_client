@@ -22,13 +22,11 @@ class EveryoneScapesBuff(TreasureBuffEffect):
         game_renderer = GameRenderer.get_instance()
 
         # é o que acontece quando foge no game_manager: elif action == "run_away"
-        game_state.set_combat(None)
         game_state.door_deck.discard(game_state.current_combat.monster)
+        game_state.set_combat(None)
         charity_phase = CharityPhase(game_state, game_renderer)
         charity_phase.run()
-        game_state.next_player()
-        curr_turn = self.increase_global_turns(curr_turn, game_state)
-        print("Turno:", curr_turn)
+
 
 class BonusToEitherSideBuff(TreasureBuffEffect):
     def __init__(self, bonus):
