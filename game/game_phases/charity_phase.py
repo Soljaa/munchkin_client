@@ -26,7 +26,6 @@ class CharityPhase(GamePhases):
 
         if len(donation_cards) == 1:
             print(f"Distributing single card to {lowest_cards_players[0].name}")
-            lowest_cards_players[0].hand += donation_cards
             distribution = {lowest_cards_players[0]: donation_cards}
         else:
             print(f"Distributing {len(donation_cards)} cards among {len(lowest_cards_players)} players")
