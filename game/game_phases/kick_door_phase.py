@@ -39,4 +39,7 @@ class KickDoorFase(GamePhases):
             self.renderer.set_message(f"Ah não! {card.name}")
             self.game_state.current_curse = card
 
+        elif card.type == CardType.DOOR_BUFF or card.type == CardType.RACE or card.type == CardType.CLASS:
+            self.current_player.hand.append(card)
+            self.renderer.set_message(f"Encontrou {card.type.value}: {card.name}")
         return True
